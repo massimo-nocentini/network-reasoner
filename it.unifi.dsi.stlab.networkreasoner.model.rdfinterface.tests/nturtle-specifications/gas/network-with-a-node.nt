@@ -9,16 +9,16 @@
 @prefix property: <http://stlab.dsi.unifi.it/networkreasoner/property/> .
 @prefix pred: <http://stlab.dsi.unifi.it/networkreasoner/predicate/> .
 @prefix ctx: <http://stlab.dsi.unifi.it/networkreasoner/context/> .
-@prefix entity: <http://stlab.dsi.unifi.it/networkreasoner/entity/> .
+@prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
 
 node:single-node 
-  a			entity:node ;
-  pred:inContext 	ctx:gas ;
+  a			type:gas-node ; # observe that GasNode is really the class name in the code base
+#  pred:inContext 	ctx:gas ;
   property:identifier	"single node" ;
   property:comment	"this is the very first node that we build with our system." .
 
-
-ctx:gas 
-  a			entity:context ;
-  property:comment	"this context represent the first context that we care about." .
+# the following I don't know if it is really necessary. Just an attempt.
+#ctx:gas 
+#  a			type:context ;
+#  property:comment	"this context represent the first context that we care about." .
 
