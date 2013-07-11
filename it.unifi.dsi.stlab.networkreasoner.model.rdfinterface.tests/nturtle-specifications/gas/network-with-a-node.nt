@@ -1,0 +1,24 @@
+@base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+# the following are the namespaces for our contexts
+
+@prefix node: <http://stlab.dsi.unifi.it/networkreasoner/node/> .
+@prefix property: <http://stlab.dsi.unifi.it/networkreasoner/property/> .
+@prefix pred: <http://stlab.dsi.unifi.it/networkreasoner/predicate/> .
+@prefix ctx: <http://stlab.dsi.unifi.it/networkreasoner/context/> .
+@prefix entity: <http://stlab.dsi.unifi.it/networkreasoner/entity/> .
+
+node:single-node 
+  a			entity:node ;
+  pred:inContext 	ctx:gas ;
+  property:identifier	"single node" ;
+  property:comment	"this is the very first node that we build with our system." .
+
+
+ctx:gas 
+  a			entity:context ;
+  property:comment	"this context represent the first context that we care about." .
+
