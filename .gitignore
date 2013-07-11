@@ -1,0 +1,6 @@
+/*/bin
+*.dll
+*.mdb
+test-results/
+*.userprefs
+third-party-libraries/dotnetrdf_library_100_stable/
