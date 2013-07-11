@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.rdfinterface", "it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj", "{035646F1-2131-4366-A526-A2E2F3A00A3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests", "it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests.csproj", "{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj

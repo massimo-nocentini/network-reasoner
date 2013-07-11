@@ -6,6 +6,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 	{
 		public MyClass ()
 		{
+
 		}
 	}
 }
