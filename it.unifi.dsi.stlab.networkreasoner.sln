@@ -1,14 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model", "it.unifi.dsi.stlab.networkreasoner.model\it.unifi.dsi.stlab.networkreasoner.model.csproj", "{4D77E402-3ADF-4B45-A8FD-15568D5BEF50}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.tests", "it.unifi.dsi.stlab.networkreasoner.model.tests\it.unifi.dsi.stlab.networkreasoner.model.tests.csproj", "{04743985-51BF-4F56-A57F-ACE2380CB1C1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.gas", "it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj", "{57C80F6B-09A7-4CE1-9A21-615B998B9E0F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.gas.tests", "it.unifi.dsi.stlab.networkreasoner.model.gas.tests\it.unifi.dsi.stlab.networkreasoner.model.gas.tests.csproj", "{CF810D13-4AA2-443C-A6C6-42142D68614D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.rdfinterface", "it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj", "{035646F1-2131-4366-A526-A2E2F3A00A3D}"
 EndProject
 Global
@@ -21,24 +13,8 @@ Global
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04743985-51BF-4F56-A57F-ACE2380CB1C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04743985-51BF-4F56-A57F-ACE2380CB1C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04743985-51BF-4F56-A57F-ACE2380CB1C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04743985-51BF-4F56-A57F-ACE2380CB1C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D77E402-3ADF-4B45-A8FD-15568D5BEF50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D77E402-3ADF-4B45-A8FD-15568D5BEF50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D77E402-3ADF-4B45-A8FD-15568D5BEF50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D77E402-3ADF-4B45-A8FD-15568D5BEF50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57C80F6B-09A7-4CE1-9A21-615B998B9E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57C80F6B-09A7-4CE1-9A21-615B998B9E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57C80F6B-09A7-4CE1-9A21-615B998B9E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57C80F6B-09A7-4CE1-9A21-615B998B9E0F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF810D13-4AA2-443C-A6C6-42142D68614D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF810D13-4AA2-443C-A6C6-42142D68614D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF810D13-4AA2-443C-A6C6-42142D68614D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF810D13-4AA2-443C-A6C6-42142D68614D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = it.unifi.dsi.stlab.networkreasoner.model\it.unifi.dsi.stlab.networkreasoner.model.csproj
+		StartupItem = it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj
 	EndGlobalSection
 EndGlobal
