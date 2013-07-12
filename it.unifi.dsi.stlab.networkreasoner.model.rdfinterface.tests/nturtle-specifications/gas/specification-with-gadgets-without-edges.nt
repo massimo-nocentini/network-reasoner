@@ -17,7 +17,7 @@ node:single-node
   a				type:gas-node ; # observe that GasNode is really the class name in the code base
 #  pred:inContext 		ctx:gas ;
   property:identifier		"single node" ;
-  property:height		35; 
+  property:height		35 ;
   property:comment		"this is the very first node that we build with our system.";
   property:equipped_with	(gadget:load, gadget:supply) .
 

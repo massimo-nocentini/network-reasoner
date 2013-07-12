@@ -1,27 +1,25 @@
 using System;
+using VDS.RDF;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 {
 	public class NamespaceRepository
 	{
-		private String Namespace { get; set; }
+		private static readonly String csharp = 
+			"http://stlab.dsi.unifi.it/networkreasoner/csharp-types/";
+		private static readonly String rdf = 
+			"http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
-		public static readonly NamespaceRepository rdf = new NamespaceRepository (
-			"http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-
-		public NamespaceRepository (String aNamespace)
+		public static Uri rdf_type ()
 		{
-			this.Namespace = aNamespace;
+			return UriFactory.Create (rdf + "type");
 		}
 
-		public NamespaceRepository Append (String suffix)
+		public static Uri csharp_qualified_fullname ()
 		{
-			return new NamespaceRepository (this.Namespace + suffix);
+			return UriFactory.Create (csharp + "qualified-fullname");
 		}
 
-		public String Value(){
-			return this.Namespace;
-		}
 	}
 }
 

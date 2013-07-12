@@ -17,60 +17,115 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			this.Reader = reader;
 		}
 
-		public static SpecificationLoader make_nturtle_specification_loader ()
+		public static SpecificationLoader MakeNTurtleSpecificationLoader ()
 		{
 			return new SpecificationLoader (new TurtleParser ());
 		}
 
-		public void LoadFile (params String[] filenames)
+		public void LoadFileIntoGraphReraisingParseException (
+			String filename, 
+			IGraph g)
 		{
-			foreach (String filename in filenames) {			
+			this.LoadFileIntoGraph (
+				filename, 
+				g,
+				HandleRdfParseException,
+				HandleRdfException
+			);
+		}
 
-				IGraph g = new Graph ();
+		protected virtual void HandleRdfParseException (RdfParseException ex)
+		{
+			throw ex;
+		}
 
-				Dictionary<String, Object> objects = 
-					new Dictionary<String, Object> ();
+		protected virtual void HandleRdfException (RdfException ex)
+		{
+			throw ex;
+		}
 
-				//try {
+		public void LoadFileIntoGraph (
+			String filename, 
+			IGraph g,
+			Action<RdfParseException> onRdfParseException,
+			Action<RdfException> onRdfException)
+		{
+			try {
 				this.Reader.Load (g, filename);
-				//} catch (RdfParseException parseEx) {
-				//	//This indicates a parser error e.g unexpected character, premature end of input, invalid syntax etc.
-				//	Console.WriteLine ("Parser Error");
-				//	Console.WriteLine (parseEx.Message);
-				//} catch (RdfException rdfEx) {
-				//	//This represents a RDF error e.g. illegal triple for the given syntax, undefined namespace
-				//	Console.WriteLine ("RDF Error");
-				//	Console.WriteLine (rdfEx.Message);
-				//}
-
-				INode rdfTypePredicateMatch = g.CreateUriNode (UriFactory.Create (
-					NamespaceRepository.rdf.Append ("type").Value ())
-				);
-
-				var triples = g.GetTriplesWithPredicate (rdfTypePredicateMatch);
-
-				foreach (Triple triple in triples) {
-
-					String key = triple.Subject.AsValuedNode ().AsString ();
-					if (objects.ContainsKey (key) == false) {
-
-						String typeNameToCreateInstanceFrom = triple.Object.AsValuedNode ().AsString ();
-						typeNameToCreateInstanceFrom = typeNameToCreateInstanceFrom.Substring (
-							typeNameToCreateInstanceFrom.LastIndexOf ('/') + 1);
-
-						Type typeToCreateInstanceFrom;
-						if (TypeMapping.Mapping.TryGetValue (
-								typeNameToCreateInstanceFrom, out typeToCreateInstanceFrom)) {
-
-							Object newInstance = Activator.CreateInstance (
-								typeToCreateInstanceFrom);						
-
-							objects.Add (key, newInstance);
-						}
-					}
-				}
+			} catch (RdfParseException parseEx) {
+				onRdfParseException.Invoke (parseEx);
+			} catch (RdfException rdfEx) {
+				onRdfException.Invoke (rdfEx);
 			}
 		}
+
+		public object Instantiate (Triple typeSpecification)
+		{
+			Object instance = null;
+
+			var canProceedToInstantiate = isPredicateNodeForQualifiedTypename (
+				typeSpecification.Predicate.AsValuedNode ().AsString ());
+
+			if (canProceedToInstantiate) {
+
+				Type typeToInstantiateFrom = Type.GetType (
+					typeSpecification.Object.ToString (), true);
+
+				instance = Activator.CreateInstance (typeToInstantiateFrom);
+			} else {
+				throw new ArgumentException (
+					"The given triple doesn't represent a type instantiation request.");
+			}
+
+			return instance;
+		}
+
+		protected virtual Boolean isPredicateNodeForQualifiedTypename (
+			String aPredicate)
+		{
+			return  aPredicate.EndsWith ("/qualified-fullname");
+		}
+
+		public Dictionary<string, object> InstantiateObjects (
+			IGraph g)
+		{
+			Dictionary<String, Object> objects = 
+					new Dictionary<String, Object> ();
+
+			INode rdfTypePredicateMatch = g.CreateUriNode (NamespaceRepository.rdf_type ());
+
+			var triples = g.GetTriplesWithPredicate (rdfTypePredicateMatch);
+
+			foreach (Triple triple in triples) {
+
+				String key = triple.Subject.AsValuedNode ().AsString ();
+				if (objects.ContainsKey (key) == false) {
+
+					INode pred = g.CreateUriNode (
+						NamespaceRepository.csharp_qualified_fullname ());
+
+					var typeSpecificationsEnumerator = g.GetTriplesWithSubjectPredicate (
+						triple.Object, pred).GetEnumerator ();
+
+					if (typeSpecificationsEnumerator.MoveNext () == false) {
+						throw new Exception ("Type specification missing");
+					}
+
+					var typeSpecification = typeSpecificationsEnumerator.Current;
+
+					if (typeSpecificationsEnumerator.MoveNext ()) {
+						throw new Exception ("The type specification is not uniquely determined.");
+					}
+						
+					objects.Add (key, this.Instantiate (typeSpecification));				
+
+				}
+
+			}
+
+			return objects;
+		}
+
 	}
 }
 

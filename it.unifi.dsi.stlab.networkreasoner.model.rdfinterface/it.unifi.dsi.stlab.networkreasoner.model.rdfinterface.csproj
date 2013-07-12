@@ -47,7 +47,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SpecificationLoader.cs" />
     <Compile Include="NamespaceRepository.cs" />
-    <Compile Include="TypeMapping.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="LearningTests.cs" />
     <Compile Include="SpecifingSimpleGasNetworks.cs" />
+    <Compile Include="DummyTypeForInstantiation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
