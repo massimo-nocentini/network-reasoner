@@ -113,6 +113,79 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 
 		}
+
+		[Test()]
+		public void build_edges_and_set_object_properties ()
+		{
+			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-checking-edge-and-uri-objects.nt";
+			IGraph g = new Graph ();
+
+			loader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
+
+			Dictionary<String, Object> objectsByUri = loader.InstantiateObjects (g);
+
+			loader.setPropertiesOnInstances (objectsByUri, g);
+
+			Assert.AreEqual (8, objectsByUri.Count);
+
+			String nodeAKey = "http://stlab.dsi.unifi.it/networkreasoner/network/nodeA";
+			String nodeBKey = "http://stlab.dsi.unifi.it/networkreasoner/network/nodeB";
+			String nodeCKey = "http://stlab.dsi.unifi.it/networkreasoner/network/nodeC";
+			String nodeDKey = "http://stlab.dsi.unifi.it/networkreasoner/network/nodeD";
+
+			String edgeADKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeAD";
+			String edgeABKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeAB";
+			String edgeBCKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeBC";
+			String edgeDBKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeDB";
+
+			// we do not check the types for nodes since we have already
+			// a test case for them.
+			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeADKey]);
+			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeABKey]);
+			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeBCKey]);
+			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeDBKey]);
+
+			var nodeA = objectsByUri [nodeAKey] as GasNode;
+			var nodeB = objectsByUri [nodeBKey] as GasNode;
+			var nodeC = objectsByUri [nodeCKey] as GasNode;
+			var nodeD = objectsByUri [nodeDKey] as GasNode;
+
+			var edgeAD = objectsByUri [edgeADKey] as GasEdge;
+			var edgeAB = objectsByUri [edgeABKey] as GasEdge;
+			var edgeBC = objectsByUri [edgeBCKey] as GasEdge;
+			var edgeDB = objectsByUri [edgeDBKey] as GasEdge;
+
+			Assert.AreEqual (45.968, edgeAD.Diameter);
+			Assert.AreSame (nodeD, edgeAD.EndNode);
+			Assert.AreEqual (1500, edgeAD.Length);
+			Assert.AreEqual (12.35, edgeAD.MaxSpeed);
+			Assert.AreEqual (1.7, edgeAD.Roughness);
+			Assert.AreSame (nodeA, edgeAD.StartNode);
+
+			Assert.AreEqual (4.8, edgeAB.Diameter);
+			Assert.AreSame (nodeB, edgeAB.EndNode);
+			Assert.AreEqual (150, edgeAB.Length);
+			Assert.AreEqual (4, edgeAB.MaxSpeed);
+			Assert.AreEqual (4.7, edgeAB.Roughness);
+			Assert.AreSame (nodeA, edgeAB.StartNode);
+
+			Assert.AreEqual (5.968, edgeBC.Diameter);
+			Assert.AreSame (nodeC, edgeBC.EndNode);
+			Assert.AreEqual (3400, edgeBC.Length);
+			Assert.AreEqual (2.35, edgeBC.MaxSpeed);
+			Assert.AreEqual (17, edgeBC.Roughness);
+			Assert.AreSame (nodeB, edgeBC.StartNode);
+
+			Assert.AreEqual (459.68, edgeDB.Diameter);
+			Assert.AreSame (nodeB, edgeDB.EndNode);
+			Assert.AreEqual (15000, edgeDB.Length);
+			Assert.AreEqual (123, edgeDB.MaxSpeed);
+			Assert.AreEqual (17, edgeDB.Roughness);
+			Assert.AreSame (nodeD, edgeDB.StartNode);
+
+		}
 	}
 }
 

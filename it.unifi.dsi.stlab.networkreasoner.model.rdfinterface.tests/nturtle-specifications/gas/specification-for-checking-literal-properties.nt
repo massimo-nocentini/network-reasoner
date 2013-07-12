@@ -19,7 +19,7 @@ node:node
 
 gadget:load1
   a				type:loader ;
-  property:Load			"463.98"^^<http://www.w3.org/2001/XMLSchema#double>.
+  property:Load			"463.98"^^<http://www.w3.org/2001/XMLSchema#double> .
   
 gadget:load2
   a				type:loader ;

@@ -37,6 +37,9 @@
     <Compile Include="gadgets\for-nodes\GasNodeGadget.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetSupply.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetLoad.cs" />
+    <Compile Include="GasEdge.cs" />
+    <Compile Include="gadgets\for-edges\GasEdgeGadget.cs" />
+    <Compile Include="gadgets\for-edges\GasEdgeGadgetSwitchOff.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

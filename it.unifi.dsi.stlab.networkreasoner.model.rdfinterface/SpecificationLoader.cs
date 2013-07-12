@@ -138,21 +138,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 
 					String subjectAsString = triple.Subject.AsValuedNode ().AsString ();
 					Object instance = objectsByUri [subjectAsString];
+					var propertyToSet = instance.GetType ().GetProperty (propertyName);
 
 					if (triple.Object.NodeType == NodeType.Literal) {
 
-						Object value = this.ValueOf (triple.Object as LiteralNode);
-
-						var propertyToSet = instance.GetType ().GetProperty (propertyName);
-
+						Object value = this.ValueOfLiteralNode (triple.Object as LiteralNode);
 						propertyToSet.SetValue (instance, value, null);
+
+					} else if (triple.Object.NodeType == NodeType.Uri) {
+						Object alreadyExistingObject = this.ValueOfUriNode (
+							triple.Object as UriNode, objectsByUri);
+						propertyToSet.SetValue (instance, alreadyExistingObject, null);
 					}
 				
 				}
 			}
 		}
 
-		private Object ValueOf (LiteralNode node)
+		private Object ValueOfUriNode (UriNode node, Dictionary<string, object> objectsByUri)
+		{
+			String uri = node.Uri.AbsoluteUri;
+			return  objectsByUri [uri];
+		}
+
+		private Object ValueOfLiteralNode (LiteralNode node)
 		{
 			if (node.DataType == null) {
 				return node.AsValuedNode ().AsString ();
