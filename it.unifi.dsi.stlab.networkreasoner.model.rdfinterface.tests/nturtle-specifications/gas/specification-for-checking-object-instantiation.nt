@@ -13,6 +13,10 @@
 @prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
 @prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
 
+# this file has the meaning to allow the construction of an instance of the 
+# following single node, without take care about its properties, we leave them here
+# just to have some more triples.
+
 node:single-node 
   a				type:gas-node ; # observe that GasNode is really the class name in the code base
 #  pred:inContext 		ctx:gas ;
@@ -21,7 +25,15 @@ node:single-node
   property:comment		"this is the very first node that we build with our system.";
   property:equipped_with	(gadget:load gadget:supply) .
 
+gadget:load
+  a				type:loader .
 
+gadget:supply
+  a				type:supplier .
   
+# the following is the really interesting line to instantiate an object for
+# the subjects above.
 type:gas-node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests.DummyTypeForInstantiation, it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests" .
+type:loader		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests.AnotherDummyObject, it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests" .
+type:supplier		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests.MoreDummyObject, it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests" .
 

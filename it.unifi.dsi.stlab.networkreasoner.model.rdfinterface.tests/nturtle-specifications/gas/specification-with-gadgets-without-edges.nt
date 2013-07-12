@@ -19,7 +19,7 @@ node:single-node
   property:identifier		"single node" ;
   property:height		35 ;
   property:comment		"this is the very first node that we build with our system.";
-  property:equipped_with	(gadget:load, gadget:supply) .
+  property:equipped_with	(gadget:load gadget:supply) .
 
 gadget:load
   a				type:loader ;
@@ -34,11 +34,8 @@ gadget:supply
 # the following I don't know if it is really necessary. Just an attempt.
 ctx:gas 
   a			type:context ;
-  property:selector	ctor:selector ;
   property:comment	"this context represent the first context that we care about." .
 
-ctor:selector
-  a			type:gas-selector ;
   
 type:selector		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:context		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .

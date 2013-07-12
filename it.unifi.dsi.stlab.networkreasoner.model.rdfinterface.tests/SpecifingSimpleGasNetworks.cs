@@ -38,12 +38,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 		{
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
 
-			var filenameToParse = "../../nturtle-specifications/gas/specification-for-checking-object-instantiation.nt";
+			var filenameToParse = "../../nturtle-specifications/gas/specification-with-gadgets-without-edges.nt";
 			IGraph g = new Graph ();
 
 			loader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
 
-			Assert.AreEqual (10, g.Triples.Count);
+			Assert.AreEqual (19, g.Triples.Count);
 		}
 
 		[Test()]
@@ -58,10 +58,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 			Dictionary<String, Object> objectsByUri = loader.InstantiateObjects (g);
 
-			Assert.AreEqual (1, objectsByUri.Count);
-			String key = "http://stlab.dsi.unifi.it/networkreasoner/node/single-node";
-			Assert.IsTrue (objectsByUri.ContainsKey (key));
-			Assert.IsInstanceOf (typeof(DummyTypeForInstantiation), objectsByUri [key]);
+			Assert.AreEqual (3, objectsByUri.Count);
+			String singleObjectKey = "http://stlab.dsi.unifi.it/networkreasoner/node/single-node";
+			String loadGadgetKey = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load";
+			String supplyGadgetKey = "http://stlab.dsi.unifi.it/networkreasoner/gadget/supply";
+			Assert.IsTrue (objectsByUri.ContainsKey (singleObjectKey));
+			Assert.IsTrue (objectsByUri.ContainsKey (loadGadgetKey));
+			Assert.IsTrue (objectsByUri.ContainsKey (supplyGadgetKey));
+			Assert.IsInstanceOf (typeof(DummyTypeForInstantiation), objectsByUri [singleObjectKey]);
+			Assert.IsInstanceOf (typeof(AnotherDummyObject), objectsByUri [loadGadgetKey]);
+			Assert.IsInstanceOf (typeof(MoreDummyObject), objectsByUri [supplyGadgetKey]);
 		}
 	}
 }
