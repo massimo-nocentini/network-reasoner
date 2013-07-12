@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.gas", "it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj", "{9B71E0F0-28C7-456B-870D-4D0C45F59846}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.gas.tests", "it.unifi.dsi.stlab.networkreasoner.model.gas.tests\it.unifi.dsi.stlab.networkreasoner.model.gas.tests.csproj", "{8D391B05-4734-45F4-80B9-20CC61AC32BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.systemsolver", "it.unifi.dsi.stlab.networkreasoner.systemsolver\it.unifi.dsi.stlab.networkreasoner.systemsolver.csproj", "{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,10 +23,18 @@ Global
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D391B05-4734-45F4-80B9-20CC61AC32BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D391B05-4734-45F4-80B9-20CC61AC32BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D391B05-4734-45F4-80B9-20CC61AC32BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D391B05-4734-45F4-80B9-20CC61AC32BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Release|Any CPU.ActiveCfg = Release|Any CPU

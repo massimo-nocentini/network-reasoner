@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{035646F1-2131-4366-A526-A2E2F3A00A3D}</ProjectGuid>
+    <ProjectGuid>{8D391B05-4734-45F4-80B9-20CC61AC32BF}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</RootNamespace>
-    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</AssemblyName>
+    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.model.gas.tests</RootNamespace>
+    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.model.gas.tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,24 +30,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="dotNetRDF">
-      <HintPath>..\third-party-libraries\dotnetrdf_library_100_stable\Core\net40\dotNetRDF.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\third-party-libraries\dotnetrdf_library_100_stable\Core\net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\third-party-libraries\dotnetrdf_library_100_stable\Core\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="VDS.Common">
-      <HintPath>..\third-party-libraries\dotnetrdf_library_100_stable\Core\net40\VDS.Common.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <Private>False</Private>
+      <Package>mono-nunit</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="SpecificationLoader.cs" />
-    <Compile Include="NamespaceRepository.cs" />
-    <Compile Include="ParserResultReceiver.cs" />
+    <Compile Include="LoadSimpleNetworks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
+      <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">
+      <Project>{035646F1-2131-4366-A526-A2E2F3A00A3D}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.systemsolver\it.unifi.dsi.stlab.networkreasoner.systemsolver.csproj">
+      <Project>{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.systemsolver</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

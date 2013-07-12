@@ -155,7 +155,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			}
 		}
 
-		private Object ValueOfUriNode (UriNode node, Dictionary<string, object> objectsByUri)
+		private Object ValueOfUriNode (UriNode node, 
+		                               Dictionary<string, object> objectsByUri)
 		{
 			String uri = node.Uri.AbsoluteUri;
 			return  objectsByUri [uri];
@@ -178,7 +179,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 				"the given literal node has a type {0} which isn't used in this application.",
 				nodeTypeAsString)
 			);
-		}	
+		}
+
+		public void Load (
+			string filename, ParserResultReceiver parserResultReceiver)
+		{
+			IGraph g = new Graph ();
+
+			this.LoadFileIntoGraphReraisingParseException (filename, g);
+
+			Dictionary<String, Object> objectsByUri = this.InstantiateObjects (g);
+
+			this.setPropertiesOnInstances (objectsByUri, g);
+
+			parserResultReceiver.receiveResults (objectsByUri);
+		}
+	
 
 
 	}

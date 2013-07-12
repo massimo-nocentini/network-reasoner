@@ -40,11 +40,24 @@
     <Compile Include="GasEdge.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadget.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadgetSwitchOff.cs" />
+    <Compile Include="GasNetwork.cs" />
+    <Compile Include="GasNodeWithGadget.cs" />
+    <Compile Include="GasNodeAbstract.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="gadgets\" />
     <Folder Include="gadgets\for-nodes\" />
     <Folder Include="gadgets\for-edges\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">
+      <Project>{035646F1-2131-4366-A526-A2E2F3A00A3D}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.systemsolver\it.unifi.dsi.stlab.networkreasoner.systemsolver.csproj">
+      <Project>{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.systemsolver</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

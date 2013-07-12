@@ -1,18 +1,24 @@
 using System;
+using it.unifi.dsi.stlab.networkreasoner.systemsolver;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
-	public class GasNode
+	public class GasNode : GasNodeAbstract
 	{
-		public String Identifier{ get; set; }
 
-		public String Comment{ get; set; }
-
-		public long Height{ get; set; }
 
 		public GasNode ()
 		{
+		}		
+
+		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeAbstract
+		public override NodeMatrixConstruction adapterForMatrixConstruction ()
+		{
+			throw new System.NotImplementedException ();
 		}
+		#endregion
+
+
 	}
 }
 
