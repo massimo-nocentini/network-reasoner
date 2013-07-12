@@ -154,9 +154,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 
 		private Object ValueOf (LiteralNode node)
 		{
+			if (node.DataType == null) {
+				return node.AsValuedNode ().AsString ();
+			}
+
 			String nodeTypeAsString = node.DataType.Fragment.Replace ("#", "");
 			if (nodeTypeAsString.Equals ("double")) {
 				return node.AsValuedNode ().AsDouble ();
+			} else if (nodeTypeAsString.Equals ("integer")) {
+				return node.AsValuedNode ().AsInteger ();
 			}
 
 			throw new ArgumentException (string.Format (

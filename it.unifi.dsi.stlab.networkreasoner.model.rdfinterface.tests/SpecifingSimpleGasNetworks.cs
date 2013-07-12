@@ -85,24 +85,31 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 			loader.setPropertiesOnInstances (objectsByUri, g);
 
-			Assert.AreEqual (3, objectsByUri.Count);
+			Assert.AreEqual (4, objectsByUri.Count);
 			String loadGadget1Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load1";
 			String loadGadget2Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load2";
 			String supplyGadgetKey = "http://stlab.dsi.unifi.it/networkreasoner/gadget/supply";
+			String nodeKey = "http://stlab.dsi.unifi.it/networkreasoner/node/node";
 
 			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget1Key]);
 			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget2Key]);
 			Assert.IsInstanceOf (typeof(GasNodeGadgetSupply), objectsByUri [supplyGadgetKey]);
+			Assert.IsInstanceOf (typeof(GasNode), objectsByUri [nodeKey]);
 
 			var loadGadget1 = objectsByUri [loadGadget1Key] as GasNodeGadgetLoad;
 			var loadGadget2 = objectsByUri [loadGadget2Key] as GasNodeGadgetLoad;
 			var supplyGadget = objectsByUri [supplyGadgetKey] as GasNodeGadgetSupply;
+			var node = objectsByUri [nodeKey] as GasNode;
 
 			Assert.AreEqual (463.98, loadGadget1.Load);
 			Assert.AreEqual (756.38, loadGadget2.Load);
 			Assert.AreEqual (157.34, supplyGadget.SetupPressure);
 			Assert.AreEqual (785.23, supplyGadget.MaxQ);
 			Assert.AreEqual (100.00, supplyGadget.MinQ);
+
+			Assert.AreEqual ("single node", node.Identifier);
+			Assert.AreEqual (35, node.Height);
+			Assert.AreEqual ("this is the very first node that we build with our system.", node.Comment);
 
 
 		}

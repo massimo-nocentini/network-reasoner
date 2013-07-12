@@ -11,6 +11,11 @@
 @prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
 @prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
 
+node:node 
+  a				type:node ;
+  property:Identifier		"single node" ;
+  property:Height		"35"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"this is the very first node that we build with our system." .
 
 gadget:load1
   a				type:loader ;
@@ -26,10 +31,8 @@ gadget:supply
   property:MaxQ			"785.23"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:MinQ			"100.00"^^<http://www.w3.org/2001/XMLSchema#double> .
   
-
-  
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
 type:loader		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetLoad, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:supplier		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetSupply, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-
+type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
