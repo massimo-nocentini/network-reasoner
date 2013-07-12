@@ -3,6 +3,7 @@ using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.networkreasoner.model.gas;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 {
@@ -68,6 +69,42 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.IsInstanceOf (typeof(DummyTypeForInstantiation), objectsByUri [singleObjectKey]);
 			Assert.IsInstanceOf (typeof(AnotherDummyObject), objectsByUri [loadGadgetKey]);
 			Assert.IsInstanceOf (typeof(MoreDummyObject), objectsByUri [supplyGadgetKey]);
+		}
+
+		[Test()]
+		public void set_literal_properties ()
+		{
+			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-checking-literal-properties.nt";
+			IGraph g = new Graph ();
+
+			loader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
+
+			Dictionary<String, Object> objectsByUri = loader.InstantiateObjects (g);
+
+			loader.setPropertiesOnInstances (objectsByUri, g);
+
+			Assert.AreEqual (3, objectsByUri.Count);
+			String loadGadget1Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load1";
+			String loadGadget2Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load2";
+			String supplyGadgetKey = "http://stlab.dsi.unifi.it/networkreasoner/gadget/supply";
+
+			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget1Key]);
+			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget2Key]);
+			Assert.IsInstanceOf (typeof(GasNodeGadgetSupply), objectsByUri [supplyGadgetKey]);
+
+			var loadGadget1 = objectsByUri [loadGadget1Key] as GasNodeGadgetLoad;
+			var loadGadget2 = objectsByUri [loadGadget2Key] as GasNodeGadgetLoad;
+			var supplyGadget = objectsByUri [supplyGadgetKey] as GasNodeGadgetSupply;
+
+			Assert.AreEqual (463.98, loadGadget1.Load);
+			Assert.AreEqual (756.38, loadGadget2.Load);
+			Assert.AreEqual (157.34, supplyGadget.SetupPressure);
+			Assert.AreEqual (785.23, supplyGadget.MaxQ);
+			Assert.AreEqual (100.00, supplyGadget.MinQ);
+
+
 		}
 	}
 }

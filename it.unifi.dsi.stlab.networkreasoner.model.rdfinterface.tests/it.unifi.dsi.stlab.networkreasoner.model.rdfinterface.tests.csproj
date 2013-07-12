@@ -64,6 +64,10 @@
       <Project>{CCDB4DD3-B36A-4368-9C55-BE9C6A154381}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
+      <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dummy-objects\" />

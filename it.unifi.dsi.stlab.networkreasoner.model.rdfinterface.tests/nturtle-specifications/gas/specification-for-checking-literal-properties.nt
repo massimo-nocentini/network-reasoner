@@ -1,0 +1,35 @@
+# @base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+# the following are the namespaces for our contexts
+
+@prefix node: <http://stlab.dsi.unifi.it/networkreasoner/node/> .
+@prefix property: <http://stlab.dsi.unifi.it/networkreasoner/property/> .
+@prefix gadget: <http://stlab.dsi.unifi.it/networkreasoner/gadget/> .
+@prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
+@prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
+
+
+gadget:load1
+  a				type:loader ;
+  property:Load			"463.98"^^<http://www.w3.org/2001/XMLSchema#double>.
+  
+gadget:load2
+  a				type:loader ;
+  property:Load			"756.38"^^<http://www.w3.org/2001/XMLSchema#double> .
+
+gadget:supply
+  a				type:supplier ;
+  property:SetupPressure	"157.34"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxQ			"785.23"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MinQ			"100.00"^^<http://www.w3.org/2001/XMLSchema#double> .
+  
+
+  
+# the following is the really interesting line to instantiate an object for
+# the subjects above.
+type:loader		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetLoad, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:supplier		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetSupply, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+

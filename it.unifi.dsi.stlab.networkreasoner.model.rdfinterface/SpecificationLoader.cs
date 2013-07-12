@@ -126,6 +126,46 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			return objects;
 		}
 
+		public void setPropertiesOnInstances (
+			Dictionary<string, object> objectsByUri, IGraph g)
+		{
+			foreach (Triple triple in g.Triples) {
+				String predicateAsString = triple.Predicate.AsValuedNode ().AsString ();
+				if (predicateAsString.Contains ("/property/")) {
+
+					String propertyName = predicateAsString.Substring (
+						predicateAsString.LastIndexOf ("/") + 1);
+
+					String subjectAsString = triple.Subject.AsValuedNode ().AsString ();
+					Object instance = objectsByUri [subjectAsString];
+
+					if (triple.Object.NodeType == NodeType.Literal) {
+
+						Object value = this.ValueOf (triple.Object as LiteralNode);
+
+						var propertyToSet = instance.GetType ().GetProperty (propertyName);
+
+						propertyToSet.SetValue (instance, value, null);
+					}
+				
+				}
+			}
+		}
+
+		private Object ValueOf (LiteralNode node)
+		{
+			String nodeTypeAsString = node.DataType.Fragment.Replace ("#", "");
+			if (nodeTypeAsString.Equals ("double")) {
+				return node.AsValuedNode ().AsDouble ();
+			}
+
+			throw new ArgumentException (string.Format (
+				"the given literal node has a type {0} which isn't used in this application.",
+				nodeTypeAsString)
+			);
+		}	
+
+
 	}
 }
 

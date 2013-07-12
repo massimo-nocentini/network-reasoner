@@ -68,8 +68,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			ILiteralNode helloWorld = g.CreateLiteralNode ("Hello World");
 			ILiteralNode bonjourMonde = g.CreateLiteralNode ("Bonjour tout le Monde", "fr");
 
+			ILiteralNode value = g.CreateLiteralNode ("12345", 
+			                                          new Uri (XmlSpecsHelper.XmlSchemaDataTypeDouble));
+
 			g.Assert (new Triple (dotNetRDF, says, helloWorld));
 			g.Assert (new Triple (dotNetRDF, says, bonjourMonde));
+			g.Assert (new Triple (dotNetRDF, says, value));
 
 			foreach (Triple t in g.Triples) {
 				Console.WriteLine (t.ToString ());
@@ -111,8 +115,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			var helloWorldmappednamespacerdf_rdfxml_syntax = "HelloWorld-mapped-namespace.rdf";
 			rdfxmlwriter.Save (g, helloWorldmappednamespacerdf_rdfxml_syntax);
 
-			Assert.IsTrue(File.Exists(helloWorldmappednamespacent_nturtle_syntax));
-			Assert.IsTrue(File.Exists(helloWorldmappednamespacerdf_rdfxml_syntax));
+			Assert.IsTrue (File.Exists (helloWorldmappednamespacent_nturtle_syntax));
+			Assert.IsTrue (File.Exists (helloWorldmappednamespacerdf_rdfxml_syntax));
 		}
 
 		[Test()]
@@ -127,10 +131,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			ttlparser.Load (g, filename_to_parse);
 
 			foreach (Triple triple in g.Triples) {
-				String asString = triple.ToString();
+				String asString = triple.ToString ();
 			}
 
-			Assert.AreEqual(7, g.Triples.Count);
+			Assert.AreEqual (7, g.Triples.Count);
 
 
 		}
