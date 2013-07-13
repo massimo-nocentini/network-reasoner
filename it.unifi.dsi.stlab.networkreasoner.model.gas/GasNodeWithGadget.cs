@@ -1,5 +1,4 @@
 using System;
-using it.unifi.dsi.stlab.networkreasoner.systemsolver;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
@@ -59,7 +58,42 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			return new MatrixConstructorWithSupplyGadget (this, gasNodeGadgetSupply);
 		}
 
-		private class MatrixConstructorWithLoadGadget : NodeMatrixConstruction
+		private abstract class AbstractNodeMatrixConstruction : NodeMatrixConstruction
+		{
+			#region NodeMatrixConstruction implementation
+			public abstract double coefficient ();
+
+			public double matrixValueRespect (NodeMatrixConstruction anotherNode, 
+			                                  MatrixComputationDataProvider dataProvider)
+			{
+				return anotherNode.dispatchOnIdentity (this, dataProvider);
+			}
+
+			public double dispatchOnIdentity (NodeMatrixConstruction aNode, 
+			                                  MatrixComputationDataProvider dataProvider)
+			{
+				double result = 0;
+				if (Object.ReferenceEquals (this, aNode)) {
+					result = aNode.matrixValueForYourColumn (aNode, dataProvider);
+				} else {
+					result = aNode.matrixValueForNotYourColumn (aNode, dataProvider);
+				}
+
+				return result;
+			}
+
+			public abstract double matrixValueForYourColumn (
+				NodeMatrixConstruction aNode, 
+				MatrixComputationDataProvider dataProvider);
+
+			public abstract double matrixValueForNotYourColumn (
+				NodeMatrixConstruction aNode, 
+				MatrixComputationDataProvider dataProvider);
+
+			#endregion
+		}
+
+		private class MatrixConstructorWithLoadGadget : AbstractNodeMatrixConstruction
 		{
 			private GasNodeWithGadget GasNodeWithGadget{ get; set; }
 
@@ -74,15 +108,33 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 
 			#region NodeMatrixConstruction implementation
-			public double coefficient ()
+			public override double coefficient ()
 			{
 				return GasNodeGadgetLoad.Load;
 			}
+
+			public override double matrixValueForYourColumn (
+				NodeMatrixConstruction aNode, 
+				MatrixComputationDataProvider dataProvider)
+			{
+				return dataProvider.LittleK (this, aNode);
+			}
+
+			public override double matrixValueForNotYourColumn (
+				NodeMatrixConstruction aNode, 
+				MatrixComputationDataProvider dataProvider)
+			{
+				return -1 * dataProvider.LittleK (aNode, this);
+			}
 			#endregion
+
+
+
+
 
 		}
 
-		private class MatrixConstructorWithSupplyGadget : NodeMatrixConstruction
+		private class MatrixConstructorWithSupplyGadget : AbstractNodeMatrixConstruction
 		{
 			private GasNodeWithGadget GasNodeWithGadget{ get; set; }
 
@@ -97,11 +149,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 
 			#region NodeMatrixConstruction implementation
-			public double coefficient ()
+			public override double coefficient ()
 			{
 				return GasNodeGadgetSupply.SetupPressure;
 			}
+
+			public override double matrixValueForYourColumn (
+				NodeMatrixConstruction aNode, 
+				MatrixComputationDataProvider dataProvider)
+			{
+				return 1;
+			}
+
+			public override double matrixValueForNotYourColumn (
+				NodeMatrixConstruction aNode, 
+				MatrixComputationDataProvider dataProvider)
+			{
+				return 0;
+			}
 			#endregion
+
 
 		}
 

@@ -43,12 +43,15 @@
     <Compile Include="GasNetwork.cs" />
     <Compile Include="GasNodeWithGadget.cs" />
     <Compile Include="GasNodeAbstract.cs" />
+    <Compile Include="system-solver\NodeMatrixConstruction.cs" />
+    <Compile Include="system-solver\MatrixComputationDataProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="gadgets\" />
     <Folder Include="gadgets\for-nodes\" />
     <Folder Include="gadgets\for-edges\" />
+    <Folder Include="system-solver\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">
