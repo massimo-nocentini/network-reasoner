@@ -7,9 +7,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 	{
 		private Dictionary<GasEdge, Double> Qvector{ get; set; }
 
-		private Dictionary<GasNodeAbstract, double> Unknowns { get; set; }
+		private Dictionary<NodeMatrixConstruction, double> Unknowns { get; set; }
 
-		private List<GasNodeAbstract> Nodes{ get; set; }
+		private List<NodeMatrixConstruction> Nodes{ get; set; }
 
 		private List<GasEdge> Edges{ get; set; }
 
@@ -30,7 +30,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		}
 
 		public void InitialGuessForUnknowns (
-			Dictionary<GasNodeAbstract, double> unknowns)
+			Dictionary<NodeMatrixConstruction, double> unknowns)
 		{
 			this.Unknowns = unknowns;
 		}
@@ -44,41 +44,69 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				unknownsAtPreviousStep,
 				QvectorAtPreviousStep);
 
+			var coefficientsVector = new Dictionary<NodeMatrixConstruction, double> ();
+
 			var matrixAtCurrentStep = new Dictionary<
-				KeyValuePair<GasNodeAbstract,GasNodeAbstract>, Double> ();
+				KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> ();
+
+			var dataProviderAtCurrentStep = new MatrixComputationDataProviderDictionaryImplementation (
+				LittleK, KvectorAtCurrentStep);
 
 			foreach (var nodeInRow in Nodes) {
 				foreach (var nodeInColumn in Nodes) {
 
 					var nodePair = new KeyValuePair<
-						GasNodeAbstract,GasNodeAbstract> (
+						NodeMatrixConstruction,NodeMatrixConstruction> (
 							nodeInRow, nodeInColumn);
 
-					var nodeInRowAdapter = nodeInRow.adapterForMatrixConstruction ();
-					var nodeInColumnAdapter = nodeInColumn.adapterForMatrixConstruction ();
-
-					double value = nodeInRowAdapter.matrixValueRespect (
-						nodeInColumnAdapter,
-						new MatrixComputationDataProviderDictionaryImplementation (
-							LittleK, KvectorAtCurrentStep)
-					);
+					double value = nodeInRow.matrixValueRespect (
+						nodeInColumn, dataProviderAtCurrentStep);
 
 					matrixAtCurrentStep.Add (nodePair, value);
 
 				}
+
+				coefficientsVector [nodeInRow] = nodeInRow.coefficient ();
 			}
 
+			var unknownsAtCurrentStep = Solve (matrixAtCurrentStep, coefficientsVector);
 
-			return null;
+			var QvectorAtCurrentStep = computeQvector (unknownsAtCurrentStep, dataProviderAtCurrentStep);
+
+			Unknowns = unknownsAtCurrentStep;
+			Qvector = QvectorAtCurrentStep;
+
+			var result = new OneStepMutationResults ();
+
+			result.Matrix = matrixAtCurrentStep;
+			result.Unknowns = unknownsAtCurrentStep;
+			result.Coefficients = coefficientsVector;
+			result.Qvector = QvectorAtCurrentStep;
+
+			return result;
 		}
 
-		protected Dictionary<KeyValuePair<GasNodeAbstract,GasNodeAbstract>, Double> 
+		protected Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> 
 			computeKvector (
-			Dictionary<GasNodeAbstract, double> unknowns,
+			Dictionary<NodeMatrixConstruction, double> unknowns,
 			Dictionary<GasEdge, Double> Qvector)
 		{
-			return null;
+			throw new NotImplementedException ();
 		}
+
+		protected Dictionary<NodeMatrixConstruction, double> Solve (
+			Dictionary<KeyValuePair<NodeMatrixConstruction, NodeMatrixConstruction>, double> matrixAtCurrentStep, 
+			Dictionary<NodeMatrixConstruction, double> coefficientsVector)
+		{
+			throw new NotImplementedException ();
+		}
+
+		protected Dictionary<GasEdge, Double> computeQvector (Dictionary<NodeMatrixConstruction, double> unknownsAtCurrentStep, MatrixComputationDataProviderDictionaryImplementation dataProviderAtCurrentStep)
+		{
+			throw new NotImplementedException ();
+		}
+
+
 
 	}
 }

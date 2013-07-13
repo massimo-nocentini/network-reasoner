@@ -50,7 +50,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			throw new NotImplementedException ();
 		}
 
-		public Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns ()
+		public Dictionary<NodeMatrixConstruction, double> makeInitialGuessForUnknowns ()
 		{
 			throw new NotImplementedException ();
 		}
