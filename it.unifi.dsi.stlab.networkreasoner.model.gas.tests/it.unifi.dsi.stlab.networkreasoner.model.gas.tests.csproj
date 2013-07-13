@@ -39,6 +39,7 @@
     <Compile Include="LoadSimpleNetworks.cs" />
     <Compile Include="MessagingForMatrixConstructionDependentOnGadgets.cs" />
     <Compile Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
+    <Compile Include="AttemptSystemInteraction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

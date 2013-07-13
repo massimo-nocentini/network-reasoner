@@ -45,6 +45,8 @@
     <Compile Include="GasNodeAbstract.cs" />
     <Compile Include="system-solver\NodeMatrixConstruction.cs" />
     <Compile Include="system-solver\MatrixComputationDataProvider.cs" />
+    <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
+    <Compile Include="system-solver\OneStepMutationResults.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

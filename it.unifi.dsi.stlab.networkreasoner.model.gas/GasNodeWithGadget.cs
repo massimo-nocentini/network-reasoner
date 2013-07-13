@@ -117,14 +117,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				NodeMatrixConstruction aNode, 
 				MatrixComputationDataProvider dataProvider)
 			{
-				return dataProvider.LittleK (this, aNode);
+				double bigK = dataProvider.BigK (this, aNode);
+				double littleK = dataProvider.LittleK (this, aNode);
+				return  bigK * littleK;
 			}
 
 			public override double matrixValueForNotYourColumn (
 				NodeMatrixConstruction aNode, 
 				MatrixComputationDataProvider dataProvider)
 			{
-				return -1 * dataProvider.LittleK (aNode, this);
+				double bigK = dataProvider.BigK (this, aNode);
+				double littleK = dataProvider.LittleK (aNode, this);
+				return  bigK * (-1 * littleK);
 			}
 			#endregion
 

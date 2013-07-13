@@ -45,6 +45,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			return new GasParserResultReceiver (this);
 		}
 
+		public Dictionary<GasEdge, double> makeInitialGuessForQvector ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns ()
+		{
+			throw new NotImplementedException ();
+		}
+
 	}
 }
 

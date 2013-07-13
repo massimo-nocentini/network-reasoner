@@ -8,9 +8,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 		}
 
-		public GasNode StartNode{ get; set; }
+		public GasNodeAbstract StartNode{ get; set; }
 
-		public GasNode EndNode{ get; set; }
+		public GasNodeAbstract EndNode{ get; set; }
 
 		public long Length{ get; set; }
 
