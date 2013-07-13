@@ -37,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LoadSimpleNetworks.cs" />
+    <Compile Include="MessagingForMatrixConstructionDependentOnGadgets.cs" />
+    <Compile Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
