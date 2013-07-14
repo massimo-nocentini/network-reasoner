@@ -20,8 +20,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				Dictionary<string, object> objectsByUri)
 			{
 				foreach (KeyValuePair<String, Object> pair in objectsByUri) {
-					if (pair.Value is GasNode) {
-						this.Parent.Nodes.Add (pair.Key, pair.Value as GasNode);
+					if (pair.Value is GasNodeAbstract) {
+						this.Parent.Nodes.Add (pair.Key, pair.Value as GasNodeAbstract);
 					} else if (pair.Value is GasEdge) {
 						this.Parent.Edges.Add (pair.Key, pair.Value as GasEdge);
 					}
@@ -32,16 +32,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public GasNetwork ()
 		{
-			this.Nodes = new Dictionary<object, GasNode> ();
-			this.Edges = new Dictionary<object, GasEdge> ();
+			this.Nodes = new Dictionary<String, GasNodeAbstract> ();
+			this.Edges = new Dictionary<String, GasEdge> ();
 			this.ParserResultReceiver = new GasParserResultReceiver (this);
 		}
 
 		public String Description { get; set; }
 
-		public Dictionary<Object, GasNode> Nodes { get; private set; }
+		public Dictionary<String, GasNodeAbstract> Nodes { get; private set; }
 
-		public Dictionary<Object, GasEdge> Edges { get; private set; }
+		public Dictionary<String, GasEdge> Edges { get; private set; }
 
 		public ParserResultReceiver ParserResultReceiver { get; set; }
 
@@ -57,6 +57,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			throw new NotImplementedException ();
 		}
 
+		public void applyValidators ()
+		{
+			this.ReachabilityValidator.validate (this);
+		}
 	}
 }
 

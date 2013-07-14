@@ -1,0 +1,93 @@
+# @base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+# the following are the namespaces for our contexts
+
+@prefix network: <http://stlab.dsi.unifi.it/networkreasoner/network/> .
+@prefix property: <http://stlab.dsi.unifi.it/networkreasoner/property/> .
+@prefix gadget: <http://stlab.dsi.unifi.it/networkreasoner/gadget/> .
+@prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
+@prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
+@prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
+
+network:nodeB
+  a				type:node ;
+  property:Identifier		"node B" ;
+  property:Height		"35"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"another useless comment." .
+  
+network:nodeD
+  a				type:node ;
+  property:Identifier		"node D" ;
+  property:Height		"43"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"some useless comment." .
+  
+network:nodeC
+  a				type:node ;
+  property:Identifier		"node C" ;
+  property:Height		"5"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"a node located at see level." .
+  
+network:nodeA
+  a				type:node ;
+  property:Identifier		"node A" ;
+  property:Height		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"a mountain node." .
+
+
+# we want to represent the following topology:
+# A -> D
+# A -> B
+# B -> C
+# C -> D
+
+network:edgeAD
+  a				type:edge ;
+  property:StartNode		network:nodeA ;
+  property:EndNode		network:nodeD ;
+  property:Length		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"1.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"45.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"12.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  
+network:edgeAB
+  a				type:edge ;
+  property:StartNode		network:nodeA ;
+  property:EndNode		network:nodeB ;
+  property:Length		"150"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"4.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"4.8"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"4.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+  
+network:edgeBC
+  a				type:edge ;
+  property:StartNode		network:nodeB ;
+  property:EndNode		network:nodeC ;
+  property:Length		"3400"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"5.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"2.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  
+network:edgeDB
+  a				type:edge ;
+  property:StartNode		network:nodeD ;
+  property:EndNode		network:nodeB ;
+  property:Length		"15000"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"459.68"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"123"^^<http://www.w3.org/2001/XMLSchema#double> .
+  
+  
+network:main
+  a						type:gas-network ;
+  property:Description				"This network represent a gas network" ;
+  tag:ParserResultReceiverPropertyName		"ParserResultReceiver" ;
+  tag:MainNetwork				"" .
+  
+# the following is the really interesting line to instantiate an object for
+# the subjects above.
+type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-network	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
