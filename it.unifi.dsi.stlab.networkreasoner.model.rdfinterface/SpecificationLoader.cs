@@ -125,11 +125,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 		public class A : INodeExtensionMethods.NodeTypeDispatchingThrowExceptionForEachCase
 		{
 
-			Action forLiteralNode { get; set; }
+			Action<ILiteralNode> forLiteralNode { get; set; }
 
-			Action forUriNode { get; set; }
+			Action<IUriNode> forUriNode { get; set; }
 
-			public A (Action forLiteralNode, Action forUriNode, Exception ex):base(ex)
+			public A (Action<ILiteralNode> forLiteralNode, 
+			          Action<IUriNode> forUriNode, 
+			          Exception ex):base(ex)
 			{
 
 				this.forLiteralNode = forLiteralNode;
@@ -138,12 +140,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 
 			public override void literalNode (ILiteralNode iLiteralNode)
 			{
-				forLiteralNode.Invoke ();
+				forLiteralNode.Invoke (iLiteralNode);
 			}
 
 			public override void uriNode (IUriNode iUriNode)
 			{
-				forUriNode.Invoke ();
+				forUriNode.Invoke (iUriNode);
 			}
 		}
 
@@ -162,13 +164,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 					var propertyToSet = instance.GetType ().GetProperty (propertyName);
 
 					triple.Object.DispatchOnNodeType (new A (
-						forLiteralNode: () => {
-
-						Object value = this.ValueOfLiteralNode (triple.Object as LiteralNode);
-						setProperty (propertyToSet, instance, value);
-					}, forUriNode: () => {
+						forLiteralNode: aLiteralNode => setProperty (
+							propertyToSet, instance, ValueOfLiteralNode (aLiteralNode))
+					, forUriNode: aUriNode => {
 						Object alreadyExistingObject = this.ValueOfUriNode (
-							triple.Object as UriNode, objectsByUri);
+							aUriNode, objectsByUri);
 						setProperty (propertyToSet, instance, alreadyExistingObject);
 					}, ex: new ShouldNotImplementException ())
 					);
@@ -185,30 +185,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			property.SetValue (instance, value, null);
 		}
 
-		private Object ValueOfUriNode (UriNode node, 
+		protected virtual Object ValueOfUriNode (IUriNode node, 
 		                               Dictionary<string, object> objectsByUri)
 		{
-			String uri = node.Uri.AbsoluteUri;
-			return  objectsByUri [uri];
+			Func<Uri, Object> mapper = uri => {
+
+				return objectsByUri [uri.AbsoluteUri];
+			};
+
+			return node.GetValue (mapper);
 		}
 
-		private Object ValueOfLiteralNode (LiteralNode node)
+		protected virtual Object ValueOfLiteralNode (ILiteralNode node)
 		{
-			if (node.DataType == null) {
-				return node.AsValuedNode ().AsString ();
-			}
-
-			String nodeTypeAsString = node.DataType.Fragment.Replace ("#", "");
-			if (nodeTypeAsString.Equals ("double")) {
-				return node.AsValuedNode ().AsDouble ();
-			} else if (nodeTypeAsString.Equals ("integer")) {
-				return node.AsValuedNode ().AsInteger ();
-			}
-
-			throw new ArgumentException (string.Format (
-				"the given literal node has a type {0} which isn't used in this application.",
-				nodeTypeAsString)
-			);
+			return node.GetValue ();
 		}
 
 		public object FindMainNetwork (Dictionary<string, object> objectsByUri, IGraph g)
@@ -249,7 +239,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			IGraph g = new Graph ();
 			Dictionary<String, Object> objectsByUri = null;
 
-			NewMethod (filename, g, out objectsByUri);
+			ReifySpecification (filename, g, out objectsByUri);
 
 			sendResultTo (parserResultReceiver, objectsByUri);
 		}
@@ -259,7 +249,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			IGraph g = new Graph ();
 			Dictionary<String, Object> objectsByUri = null;
 
-			NewMethod (filename, g, out objectsByUri);
+			ReifySpecification (filename, g, out objectsByUri);
 
 			T mainNetwork = this.FindMainNetwork (objectsByUri, g)as T;
 
@@ -277,7 +267,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			parserResultReceiver.receiveResults (parserResult);
 		}
 
-		void NewMethod (string filename, 
+		void ReifySpecification (string filename, 
 		                IGraph g, 
 		                out Dictionary<string, object> objectsByUri)
 		{

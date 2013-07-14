@@ -47,6 +47,8 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="IEnumerableExtensionMethods.cs" />
     <Compile Include="INodeExtensionMethods.cs" />
+    <Compile Include="ILiteralNodeExtensionMethods.cs" />
+    <Compile Include="IUriNodeExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

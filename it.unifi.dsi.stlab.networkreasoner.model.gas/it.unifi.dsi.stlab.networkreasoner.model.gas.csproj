@@ -47,6 +47,7 @@
     <Compile Include="system-solver\MatrixComputationDataProvider.cs" />
     <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
     <Compile Include="system-solver\OneStepMutationResults.cs" />
+    <Compile Include="validators\ReachabilityValidator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,6 +55,7 @@
     <Folder Include="gadgets\for-nodes\" />
     <Folder Include="gadgets\for-edges\" />
     <Folder Include="system-solver\" />
+    <Folder Include="validators\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">

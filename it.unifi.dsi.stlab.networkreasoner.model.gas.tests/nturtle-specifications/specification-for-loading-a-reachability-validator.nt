@@ -10,6 +10,8 @@
 @prefix gadget: <http://stlab.dsi.unifi.it/networkreasoner/gadget/> .
 @prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
 @prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
+@prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
+@prefix validator: <http://stlab.dsi.unifi.it/networkreasoner/validator/> .
 
 network:nodeB
   a				type:node ;
@@ -84,8 +86,16 @@ validator:reachability
   property:RaiseException	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
   property:WriteLog		"false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
   
+network:main
+  a						type:gas-network ;
+  property:Description				"This network represent a gas network" ;
+  property:ReachabilityValidator		validator:reachability ;
+  tag:ParserResultReceiverPropertyName		"ParserResultReceiver" ;
+  tag:MainNetwork				"" .
+  
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
 type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:edge		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-validator:reachability	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.<<to-fill>>, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:reachability-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.ReachabilityValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-network	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .

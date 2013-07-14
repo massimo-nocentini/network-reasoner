@@ -45,6 +45,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public ParserResultReceiver ParserResultReceiver { get; set; }
 
+		public ReachabilityValidator ReachabilityValidator{ get; set; }
+
 		public Dictionary<GasEdge, double> makeInitialGuessForQvector ()
 		{
 			throw new NotImplementedException ();
