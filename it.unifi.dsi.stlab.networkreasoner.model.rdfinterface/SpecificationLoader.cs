@@ -211,20 +211,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			);
 		}
 
-		public void Load (
-			string filename, ParserResultReceiver parserResultReceiver)
-		{
-			IGraph g = new Graph ();
-
-			this.LoadFileIntoGraphReraisingParseException (filename, g);
-
-			Dictionary<String, Object> objectsByUri = this.InstantiateObjects (g);
-
-			this.setPropertiesOnInstances (objectsByUri, g);
-
-			parserResultReceiver.receiveResults (objectsByUri);
-		}
-
 		public object FindMainNetwork (Dictionary<string, object> objectsByUri, IGraph g)
 		{
 			var triples = g.GetTriplesWithPredicate (
@@ -257,9 +243,48 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			return parserResultReceiver as ParserResultReceiver;
 		}
 
+		public void Load (
+			string filename, ParserResultReceiver parserResultReceiver)
+		{
+			IGraph g = new Graph ();
+			Dictionary<String, Object> objectsByUri = null;
 
+			NewMethod (filename, g, out objectsByUri);
 
+			sendResultTo (parserResultReceiver, objectsByUri);
+		}
 
+		public T Load <T> (string filename) where T : class
+		{
+			IGraph g = new Graph ();
+			Dictionary<String, Object> objectsByUri = null;
+
+			NewMethod (filename, g, out objectsByUri);
+
+			T mainNetwork = this.FindMainNetwork (objectsByUri, g)as T;
+
+			var parserResultReceiver = this.GetParserResultReceiverFrom (objectsByUri, g);
+
+			sendResultTo (parserResultReceiver, objectsByUri);
+
+			return mainNetwork;
+		}
+
+		protected virtual void sendResultTo (
+			ParserResultReceiver parserResultReceiver, 
+			Dictionary<String, Object> parserResult)
+		{
+			parserResultReceiver.receiveResults (parserResult);
+		}
+
+		void NewMethod (string filename, 
+		                IGraph g, 
+		                out Dictionary<string, object> objectsByUri)
+		{
+			this.LoadFileIntoGraphReraisingParseException (filename, g);
+			objectsByUri = this.InstantiateObjects (g);
+			this.setPropertiesOnInstances (objectsByUri, g);
+		}
 
 	}
 }

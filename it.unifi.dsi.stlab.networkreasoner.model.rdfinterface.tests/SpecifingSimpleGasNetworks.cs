@@ -238,6 +238,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 			Assert.AreSame (gasNetwork.ParserResultReceiver, parserResultReceiver);
 		}
+
+		[Test()]
+		public void load_a_complete_network_with_a_main_object_defined_in_specification ()
+		{
+			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-loading-a-network-with-a-main-object-defined-in-it.nt";
+
+			var network = loader.Load<GasNetwork> (filenameToParse);
+
+			Assert.IsNotNull (network);
+			Assert.IsInstanceOf (typeof(GasNetwork), network);
+			Assert.IsNotNull (network.ParserResultReceiver);
+			Assert.AreEqual ("This network represent a gas network", network.Description);
+
+			Assert.AreEqual(4, network.Nodes.Count);
+			Assert.AreEqual(4, network.Edges.Count);
+		}
 	}
 }
 
