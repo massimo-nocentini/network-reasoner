@@ -238,7 +238,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			return objectsByUri [key];
 		}
 
-		public object GetParserResultReceiverFrom (
+		public ParserResultReceiver GetParserResultReceiverFrom (
 			Dictionary<string, object> objectsByUri, IGraph g)
 		{
 			var triples = g.GetTriplesWithPredicate (
@@ -251,7 +251,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			String propertyName = mainNetworkTripleWithTag.Object.ToString ();
 
 			Object mainNetwork = objectsByUri [mainNetworkKey];
-			return mainNetwork.GetType ().GetProperty (propertyName).GetValue (mainNetwork, null);
+			var parserResultReceiver = mainNetwork.GetType ().GetProperty (
+				propertyName).GetValue (mainNetwork, null);
+
+			return parserResultReceiver as ParserResultReceiver;
 		}
 
 
