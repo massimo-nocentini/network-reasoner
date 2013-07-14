@@ -16,7 +16,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
 
 			loader.Load ("../../nturtle-specifications/specification-for-loading-a-simple-gas-network.nt",
-			            network.parserResultReceiver ());
+			            network.ParserResultReceiver);
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
 			system.InitialGuessForQvector (network.makeInitialGuessForQvector ());

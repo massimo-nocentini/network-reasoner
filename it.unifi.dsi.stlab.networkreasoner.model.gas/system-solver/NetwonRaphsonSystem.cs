@@ -44,7 +44,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				unknownsAtPreviousStep,
 				QvectorAtPreviousStep);
 
-			var coefficientsVector = new Dictionary<NodeMatrixConstruction, double> ();
+			var coefficientsVectorAtCurrentStep = new Dictionary<NodeMatrixConstruction, double> ();
 
 			var matrixAtCurrentStep = new Dictionary<
 				KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> ();
@@ -66,12 +66,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 				}
 
-				coefficientsVector [nodeInRow] = nodeInRow.coefficient ();
+				coefficientsVectorAtCurrentStep [nodeInRow] = nodeInRow.coefficient ();
 			}
 
-			var unknownsAtCurrentStep = Solve (matrixAtCurrentStep, coefficientsVector);
+			var unknownsAtCurrentStep = Solve (
+				matrixAtCurrentStep, coefficientsVectorAtCurrentStep);
 
-			var QvectorAtCurrentStep = computeQvector (unknownsAtCurrentStep, dataProviderAtCurrentStep);
+			var QvectorAtCurrentStep = computeQvector (
+				unknownsAtCurrentStep, dataProviderAtCurrentStep);
 
 			Unknowns = unknownsAtCurrentStep;
 			Qvector = QvectorAtCurrentStep;
@@ -80,7 +82,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			result.Matrix = matrixAtCurrentStep;
 			result.Unknowns = unknownsAtCurrentStep;
-			result.Coefficients = coefficientsVector;
+			result.Coefficients = coefficientsVectorAtCurrentStep;
 			result.Qvector = QvectorAtCurrentStep;
 
 			return result;
@@ -101,7 +103,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			throw new NotImplementedException ();
 		}
 
-		protected Dictionary<GasEdge, Double> computeQvector (Dictionary<NodeMatrixConstruction, double> unknownsAtCurrentStep, MatrixComputationDataProviderDictionaryImplementation dataProviderAtCurrentStep)
+		protected Dictionary<GasEdge, Double> computeQvector (
+			Dictionary<NodeMatrixConstruction, double> unknownsAtCurrentStep, 
+			MatrixComputationDataProviderDictionaryImplementation dataProviderAtCurrentStep)
 		{
 			throw new NotImplementedException ();
 		}

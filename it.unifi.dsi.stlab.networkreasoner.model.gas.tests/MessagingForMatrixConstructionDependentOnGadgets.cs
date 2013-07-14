@@ -117,7 +117,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 
 			public double BigK (NodeMatrixConstruction startNode, NodeMatrixConstruction endNode)
 			{
-				throw new System.NotImplementedException ();
+				return 1;
 			}
 			#endregion
 		}

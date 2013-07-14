@@ -4,6 +4,9 @@ using VDS.RDF;
 using System.IO;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
+using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.exceptions;
+using System.Reflection;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 {
@@ -104,18 +107,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 					INode pred = g.CreateUriNode (
 						NamespaceRepository.csharp_qualified_fullname ());
 
-					var typeSpecificationsEnumerator = g.GetTriplesWithSubjectPredicate (
-						triple.Object, pred).GetEnumerator ();
+					var enumerableOfTypeSpecifications = g.GetTriplesWithSubjectPredicate (
+						triple.Object, pred);						
 
-					if (typeSpecificationsEnumerator.MoveNext () == false) {
-						throw new Exception ("Type specification missing");
-					}
-
-					var typeSpecification = typeSpecificationsEnumerator.Current;
-
-					if (typeSpecificationsEnumerator.MoveNext ()) {
-						throw new Exception ("The type specification is not uniquely determined.");
-					}
+					var typeSpecification = enumerableOfTypeSpecifications.
+						FetchExactlyOneThrowingExceptionsIfErrorsOccurs ();				
 						
 					objects.Add (key, this.Instantiate (typeSpecification));				
 
@@ -124,6 +120,31 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			}
 
 			return objects;
+		}
+
+		public class A : INodeExtensionMethods.NodeTypeDispatchingThrowExceptionForEachCase
+		{
+
+			Action forLiteralNode { get; set; }
+
+			Action forUriNode { get; set; }
+
+			public A (Action forLiteralNode, Action forUriNode, Exception ex):base(ex)
+			{
+
+				this.forLiteralNode = forLiteralNode;
+				this.forUriNode = forUriNode;
+			}
+
+			public override void literalNode (ILiteralNode iLiteralNode)
+			{
+				forLiteralNode.Invoke ();
+			}
+
+			public override void uriNode (IUriNode iUriNode)
+			{
+				forUriNode.Invoke ();
+			}
 		}
 
 		public void setPropertiesOnInstances (
@@ -140,19 +161,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 					Object instance = objectsByUri [subjectAsString];
 					var propertyToSet = instance.GetType ().GetProperty (propertyName);
 
-					if (triple.Object.NodeType == NodeType.Literal) {
+					triple.Object.DispatchOnNodeType (new A (
+						forLiteralNode: () => {
 
 						Object value = this.ValueOfLiteralNode (triple.Object as LiteralNode);
-						propertyToSet.SetValue (instance, value, null);
-
-					} else if (triple.Object.NodeType == NodeType.Uri) {
+						setProperty (propertyToSet, instance, value);
+					}, forUriNode: () => {
 						Object alreadyExistingObject = this.ValueOfUriNode (
 							triple.Object as UriNode, objectsByUri);
-						propertyToSet.SetValue (instance, alreadyExistingObject, null);
-					}
+						setProperty (propertyToSet, instance, alreadyExistingObject);
+					}, ex: new ShouldNotImplementException ())
+					);
+
+
 				
 				}
 			}
+		}
+
+		protected virtual void setProperty (
+			PropertyInfo property, Object instance, Object value)
+		{
+			property.SetValue (instance, value, null);
 		}
 
 		private Object ValueOfUriNode (UriNode node, 
@@ -194,7 +224,38 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 
 			parserResultReceiver.receiveResults (objectsByUri);
 		}
-	
+
+		public object FindMainNetwork (Dictionary<string, object> objectsByUri, IGraph g)
+		{
+			var triples = g.GetTriplesWithPredicate (
+				NamespaceRepository.tag_main_network ());
+
+			var mainNetworkTripleWithTag = triples.
+				FetchExactlyOneThrowingExceptionsIfErrorsOccurs ();
+
+			String key = mainNetworkTripleWithTag.Subject.AsValuedNode ().AsString ();
+
+			return objectsByUri [key];
+		}
+
+		public object GetParserResultReceiverFrom (
+			Dictionary<string, object> objectsByUri, IGraph g)
+		{
+			var triples = g.GetTriplesWithPredicate (
+				NamespaceRepository.tag_parser_result_receiver_property_name ());
+
+			var mainNetworkTripleWithTag = triples.
+				FetchExactlyOneThrowingExceptionsIfErrorsOccurs ();
+
+			String mainNetworkKey = mainNetworkTripleWithTag.Subject.AsValuedNode ().AsString ();
+			String propertyName = mainNetworkTripleWithTag.Object.ToString ();
+
+			Object mainNetwork = objectsByUri [mainNetworkKey];
+			return mainNetwork.GetType ().GetProperty (propertyName).GetValue (mainNetwork, null);
+		}
+
+
+
 
 
 	}

@@ -186,6 +186,58 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.AreSame (nodeD, edgeDB.StartNode);
 
 		}
+
+		[Test()]
+		public void load_main_network_object ()
+		{
+			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-loading-the-main-network-object.nt";
+
+			IGraph g = new Graph ();
+
+			loader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
+
+			Dictionary<String, Object> objectsByUri = loader.InstantiateObjects (g);
+
+			loader.setPropertiesOnInstances (objectsByUri, g);
+
+			var mainNetwork = loader.FindMainNetwork (objectsByUri, g);
+
+			Assert.IsInstanceOf (typeof(GasNetwork), mainNetwork);
+
+			var gasNetwork = mainNetwork as GasNetwork;
+			Assert.AreEqual ("This network represent a gas network, actually an empty network.", gasNetwork.Description);
+			CollectionAssert.IsEmpty (gasNetwork.Edges);
+			CollectionAssert.IsEmpty (gasNetwork.Nodes);
+		}
+
+		[Test()]
+		public void check_if_parser_receiver_is_correctly_set_in_main_network_object ()
+		{
+			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-loading-the-main-network-object-with-result-receiver.nt";
+
+			IGraph g = new Graph ();
+
+			loader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
+
+			Dictionary<String, Object> objectsByUri = loader.InstantiateObjects (g);
+
+			loader.setPropertiesOnInstances (objectsByUri, g);
+
+			var mainNetwork = loader.FindMainNetwork (objectsByUri, g);
+
+			var parserResultReceiver = loader.GetParserResultReceiverFrom (objectsByUri, g);
+
+			Assert.IsInstanceOf (typeof(GasNetwork.GasParserResultReceiver), 
+			                     parserResultReceiver);
+
+			var gasNetwork = mainNetwork as GasNetwork;
+
+			Assert.AreSame (gasNetwork.ParserResultReceiver, parserResultReceiver);
+		}
 	}
 }
 

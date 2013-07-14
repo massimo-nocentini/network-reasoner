@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{035646F1-2131-4366-A526-A2E2F3A00A3D}</ProjectGuid>
+    <ProjectGuid>{1A93011C-4839-42D1-B6BB-6A96283291D5}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</RootNamespace>
-    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</AssemblyName>
+    <RootNamespace>it.unifi.dsi.stlab.extensionmethods</RootNamespace>
+    <AssemblyName>it.unifi.dsi.stlab.extension-methods</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,19 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="SpecificationLoader.cs" />
-    <Compile Include="NamespaceRepository.cs" />
-    <Compile Include="ParserResultReceiver.cs" />
+    <Compile Include="IEnumerableExtensionMethods.cs" />
+    <Compile Include="INodeExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.extension-methods\it.unifi.dsi.stlab.extension-methods.csproj">
-      <Project>{1A93011C-4839-42D1-B6BB-6A96283291D5}</Project>
-      <Name>it.unifi.dsi.stlab.extension-methods</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.exceptions\it.unifi.dsi.stlab.exceptions.csproj">
-      <Project>{14D86C4D-1649-4987-A74F-3044C20AD2E5}</Project>
-      <Name>it.unifi.dsi.stlab.exceptions</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

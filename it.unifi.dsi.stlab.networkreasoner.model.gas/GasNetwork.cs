@@ -6,7 +6,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class GasNetwork
 	{
-		class GasParserResultReceiver : ParserResultReceiver
+		public class GasParserResultReceiver : ParserResultReceiver
 		{
 			private GasNetwork Parent { get; set; }
 
@@ -34,16 +34,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			this.Nodes = new Dictionary<object, GasNode> ();
 			this.Edges = new Dictionary<object, GasEdge> ();
+			this.ParserResultReceiver = new GasParserResultReceiver (this);
 		}
+
+		public String Description { get; set; }
 
 		public Dictionary<Object, GasNode> Nodes { get; private set; }
 
 		public Dictionary<Object, GasEdge> Edges { get; private set; }
 
-		public ParserResultReceiver parserResultReceiver ()
-		{
-			return new GasParserResultReceiver (this);
-		}
+		public ParserResultReceiver ParserResultReceiver { get; set; }
 
 		public Dictionary<GasEdge, double> makeInitialGuessForQvector ()
 		{
