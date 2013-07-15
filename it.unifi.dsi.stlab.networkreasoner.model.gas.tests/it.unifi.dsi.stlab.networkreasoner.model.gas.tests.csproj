@@ -41,6 +41,7 @@
     <Compile Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
     <Compile Include="AttemptSystemInteraction.cs" />
     <Compile Include="ReachabilityValidatorTests.cs" />
+    <Compile Include="DotRepresentationValidatorTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

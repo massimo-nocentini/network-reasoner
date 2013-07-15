@@ -3,13 +3,9 @@ using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
-	public class ReachabilityValidator
+	public class ReachabilityValidator : ValidatorAbstract
 	{
-		public Boolean Enabled{ get; set; }
 
-		public Boolean RaiseException{ get; set; }
-
-		public Boolean WriteLog{ get; set; }
 
 		public ReachabilityValidator ()
 		{

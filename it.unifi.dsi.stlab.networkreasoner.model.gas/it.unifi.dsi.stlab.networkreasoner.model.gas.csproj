@@ -51,6 +51,8 @@
     <Compile Include="system-solver\OneStepMutationResults.cs" />
     <Compile Include="validators\ReachabilityValidator.cs" />
     <Compile Include="validators\NetworkNotConnectedException.cs" />
+    <Compile Include="validators\DotRepresentationValidator.cs" />
+    <Compile Include="validators\ValidatorAbstract.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

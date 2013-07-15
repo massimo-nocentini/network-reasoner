@@ -47,6 +47,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public ReachabilityValidator ReachabilityValidator{ get; set; }
 
+		public DotRepresentationValidator DotRepresentationValidator { get; set; }
+
 		public Dictionary<GasEdge, double> makeInitialGuessForQvector ()
 		{
 			throw new NotImplementedException ();
@@ -60,6 +62,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public void applyValidators ()
 		{
 			this.ReachabilityValidator.validate (this);
+			this.DotRepresentationValidator.validate(this);
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			Assert.IsTrue (network.ReachabilityValidator.RaiseException);
 			Assert.IsFalse (network.ReachabilityValidator.WriteLog);
 
-			network.applyValidators ();
+			network.ReachabilityValidator.validate (network);
 		}
 
 		[Test()]
