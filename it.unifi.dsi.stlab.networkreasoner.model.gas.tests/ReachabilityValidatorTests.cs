@@ -12,7 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		{
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
 
-			var filenameToParse = "../../nturtle-specifications/specification-for-loading-a-reachability-validator.nt";
+			var filenameToParse = "../../nturtle-specifications/specification-for-loading-a-reachability-validator-for-connected-network.nt";
 
 			var network = loader.Load<GasNetwork> (filenameToParse);
 
@@ -27,7 +27,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		{
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
 
-			var filenameToParse = "../../nturtle-specifications/specification-for-loading-a-reachability-validator.nt";
+			var filenameToParse = "../../nturtle-specifications/specification-for-loading-a-reachability-validator-for-connected-network.nt";
 
 			var network = loader.Load<GasNetwork> (filenameToParse);
 
