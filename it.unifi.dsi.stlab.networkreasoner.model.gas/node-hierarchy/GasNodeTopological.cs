@@ -17,7 +17,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			throw new ShouldNotImplementException ();
 		}
+
+		public override void accept (GasNodeVisitor visitor)
+		{
+			visitor.forNodeWithTopologicalInfo (this);
+		}
 		#endregion
+
 
 
 	}

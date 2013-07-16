@@ -13,7 +13,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			return Gadget.dispatchForNodeMatrixConstructionOn (this);
 		}
-		#endregion	
+
+		public override void accept (GasNodeVisitor visitor)
+		{
+			visitor.forNodeWithGadget (this);
+		}
+		#endregion
 
 		public NodeMatrixConstruction makeNodeMatrixConstructionForLoadGadget (
 			GasNodeGadgetLoad gasNodeGadgetLoad)
