@@ -12,6 +12,7 @@
 @prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
 @prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
 @prefix validator: <http://stlab.dsi.unifi.it/networkreasoner/validator/> .
+@prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
 
 network:nodeB
   a				type:node ;
@@ -50,41 +51,63 @@ network:island
 # B -> C
 # C -> D
 
-network:edgeAD
-  a				type:edge ;
+network:edgeAD-topological
+  a				type:edge-topological ;
   property:StartNode		network:nodeA ;
   property:EndNode		network:nodeD ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+# we do not write the ``tag:DeleteAfterParsing'' predicate since it is the topmost
+# decoration we would like to do on the edge ``edgeAD-topological''.
+network:edgeAD-physical
+  a				type:edge-physical ;
   property:Length		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Roughness		"1.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:Diameter		"45.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"12.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:MaxSpeed		"12.35"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeAD-topological .
   
-network:edgeAB
-  a				type:edge ;
+network:edgeAB-topological
+  a				type:edge-topological ;
   property:StartNode		network:nodeA ;
   property:EndNode		network:nodeB ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+network:edgeAB-physical
+  a				type:edge-physical ;
   property:Length		"150"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Roughness		"4.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:Diameter		"4.8"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"4.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:MaxSpeed		"4.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeAB-topological .
   
-network:edgeBC
-  a				type:edge ;
+network:edgeBC-topological
+  a				type:edge-topological ;
   property:StartNode		network:nodeB ;
   property:EndNode		network:nodeC ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+network:edgeBC-physical
+  a				type:edge-physical ;
   property:Length		"3400"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:Diameter		"5.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"2.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:MaxSpeed		"2.35"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeBC-topological .
   
-network:edgeDB
-  a				type:edge ;
+network:edgeDB-topological
+  a				type:edge-topological ;
   property:StartNode		network:nodeD ;
   property:EndNode		network:nodeB ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+network:edgeDB-physical
+  a				type:edge-physical ;
   property:Length		"15000"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:Diameter		"459.68"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"123"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:MaxSpeed		"123"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeDB-topological .
   
 validator:dot-viewer
   a					type:dot-viewer-validator ;
@@ -105,7 +128,8 @@ network:main
   
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
-type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:edge		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge-physical		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgePhysical, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge-topological		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:dot-viewer-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.DotRepresentationValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:gas-network	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .

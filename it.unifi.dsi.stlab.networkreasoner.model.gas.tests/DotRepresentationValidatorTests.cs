@@ -36,7 +36,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			network.DotRepresentationValidator.validate (network);
 
 			Assert.IsTrue (File.Exists ("simple-output-for-not-connected-network.svg"));
-
+			// TODO: check if the file contains some interesting lines.
 		}
 	}
 }
