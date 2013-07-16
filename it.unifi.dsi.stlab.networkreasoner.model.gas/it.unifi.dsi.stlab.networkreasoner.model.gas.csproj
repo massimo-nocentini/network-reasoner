@@ -35,7 +35,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="GasNode.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadget.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetSupply.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetLoad.cs" />
@@ -43,8 +42,6 @@
     <Compile Include="gadgets\for-edges\GasEdgeGadget.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadgetSwitchOff.cs" />
     <Compile Include="GasNetwork.cs" />
-    <Compile Include="GasNodeWithGadget.cs" />
-    <Compile Include="GasNodeAbstract.cs" />
     <Compile Include="system-solver\NodeMatrixConstruction.cs" />
     <Compile Include="system-solver\MatrixComputationDataProvider.cs" />
     <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
@@ -54,6 +51,9 @@
     <Compile Include="validators\DotRepresentationValidator.cs" />
     <Compile Include="validators\ValidatorAbstract.cs" />
     <Compile Include="parameters\AmbientParameters.cs" />
+    <Compile Include="node-hierarchy\GasNode.cs" />
+    <Compile Include="node-hierarchy\GasNodeAbstract.cs" />
+    <Compile Include="node-hierarchy\GasNodeWithGadget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
