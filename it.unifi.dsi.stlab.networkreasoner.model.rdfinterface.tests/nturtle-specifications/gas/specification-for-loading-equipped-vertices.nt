@@ -10,12 +10,34 @@
 @prefix gadget: <http://stlab.dsi.unifi.it/networkreasoner/gadget/> .
 @prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
 @prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
+@prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
+
+# in the following two nodes we comment the tag:Become in order to 
+# let them alive and not be replaced by the decorators.
 
 node:node 
   a				type:node ;
-  property:Identifier		"single node" ;
+  property:Identifier		"I'll be a loader" ;
   property:Height		"35"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Comment		"this is the very first node that we build with our system." .
+#  tag:Become			node:loader .
+  
+node:node-to-be-equipped-with-supply-gadget 
+  a				type:node ;
+  property:Identifier		"I'll be a supplier" ;
+  property:Height		"46"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"" .
+#  tag:Become			node:supplier .
+  
+node:loader
+  a				type:node-with-gadget ;
+  property:Equipped		node:node ;
+  property:Gadget		gadget:load1 .
+  
+node:supplier
+  a				type:node-with-gadget ;
+  property:Equipped		node:node-to-be-equipped-with-supply-gadget  ;
+  property:Gadget		gadget:supply .
 
 gadget:load1
   a				type:loader ;
@@ -29,10 +51,11 @@ gadget:supply
   a				type:supplier ;
   property:SetupPressure	"157.34"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:MaxQ			"785.23"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MinQ			"100.00"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:MinQ			"100.00"^^<http://www.w3.org/2001/XMLSchema#double> .  
   
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
 type:loader		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetLoad, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:supplier		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetSupply, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node-with-gadget	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeWithGadget, it.unifi.dsi.stlab.networkreasoner.model.gas" .

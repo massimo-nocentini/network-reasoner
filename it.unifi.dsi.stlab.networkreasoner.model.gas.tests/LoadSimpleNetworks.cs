@@ -22,30 +22,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			Assert.AreEqual (4, network.Nodes.Count);
 		}
 
-		[Test()]
-		public void equipping_a_node_preserve_properties ()
-		{
-			long height = 40;
-			GasNodeAbstract basicNode = new GasNodeTopological {
-				Identifier = "Dummy identifier",
-				Height = height
-			};
-
-			double load = 74.98;
-			GasNodeGadget gadget = new GasNodeGadgetLoad{ Load= load};
-
-			GasNodeWithGadget wrapper = new GasNodeWithGadget ();
-			wrapper.Equipped = basicNode;
-			wrapper.Gadget = gadget;
-
-			// this is really the same order of operation that at the moment
-			// I'll put in the final code.
-			basicNode = wrapper;
-
-			// just check that the wrapping preserve the properties
-			// of the equipped node (aka. the wrappee)
-			Assert.AreEqual (height, basicNode.Height);
-		}
+//		[Test()]
+//		public void equipping_a_node_preserve_properties ()
+//		{
+//			long height = 40;
+//			GasNodeAbstract basicNode = new GasNodeTopological {
+//				Identifier = "Dummy identifier",
+//				Height = height
+//			};
+//
+//			double load = 74.98;
+//			GasNodeGadget gadget = new GasNodeGadgetLoad{ Load= load};
+//
+//			GasNodeWithGadget wrapper = new GasNodeWithGadget ();
+//			wrapper.Equipped = basicNode;
+//			wrapper.Gadget = gadget;
+//
+//			// this is really the same order of operation that at the moment
+//			// I'll put in the final code.
+//			basicNode = wrapper;
+//
+//			// just check that the wrapping preserve the properties
+//			// of the equipped node (aka. the wrappee)
+//			Assert.AreEqual (height, basicNode.Height);
+//		}
 
 		[Test()]
 		public void load_a_complete_network_with_a_main_object_defined_in_specification ()

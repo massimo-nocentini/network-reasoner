@@ -19,8 +19,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			            network.ParserResultReceiver);
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
-			system.InitialGuessForQvector (network.makeInitialGuessForQvector ());
-			system.InitialGuessForUnknowns (network.makeInitialGuessForUnknowns ());
+			//system.InitialGuessForQvector (network.makeInitialGuessForQvector ());
+			//system.InitialGuessForUnknowns (network.makeInitialGuessForUnknowns ());
 
 			OneStepMutationResults results = system.mutate ();
 

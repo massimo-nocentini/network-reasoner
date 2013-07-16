@@ -40,7 +40,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		}
 
 		[Test()]
-		[ExpectedException( typeof( NetworkNotConnectedException ) )]
+		[ExpectedException( typeof(ReachabilityValidator.NetworkNotConnectedException ) )]
 		public void validate_a_not_connected_graph ()
 		{
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();

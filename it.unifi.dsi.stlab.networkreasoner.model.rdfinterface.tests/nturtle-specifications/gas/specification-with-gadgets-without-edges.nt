@@ -37,6 +37,6 @@ ctx:gas
   property:comment	"this context represent the first context that we care about." .
 
   
-type:selector		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:context		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:selector		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:context		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 

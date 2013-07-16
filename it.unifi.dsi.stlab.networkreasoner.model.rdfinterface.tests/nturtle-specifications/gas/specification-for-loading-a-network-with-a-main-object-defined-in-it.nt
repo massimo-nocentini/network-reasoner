@@ -88,6 +88,6 @@ network:main
   
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
-type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:edge		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:gas-network	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .

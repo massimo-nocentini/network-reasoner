@@ -115,6 +115,74 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 		}
 
 		[Test()]
+		public void load_vertices_equipped_with_gadgets ()
+		{
+			var specLoader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-loading-equipped-vertices.nt";
+			IGraph g = new Graph ();
+
+			specLoader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
+
+			Dictionary<String, Object> objectsByUri = specLoader.InstantiateObjects (g);
+
+			specLoader.setPropertiesOnInstances (objectsByUri, g);
+
+			Assert.AreEqual (7, objectsByUri.Count);
+
+			String loadGadget1Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load1";
+			String loadGadget2Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load2";
+			String supplyGadgetKey = "http://stlab.dsi.unifi.it/networkreasoner/gadget/supply";
+			String nodeKey = "http://stlab.dsi.unifi.it/networkreasoner/node/node";
+			String nodeToBeEquippedWithSupplyGadgetKey = 
+				"http://stlab.dsi.unifi.it/networkreasoner/node/node-to-be-equipped-with-supply-gadget";
+			String loaderKey = "http://stlab.dsi.unifi.it/networkreasoner/node/loader";
+			String supplierKey = "http://stlab.dsi.unifi.it/networkreasoner/node/supplier";
+
+
+			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget1Key]);
+			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget2Key]);
+			Assert.IsInstanceOf (typeof(GasNodeGadgetSupply), objectsByUri [supplyGadgetKey]);
+			Assert.IsInstanceOf (typeof(GasNodeTopological), objectsByUri [nodeKey]);
+			Assert.IsInstanceOf (typeof(GasNodeTopological), objectsByUri [nodeToBeEquippedWithSupplyGadgetKey]);
+			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [loaderKey]);
+			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [loaderKey]);
+
+			var loadGadget1 = objectsByUri [loadGadget1Key] as GasNodeGadgetLoad;
+			var loadGadget2 = objectsByUri [loadGadget2Key] as GasNodeGadgetLoad;
+			var supplyGadget = objectsByUri [supplyGadgetKey] as GasNodeGadgetSupply;
+			var node = objectsByUri [nodeKey] as GasNodeTopological;
+			var nodeToBeEquippedWithSupplyGadget = objectsByUri [nodeToBeEquippedWithSupplyGadgetKey] as GasNodeTopological;
+			var loader = objectsByUri [loaderKey] as GasNodeWithGadget;
+			var supplier = objectsByUri [supplierKey] as GasNodeWithGadget;
+
+			Assert.AreEqual (463.98, loadGadget1.Load);
+			Assert.AreEqual (756.38, loadGadget2.Load);
+			Assert.AreEqual (157.34, supplyGadget.SetupPressure);
+			Assert.AreEqual (785.23, supplyGadget.MaxQ);
+			Assert.AreEqual (100.00, supplyGadget.MinQ);
+
+			Assert.AreEqual ("I'll be a loader", node.Identifier);
+			Assert.AreEqual (35, node.Height);
+			Assert.AreEqual ("this is the very first node that we build with our system.", node.Comment);
+
+			Assert.AreEqual ("I'll be a supplier", nodeToBeEquippedWithSupplyGadget.Identifier);
+			Assert.AreEqual (46, nodeToBeEquippedWithSupplyGadget.Height);
+			Assert.AreEqual ("", nodeToBeEquippedWithSupplyGadget.Comment);
+
+			Assert.IsNotNull (loader.Equipped);
+			Assert.IsNotNull (loader.Gadget);
+			Assert.AreSame (node, loader.Equipped);
+			Assert.AreSame (loadGadget1, loader.Gadget);
+
+			Assert.IsNotNull (supplier.Equipped);
+			Assert.IsNotNull (supplier.Gadget);
+			Assert.AreSame (nodeToBeEquippedWithSupplyGadget, supplier.Equipped);
+			Assert.AreSame (supplyGadget, supplier.Gadget);
+
+		}
+
+		[Test()]
 		public void build_edges_and_set_object_properties ()
 		{
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
@@ -142,48 +210,58 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 			// we do not check the types for nodes since we have already
 			// a test case for them.
-			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeADKey]);
-			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeABKey]);
-			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeBCKey]);
-			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeDBKey]);
+			Assert.IsInstanceOf (typeof(GasEdgePhysical), objectsByUri [edgeADKey]);
+			Assert.IsInstanceOf (typeof(GasEdgePhysical), objectsByUri [edgeABKey]);
+			Assert.IsInstanceOf (typeof(GasEdgePhysical), objectsByUri [edgeBCKey]);
+			Assert.IsInstanceOf (typeof(GasEdgePhysical), objectsByUri [edgeDBKey]);
 
 			var nodeA = objectsByUri [nodeAKey] as GasNodeTopological;
 			var nodeB = objectsByUri [nodeBKey] as GasNodeTopological;
 			var nodeC = objectsByUri [nodeCKey] as GasNodeTopological;
 			var nodeD = objectsByUri [nodeDKey] as GasNodeTopological;
 
-			var edgeAD = objectsByUri [edgeADKey] as GasEdge;
-			var edgeAB = objectsByUri [edgeABKey] as GasEdge;
-			var edgeBC = objectsByUri [edgeBCKey] as GasEdge;
-			var edgeDB = objectsByUri [edgeDBKey] as GasEdge;
+			var edgeAD = objectsByUri [edgeADKey] as GasEdgePhysical;
+			var edgeAB = objectsByUri [edgeABKey] as GasEdgePhysical;
+			var edgeBC = objectsByUri [edgeBCKey] as GasEdgePhysical;
+			var edgeDB = objectsByUri [edgeDBKey] as GasEdgePhysical;
+
+			Assert.IsInstanceOf (typeof(GasEdgeTopological), edgeAD.Described);
+			Assert.IsInstanceOf (typeof(GasEdgeTopological), edgeAB.Described);
+			Assert.IsInstanceOf (typeof(GasEdgeTopological), edgeBC.Described);
+			Assert.IsInstanceOf (typeof(GasEdgeTopological), edgeDB.Described);
+
+			var edgeADTopological = edgeAD.Described as GasEdgeTopological;
+			var edgeABTopological = edgeAD.Described as GasEdgeTopological;
+			var edgeBCTopological = edgeAD.Described as GasEdgeTopological;
+			var edgeDBTopological = edgeAD.Described as GasEdgeTopological;
 
 			Assert.AreEqual (45.968, edgeAD.Diameter);
-			Assert.AreSame (nodeD, edgeAD.EndNode);
+			Assert.AreSame (nodeD, edgeADTopological.EndNode);
 			Assert.AreEqual (1500, edgeAD.Length);
 			Assert.AreEqual (12.35, edgeAD.MaxSpeed);
 			Assert.AreEqual (1.7, edgeAD.Roughness);
-			Assert.AreSame (nodeA, edgeAD.StartNode);
+			Assert.AreSame (nodeA, edgeADTopological.StartNode);
 
 			Assert.AreEqual (4.8, edgeAB.Diameter);
-			Assert.AreSame (nodeB, edgeAB.EndNode);
+			Assert.AreSame (nodeB, edgeABTopological.EndNode);
 			Assert.AreEqual (150, edgeAB.Length);
 			Assert.AreEqual (4, edgeAB.MaxSpeed);
 			Assert.AreEqual (4.7, edgeAB.Roughness);
-			Assert.AreSame (nodeA, edgeAB.StartNode);
+			Assert.AreSame (nodeA, edgeABTopological.StartNode);
 
 			Assert.AreEqual (5.968, edgeBC.Diameter);
-			Assert.AreSame (nodeC, edgeBC.EndNode);
+			Assert.AreSame (nodeC, edgeBCTopological.EndNode);
 			Assert.AreEqual (3400, edgeBC.Length);
 			Assert.AreEqual (2.35, edgeBC.MaxSpeed);
 			Assert.AreEqual (17, edgeBC.Roughness);
-			Assert.AreSame (nodeB, edgeBC.StartNode);
+			Assert.AreSame (nodeB, edgeBCTopological.StartNode);
 
 			Assert.AreEqual (459.68, edgeDB.Diameter);
-			Assert.AreSame (nodeB, edgeDB.EndNode);
+			Assert.AreSame (nodeB, edgeDBTopological.EndNode);
 			Assert.AreEqual (15000, edgeDB.Length);
 			Assert.AreEqual (123, edgeDB.MaxSpeed);
 			Assert.AreEqual (17, edgeDB.Roughness);
-			Assert.AreSame (nodeD, edgeDB.StartNode);
+			Assert.AreSame (nodeD, edgeDBTopological.StartNode);
 
 		}
 
@@ -253,8 +331,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.IsNotNull (network.ParserResultReceiver);
 			Assert.AreEqual ("This network represent a gas network", network.Description);
 
-			Assert.AreEqual(4, network.Nodes.Count);
-			Assert.AreEqual(4, network.Edges.Count);
+			Assert.AreEqual (4, network.Nodes.Count);
+			Assert.AreEqual (4, network.Edges.Count);
 		}
 	}
 }
