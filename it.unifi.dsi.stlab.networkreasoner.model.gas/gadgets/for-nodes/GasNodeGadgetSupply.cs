@@ -5,9 +5,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class GasNodeGadgetSupply : GasNodeGadget
 	{
-		public GasNodeGadgetSupply ()
-		{
-		}
 
 		public double SetupPressure { get; set; }
 
@@ -21,7 +18,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			return gasNodeWithGadget.makeNodeMatrixConstructionForSupplyGadget (this);
 		}
+
+		public override void accept (GasNodeGadgetVisitor visitor)
+		{
+			visitor.forSupplyGadget (this);
+		}
 		#endregion
+
 
 	}
 }

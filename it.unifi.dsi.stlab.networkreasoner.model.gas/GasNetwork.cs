@@ -74,6 +74,71 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			this.ReachabilityValidator.validate (this);
 			this.DotRepresentationValidator.validate (this);
 		}
+
+		public interface NodeHandler
+		{
+			void onRawNode (GasNodeAbstract aNode);
+
+			void onNodeWithKey (string aNodeIdentifier, GasNodeAbstract aNode);
+		}
+
+		public abstract class NodeHandlerAbstract : NodeHandler
+		{
+			#region NodeHandler implementation
+			public virtual void onRawNode (GasNodeAbstract aNode)
+			{
+
+			}
+
+			public virtual void onNodeWithKey (
+				string aNodeIdentifier, GasNodeAbstract aNode)
+			{
+
+			}
+			#endregion
+		}
+
+		public class NodeHandlerWithDelegateOnRawNode : NodeHandlerAbstract
+		{
+			Action<GasNodeAbstract> aBlock { get; set; }
+
+			public NodeHandlerWithDelegateOnRawNode (Action<GasNodeAbstract> aBlock)
+			{
+				this.aBlock = aBlock;
+			}
+
+			#region NodeHandler implementation
+			public override void onRawNode (GasNodeAbstract aNode)
+			{
+				this.aBlock.Invoke (aNode);
+			}
+			#endregion
+		}
+
+		public class NodeHandlerWithDelegateOnKeyedNode : NodeHandlerAbstract
+		{
+			Action<String, GasNodeAbstract> aBlock { get; set; }
+
+			public NodeHandlerWithDelegateOnKeyedNode (
+				Action<String, GasNodeAbstract> aBlock)
+			{
+				this.aBlock = aBlock;
+			}
+
+			public override void onNodeWithKey (
+				string aNodeIdentifier, GasNodeAbstract aNode)
+			{
+				this.aBlock.Invoke (aNodeIdentifier, aNode);
+			}
+		}
+
+		public void doOnNodes (NodeHandler nodeHandler)
+		{
+			foreach (var aNode in this.Nodes) {
+				nodeHandler.onNodeWithKey (aNode.Key, aNode.Value);
+				nodeHandler.onRawNode (aNode.Value);
+			}
+		}
 	}
 }
 
