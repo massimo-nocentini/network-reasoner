@@ -2,15 +2,16 @@ using System;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
-	public class GasEdgeTopological : GasEdgeAbstract
+	public class GasEdgeWithGadget : GasEdgeAbstract
 	{
-		public GasNodeAbstract StartNode{ get; set; }
+		public GasEdgeAbstract Equipped{ get; set; }
 
-		public GasNodeAbstract EndNode{ get; set; }
+		public GasEdgeGadget Gadget{ get; set; }
+
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeAbstract
 		public override void accept (GasEdgeVisitor aVisitor)
 		{
-			aVisitor.forTopologicalEdge (this);
+			aVisitor.forEdgeWithGadget (this);
 		}
 		#endregion
 

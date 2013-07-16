@@ -22,8 +22,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				foreach (KeyValuePair<String, Object> pair in objectsByUri) {
 					if (pair.Value is GasNodeAbstract) {
 						this.Parent.Nodes.Add (pair.Key, pair.Value as GasNodeAbstract);
-					} else if (pair.Value is GasEdge) {
-						this.Parent.Edges.Add (pair.Key, pair.Value as GasEdge);
+					} else if (pair.Value is GasEdgeAbstract) {
+						this.Parent.Edges.Add (pair.Key, pair.Value as GasEdgeAbstract);
 					}
 				}
 			}
@@ -33,7 +33,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public GasNetwork ()
 		{
 			this.Nodes = new Dictionary<String, GasNodeAbstract> ();
-			this.Edges = new Dictionary<String, GasEdge> ();
+			this.Edges = new Dictionary<String, GasEdgeAbstract> ();
 			this.ParserResultReceiver = new GasParserResultReceiver (this);
 		}
 
@@ -43,7 +43,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Dictionary<String, GasNodeAbstract> Nodes { get; private set; }
 
-		public Dictionary<String, GasEdge> Edges { get; private set; }
+		public Dictionary<String, GasEdgeAbstract> Edges { get; private set; }
 
 		public ParserResultReceiver ParserResultReceiver { get; set; }
 
@@ -51,7 +51,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public DotRepresentationValidator DotRepresentationValidator { get; set; }
 
-		public Dictionary<GasEdge, double> makeInitialGuessForQvector ()
+		public Dictionary<GasEdgeAbstract, double> makeInitialGuessForQvector ()
 		{
 			throw new NotImplementedException ();
 		}
@@ -75,68 +75,76 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			this.DotRepresentationValidator.validate (this);
 		}
 
-		public interface NodeHandler
+		public interface NodeHandler<T>
 		{
-			void onRawNode (GasNodeAbstract aNode);
+			void onRawNode (T aNode);
 
-			void onNodeWithKey (string aNodeIdentifier, GasNodeAbstract aNode);
+			void onNodeWithKey (string aNodeIdentifier, T aNode);
 		}
 
-		public abstract class NodeHandlerAbstract : NodeHandler
+		public abstract class NodeHandlerAbstract<T> : NodeHandler<T>
 		{
 			#region NodeHandler implementation
-			public virtual void onRawNode (GasNodeAbstract aNode)
+			public virtual void onRawNode (T aNode)
 			{
 
 			}
 
 			public virtual void onNodeWithKey (
-				string aNodeIdentifier, GasNodeAbstract aNode)
+				string aNodeIdentifier, T aNode)
 			{
 
 			}
 			#endregion
 		}
 
-		public class NodeHandlerWithDelegateOnRawNode : NodeHandlerAbstract
+		public class NodeHandlerWithDelegateOnRawNode<T> : NodeHandlerAbstract<T>
 		{
-			Action<GasNodeAbstract> aBlock { get; set; }
+			Action<T> aBlock { get; set; }
 
-			public NodeHandlerWithDelegateOnRawNode (Action<GasNodeAbstract> aBlock)
+			public NodeHandlerWithDelegateOnRawNode (Action<T> aBlock)
 			{
 				this.aBlock = aBlock;
 			}
 
 			#region NodeHandler implementation
-			public override void onRawNode (GasNodeAbstract aNode)
+			public override void onRawNode (T aNode)
 			{
 				this.aBlock.Invoke (aNode);
 			}
 			#endregion
 		}
 
-		public class NodeHandlerWithDelegateOnKeyedNode : NodeHandlerAbstract
+		public class NodeHandlerWithDelegateOnKeyedNode<T> : NodeHandlerAbstract<T>
 		{
-			Action<String, GasNodeAbstract> aBlock { get; set; }
+			Action<String, T> aBlock { get; set; }
 
 			public NodeHandlerWithDelegateOnKeyedNode (
-				Action<String, GasNodeAbstract> aBlock)
+				Action<String, T> aBlock)
 			{
 				this.aBlock = aBlock;
 			}
 
 			public override void onNodeWithKey (
-				string aNodeIdentifier, GasNodeAbstract aNode)
+				string aNodeIdentifier, T aNode)
 			{
 				this.aBlock.Invoke (aNodeIdentifier, aNode);
 			}
 		}
 
-		public void doOnNodes (NodeHandler nodeHandler)
+		public void doOnNodes (NodeHandler<GasNodeAbstract> nodeHandler)
 		{
 			foreach (var aNode in this.Nodes) {
 				nodeHandler.onNodeWithKey (aNode.Key, aNode.Value);
 				nodeHandler.onRawNode (aNode.Value);
+			}
+		}
+
+		public void doOnEdges (NodeHandler<GasEdgeAbstract> nodeHandler)
+		{
+			foreach (var anEdge in this.Edges) {
+				nodeHandler.onNodeWithKey (anEdge.Key, anEdge.Value);
+				nodeHandler.onRawNode (anEdge.Value);
 			}
 		}
 	}

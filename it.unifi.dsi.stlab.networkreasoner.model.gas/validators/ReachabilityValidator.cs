@@ -146,7 +146,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			var buildingNodes = new Dictionary<String, NodeForReachabilityValidator> ();
 
-			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode (
+			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 			(aKey, aNode) => {
 
 				var newNode = new NodeForReachabilityValidator {

@@ -105,7 +105,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			foreach (var edge in this.Edges) {
 				var f = Fvector[edge];
 				var A = 4837.00;
-				var l = edge.Length;
+				//var l = edge.Length;
 				//unknowns[edge.StartNode.adapterForMatrixConstruction()] - unknowns[edge.EndNode.adapterForMatrixConstruction()]
 			}
 
