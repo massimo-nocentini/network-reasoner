@@ -267,15 +267,47 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			parserResultReceiver.receiveResults (parserResult);
 		}
 
-		void ReifySpecification (string filename, 
+		public void ReifySpecification (string filename, 
 		                IGraph g, 
 		                out Dictionary<string, object> objectsByUri)
 		{
 			this.LoadFileIntoGraphReraisingParseException (filename, g);
 			objectsByUri = this.InstantiateObjects (g);
 			this.setPropertiesOnInstances (objectsByUri, g);
+			this.removeDefinitionsAfterParsing (objectsByUri, g);
 		}
 
+		public void removeDefinitionsAfterParsing (
+			Dictionary<string, object> objectsByUri, IGraph g)
+		{
+
+			var triples = g.GetTriplesWithPredicate (
+				NamespaceRepository.tag_delete_after_parsing ());
+
+			foreach (Triple triple in triples) {
+
+
+				var handler = new A (aLiteralNode => {
+					Boolean reallyDelete;
+					if (Boolean.TryParse (aLiteralNode.Value, out reallyDelete)) {
+						if (reallyDelete) {
+							String objKeyToDelete = triple.Subject.AsValuedNode ().AsString ();
+							objectsByUri.Remove (objKeyToDelete);
+			//				g.Retract (triple);
+						}
+
+					}
+
+				}, aUriNode => {}, null);
+
+				triple.Object.DispatchOnNodeType (handler);
+
+
+
+			}
+
+
+		}
 	}
 }
 

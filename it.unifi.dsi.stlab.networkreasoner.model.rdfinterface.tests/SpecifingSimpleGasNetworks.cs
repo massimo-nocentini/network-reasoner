@@ -146,7 +146,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.IsInstanceOf (typeof(GasNodeTopological), objectsByUri [nodeKey]);
 			Assert.IsInstanceOf (typeof(GasNodeTopological), objectsByUri [nodeToBeEquippedWithSupplyGadgetKey]);
 			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [loaderKey]);
-			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [loaderKey]);
+			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [supplierKey]);
 
 			var loadGadget1 = objectsByUri [loadGadget1Key] as GasNodeGadgetLoad;
 			var loadGadget2 = objectsByUri [loadGadget2Key] as GasNodeGadgetLoad;
@@ -180,6 +180,68 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.AreSame (nodeToBeEquippedWithSupplyGadget, supplier.Equipped);
 			Assert.AreSame (supplyGadget, supplier.Gadget);
 
+		}
+
+		[Test()]
+		public void load_vertices_equipped_with_gadgets_substituting_decorator_objects ()
+		{
+			var specLoader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
+
+			var filenameToParse = "../../nturtle-specifications/gas/specification-for-loading-equipped-vertices-with-decoration-substitution.nt";
+			IGraph g = new Graph ();
+			Dictionary<String, Object> objectsByUri;
+			specLoader.ReifySpecification (filenameToParse, g, out objectsByUri);
+
+			Assert.AreEqual (5, objectsByUri.Count);
+
+			String loadGadget1Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load1";
+			String loadGadget2Key = "http://stlab.dsi.unifi.it/networkreasoner/gadget/load2";
+			String supplyGadgetKey = "http://stlab.dsi.unifi.it/networkreasoner/gadget/supply";
+			String nodeKey = "http://stlab.dsi.unifi.it/networkreasoner/node/node";
+			String nodeToBeEquippedWithSupplyGadgetKey = 
+				"http://stlab.dsi.unifi.it/networkreasoner/node/node-to-be-equipped-with-supply-gadget";
+			String loaderKey = "http://stlab.dsi.unifi.it/networkreasoner/node/loader";
+			String supplierKey = "http://stlab.dsi.unifi.it/networkreasoner/node/supplier";
+
+			Assert.IsFalse (objectsByUri.ContainsKey (nodeKey));
+			Assert.IsFalse (objectsByUri.ContainsKey (nodeToBeEquippedWithSupplyGadgetKey));
+
+			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget1Key]);
+			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget2Key]);
+			Assert.IsInstanceOf (typeof(GasNodeGadgetSupply), objectsByUri [supplyGadgetKey]);
+			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [loaderKey]);
+			Assert.IsInstanceOf (typeof(GasNodeWithGadget), objectsByUri [supplierKey]);
+
+			var loadGadget1 = objectsByUri [loadGadget1Key] as GasNodeGadgetLoad;
+			var loadGadget2 = objectsByUri [loadGadget2Key] as GasNodeGadgetLoad;
+			var supplyGadget = objectsByUri [supplyGadgetKey] as GasNodeGadgetSupply;
+			var loader = objectsByUri [loaderKey] as GasNodeWithGadget;
+			var supplier = objectsByUri [supplierKey] as GasNodeWithGadget;
+
+			Assert.IsNotNull (loader.Equipped);
+			Assert.IsNotNull (loader.Gadget);
+			Assert.IsInstanceOf (typeof(GasNodeTopological), loader.Equipped);
+
+			Assert.IsNotNull (supplier.Equipped);
+			Assert.IsNotNull (supplier.Gadget);
+			Assert.IsInstanceOf (typeof(GasNodeTopological), supplier.Equipped);
+
+			var node = loader.Equipped as GasNodeTopological;
+			var nodeToBeEquippedWithSupplyGadget = supplier.Equipped as GasNodeTopological;
+
+			Assert.AreEqual (463.98, loadGadget1.Load);
+			Assert.AreEqual (756.38, loadGadget2.Load);
+			Assert.AreEqual (157.34, supplyGadget.SetupPressure);
+			Assert.AreEqual (785.23, supplyGadget.MaxQ);
+			Assert.AreEqual (100.00, supplyGadget.MinQ);
+
+			Assert.AreEqual ("I'll be a loader", node.Identifier);
+			Assert.AreEqual (35, node.Height);
+			Assert.AreEqual ("this is the very first node that we build with our system.", node.Comment);
+
+			Assert.AreEqual ("I'll be a supplier", nodeToBeEquippedWithSupplyGadget.Identifier);
+			Assert.AreEqual (46, nodeToBeEquippedWithSupplyGadget.Height);
+			Assert.AreEqual ("", nodeToBeEquippedWithSupplyGadget.Comment);
 		}
 
 		[Test()]

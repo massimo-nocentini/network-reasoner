@@ -27,9 +27,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 			return UriFactory.Create (tag + "MainNetwork");
 		}
 
-		public static Uri tag_become ()
+		public static Uri tag_delete_after_parsing ()
 		{
-			return UriFactory.Create (tag + "Become");
+			return UriFactory.Create (tag + "DeleteAfterParsing");
 		}
 
 		public static Uri tag_parser_result_receiver_property_name ()
