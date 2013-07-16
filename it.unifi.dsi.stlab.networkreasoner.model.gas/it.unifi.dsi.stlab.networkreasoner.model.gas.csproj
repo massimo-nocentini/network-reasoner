@@ -55,6 +55,8 @@
     <Compile Include="node-hierarchy\GasNodeVisitor.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetVisitor.cs" />
     <Compile Include="edge-hierarchy\GasEdgeTopological.cs" />
+    <Compile Include="edge-hierarchy\GasEdgeAbstract.cs" />
+    <Compile Include="edge-hierarchy\GasEdgePhysical.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

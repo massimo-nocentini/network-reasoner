@@ -24,7 +24,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			set;
 		}
 
-		public Dictionary<GasEdge, double> Qvector {
+		public Dictionary<GasEdgeTopological, double> Qvector {
 			get;
 			set;
 		}

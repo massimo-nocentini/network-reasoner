@@ -5,13 +5,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class NetwonRaphsonSystem
 	{
-		private Dictionary<GasEdge, Double> Qvector{ get; set; }
+		private Dictionary<GasEdgeTopological, Double> Qvector{ get; set; }
 
 		private Dictionary<NodeMatrixConstruction, double> Unknowns { get; set; }
 
 		private List<NodeMatrixConstruction> Nodes{ get; set; }
 
-		private List<GasEdge> Edges{ get; set; }
+		private List<GasEdgeTopological> Edges{ get; set; }
 
 		private MatrixComputationDataProvider ComputationDataProvider { get; set; }
 
@@ -24,7 +24,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		}
 
 		public void InitialGuessForQvector (
-			Dictionary<GasEdge, Double> Qvector)
+			Dictionary<GasEdgeTopological, Double> Qvector)
 		{
 			this.Qvector = Qvector;
 		}
@@ -39,7 +39,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			var unknownsAtPreviousStep = Unknowns;
 			var QvectorAtPreviousStep = Qvector;
-			Dictionary<GasEdge, Double> VvectorAtPreviousStep = null;
+			Dictionary<GasEdgeTopological, Double> VvectorAtPreviousStep = null;
 
 
 
@@ -98,9 +98,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		protected Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> 
 			computeKvector (
 			Dictionary<NodeMatrixConstruction, double> unknowns,
-			Dictionary<GasEdge, Double> Qvector, // questo possiamo non passarlo
-			Dictionary<GasEdge, Double> Vvector, // questo possiamo non passarlo
-			Dictionary<GasEdge, Double> Fvector) // di default 0.015, per ogni arco
+			Dictionary<GasEdgeTopological, Double> Qvector, // questo possiamo non passarlo
+			Dictionary<GasEdgeTopological, Double> Vvector, // questo possiamo non passarlo
+			Dictionary<GasEdgeTopological, Double> Fvector) // di default 0.015, per ogni arco
 		{
 			foreach (var edge in this.Edges) {
 				var f = Fvector[edge];
@@ -119,7 +119,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			throw new NotImplementedException ();
 		}
 
-		protected Dictionary<GasEdge, Double> computeQvector (
+		protected Dictionary<GasEdgeTopological, Double> computeQvector (
 			Dictionary<NodeMatrixConstruction, double> unknownsAtCurrentStep, 
 			MatrixComputationDataProviderDictionaryImplementation dataProviderAtCurrentStep)
 		{
