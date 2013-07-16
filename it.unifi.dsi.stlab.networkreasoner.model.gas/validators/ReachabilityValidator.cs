@@ -7,7 +7,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 	{
 
 
-		interface NodeState
+		protected interface NodeState
 		{
 			void visitFor (NodeForReachabilityValidator aNode);
 
@@ -55,7 +55,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			#endregion
 		}
 
-		interface NodeRole
+		protected interface NodeRole
 		{
 			void startVisitFor (NodeForReachabilityValidator aNode);
 		}
@@ -82,15 +82,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			#endregion
 		}
 
-		class NodeForReachabilityValidator : GasNodeVisitor, GasNodeGadgetVisitor
+		protected class NodeForReachabilityValidator : 
+			GasNodeVisitor, 
+			GasNodeGadgetVisitor
 		{
-			String Identifier{ get; set; }
+			public	String Identifier{ get; set; }
 
-			List<NodeForReachabilityValidator> Neighborhood{ get; set; }
+			public	List<NodeForReachabilityValidator> Neighborhood{ get; set; }
 
-			NodeState State{ get; set; }
+			public	NodeState State{ get; set; }
 
-			NodeRole Role{ get; set; }
+			public	NodeRole Role{ get; set; }
 
 			#region GasNodeVisitor implementation
 			public void forNodeWithTopologicalInfo (
@@ -107,7 +109,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			#endregion			
 
 			#region GasNodeGadgetVisitor implementation
-			public void ForLoadGadget (GasNodeGadgetLoad aLoadGadget)
+			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
 			{
 				this.Role = new NodeRoleLoader ();
 			}
@@ -172,7 +174,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		internal virtual void HandleNotVisitedNode (
+		protected virtual void HandleNotVisitedNode (
 			NodeForReachabilityValidator aNotVisitedNode)
 		{
 			throw new NetworkNotConnectedException (string.Format (

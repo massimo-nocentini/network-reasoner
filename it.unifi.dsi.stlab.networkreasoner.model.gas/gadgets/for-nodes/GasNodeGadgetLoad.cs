@@ -16,7 +16,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public override void accept (GasNodeGadgetVisitor visitor)
 		{
-			visitor.ForLoadGadget (this);
+			visitor.forLoadGadget (this);
 		}
 		#endregion
 
