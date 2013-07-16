@@ -47,7 +47,6 @@
     <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
     <Compile Include="system-solver\OneStepMutationResults.cs" />
     <Compile Include="validators\ReachabilityValidator.cs" />
-    <Compile Include="validators\NetworkNotConnectedException.cs" />
     <Compile Include="validators\DotRepresentationValidator.cs" />
     <Compile Include="validators\ValidatorAbstract.cs" />
     <Compile Include="parameters\AmbientParameters.cs" />

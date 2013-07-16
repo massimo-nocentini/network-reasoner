@@ -182,6 +182,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 						aNotVisitedNode.Identifier)
 			);
 		}
+
+		public class NetworkNotConnectedException : Exception
+		{
+			public NetworkNotConnectedException (String message):base(message)
+			{
+			}
+		}
 	}
 }
 
