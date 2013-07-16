@@ -6,11 +6,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class GasNode : GasNodeAbstract
 	{
+		public virtual String Identifier{ get; set; }
 
+		public virtual String Comment{ get; set; }
 
-		public GasNode ()
-		{
-		}		
+		public virtual long Height{ get; set; }
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeAbstract
 		public override NodeMatrixConstruction adapterForMatrixConstruction ()

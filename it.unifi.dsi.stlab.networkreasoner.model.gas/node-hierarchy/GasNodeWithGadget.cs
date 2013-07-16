@@ -6,38 +6,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 	{
 		public GasNodeAbstract Equipped{ get; set; }
 
-		public GasNodeGadget Gadget{ get; set; }
-
-		public GasNodeWithGadget ()
-		{
-		}
-
-		public override string Comment {
-			get {
-				return Equipped.Comment;
-			}
-			set {
-				Equipped.Comment = value;
-			}
-		}
-
-		public override long Height {
-			get {
-				return Equipped.Height;
-			}
-			set {
-				Equipped.Height = value;
-			}
-		}
-
-		public override string Identifier {
-			get {
-				return Equipped.Identifier;
-			}
-			set {
-				Equipped.Identifier = value;
-			}
-		}
+		public GasNodeGadget Gadget{ get; set; }	
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeAbstract
 		public override NodeMatrixConstruction adapterForMatrixConstruction ()

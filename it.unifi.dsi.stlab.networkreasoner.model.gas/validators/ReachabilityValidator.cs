@@ -7,10 +7,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 	{
 
 
-		public ReachabilityValidator ()
-		{
-		}
-
 		public void validate (GasNetwork gasNetwork)
 		{
 			var visitedFlagsByNode = new Dictionary<GasNodeAbstract, bool> ();
