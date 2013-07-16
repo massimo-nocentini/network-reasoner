@@ -10,9 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Boolean WriteLog{ get; set; }
 
-		public ValidatorAbstract ()
-		{
-		}
+	
 	}
 }
 

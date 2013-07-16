@@ -40,8 +40,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					Boolean isVisited = pair.Value;
 					GasNodeAbstract node = pair.Key;
 					if (isVisited == false) {
-						throw new NetworkNotConnectedException (
-						string.Format ("The node ``{0}'' isn't connected to the others.", node.Identifier));
+						throw new NetworkNotConnectedException (						string.Format ("The node ``{0}'' isn't connected to the others.", node.Identifier));
 					}
 				}
 
