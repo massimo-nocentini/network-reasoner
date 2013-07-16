@@ -251,12 +251,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 			var filenameToParse = "../../nturtle-specifications/gas/specification-for-checking-edge-and-uri-objects.nt";
 			IGraph g = new Graph ();
+			Dictionary<String, Object> objectsByUri;
 
-			loader.LoadFileIntoGraphReraisingParseException (filenameToParse, g);
-
-			Dictionary<String, Object> objectsByUri = loader.InstantiateObjects (g);
-
-			loader.setPropertiesOnInstances (objectsByUri, g);
+			loader.ReifySpecification (filenameToParse, g, out objectsByUri);
 
 			Assert.AreEqual (8, objectsByUri.Count);
 
@@ -265,10 +262,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			String nodeCKey = "http://stlab.dsi.unifi.it/networkreasoner/network/nodeC";
 			String nodeDKey = "http://stlab.dsi.unifi.it/networkreasoner/network/nodeD";
 
-			String edgeADKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeAD";
-			String edgeABKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeAB";
-			String edgeBCKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeBC";
-			String edgeDBKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeDB";
+			String edgeADKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeAD-physical";
+			String edgeABKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeAB-physical";
+			String edgeBCKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeBC-physical";
+			String edgeDBKey = "http://stlab.dsi.unifi.it/networkreasoner/network/edgeDB-physical";
 
 			// we do not check the types for nodes since we have already
 			// a test case for them.
@@ -293,9 +290,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.IsInstanceOf (typeof(GasEdgeTopological), edgeDB.Described);
 
 			var edgeADTopological = edgeAD.Described as GasEdgeTopological;
-			var edgeABTopological = edgeAD.Described as GasEdgeTopological;
-			var edgeBCTopological = edgeAD.Described as GasEdgeTopological;
-			var edgeDBTopological = edgeAD.Described as GasEdgeTopological;
+			var edgeABTopological = edgeAB.Described as GasEdgeTopological;
+			var edgeBCTopological = edgeBC.Described as GasEdgeTopological;
+			var edgeDBTopological = edgeDB.Described as GasEdgeTopological;
 
 			Assert.AreEqual (45.968, edgeAD.Diameter);
 			Assert.AreSame (nodeD, edgeADTopological.EndNode);
