@@ -14,10 +14,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public String DotRepresentationOutputFile{ get; set; }
 
 		public String ImageEncoding{ get; set; }
-		
-		public DotRepresentationValidator ()
-		{
-		}
 
 		protected virtual void BuildRepresentation (
 			GasNetwork gasNetwork, StringBuilder dotRepresentation)
@@ -36,6 +32,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public void validate (GasNetwork gasNetwork)
 		{
+
+
 			StringBuilder dotRepresentation = new StringBuilder ();
 			BuildRepresentation (gasNetwork, dotRepresentation);
 
@@ -57,26 +55,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		protected virtual void InvokeDotCommand (
 			StringBuilder dotRepresentation, Action<String> onImageGenerated)
 		{
-			ProcessStartInfo start = new ProcessStartInfo ();
-			start.FileName = string.Format (this.DotCommand, Path.GetFullPath (DotRepresentationOutputFile), Path.GetFullPath (GeneratedImageOutputFile)); 
-			start.UseShellExecute = false;
-			start.Arguments = string.Format ("-T{0} {1}", 
+			var processStartInfo = new ProcessStartInfo ();
+			processStartInfo.FileName = this.DotCommand;
+			processStartInfo.UseShellExecute = false;
+			processStartInfo.Arguments = string.Format ("-T{0} {1}", 
 			                                this.ImageEncoding,
 			                                Path.GetFullPath (DotRepresentationOutputFile));
-			start.RedirectStandardOutput = true;
-			start.WorkingDirectory = Directory.GetCurrentDirectory ();
+			processStartInfo.RedirectStandardOutput = true;
+			processStartInfo.WorkingDirectory = Directory.GetCurrentDirectory ();
 
-			//PrintEvent ("COMMAND read_version received with argument " + arg);
+			using (Process process = Process.Start(processStartInfo)) {
 
-			//
-			// Start the process.
-			//
-
-			using (Process process = Process.Start(start)) {
-				//
-				// Read in all the text from the process with the StreamReader.
-				//
-				//PrintEvent ("Process correctly started.");
 				process.WaitForExit ();
 				using (StreamReader reader = process.StandardOutput) {
 

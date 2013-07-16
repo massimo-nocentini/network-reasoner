@@ -38,7 +38,6 @@
     <Compile Include="gadgets\for-nodes\GasNodeGadget.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetSupply.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetLoad.cs" />
-    <Compile Include="GasEdge.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadget.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadgetSwitchOff.cs" />
     <Compile Include="GasNetwork.cs" />
@@ -55,6 +54,7 @@
     <Compile Include="node-hierarchy\GasNodeTopological.cs" />
     <Compile Include="node-hierarchy\GasNodeVisitor.cs" />
     <Compile Include="gadgets\for-nodes\GasNodeGadgetVisitor.cs" />
+    <Compile Include="edge-hierarchy\GasEdge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -64,6 +64,7 @@
     <Folder Include="system-solver\" />
     <Folder Include="validators\" />
     <Folder Include="parameters\" />
+    <Folder Include="edge-hierarchy\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">
