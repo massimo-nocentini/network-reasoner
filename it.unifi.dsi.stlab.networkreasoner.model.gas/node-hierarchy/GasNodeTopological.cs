@@ -4,7 +4,7 @@ using it.unifi.dsi.stlab.exceptions;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
-	public class GasNode : GasNodeAbstract
+	public class GasNodeTopological : GasNodeAbstract
 	{
 		public virtual String Identifier{ get; set; }
 

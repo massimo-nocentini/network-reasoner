@@ -26,7 +26,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		public void equipping_a_node_preserve_properties ()
 		{
 			long height = 40;
-			GasNodeAbstract basicNode = new GasNode {
+			GasNodeAbstract basicNode = new GasNodeTopological {
 				Identifier = "Dummy identifier",
 				Height = height
 			};

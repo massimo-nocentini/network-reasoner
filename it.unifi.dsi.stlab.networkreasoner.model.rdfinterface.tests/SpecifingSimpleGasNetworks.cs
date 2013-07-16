@@ -94,12 +94,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget1Key]);
 			Assert.IsInstanceOf (typeof(GasNodeGadgetLoad), objectsByUri [loadGadget2Key]);
 			Assert.IsInstanceOf (typeof(GasNodeGadgetSupply), objectsByUri [supplyGadgetKey]);
-			Assert.IsInstanceOf (typeof(GasNode), objectsByUri [nodeKey]);
+			Assert.IsInstanceOf (typeof(GasNodeTopological), objectsByUri [nodeKey]);
 
 			var loadGadget1 = objectsByUri [loadGadget1Key] as GasNodeGadgetLoad;
 			var loadGadget2 = objectsByUri [loadGadget2Key] as GasNodeGadgetLoad;
 			var supplyGadget = objectsByUri [supplyGadgetKey] as GasNodeGadgetSupply;
-			var node = objectsByUri [nodeKey] as GasNode;
+			var node = objectsByUri [nodeKey] as GasNodeTopological;
 
 			Assert.AreEqual (463.98, loadGadget1.Load);
 			Assert.AreEqual (756.38, loadGadget2.Load);
@@ -147,10 +147,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeBCKey]);
 			Assert.IsInstanceOf (typeof(GasEdge), objectsByUri [edgeDBKey]);
 
-			var nodeA = objectsByUri [nodeAKey] as GasNode;
-			var nodeB = objectsByUri [nodeBKey] as GasNode;
-			var nodeC = objectsByUri [nodeCKey] as GasNode;
-			var nodeD = objectsByUri [nodeDKey] as GasNode;
+			var nodeA = objectsByUri [nodeAKey] as GasNodeTopological;
+			var nodeB = objectsByUri [nodeBKey] as GasNodeTopological;
+			var nodeC = objectsByUri [nodeCKey] as GasNodeTopological;
+			var nodeD = objectsByUri [nodeDKey] as GasNodeTopological;
 
 			var edgeAD = objectsByUri [edgeADKey] as GasEdge;
 			var edgeAB = objectsByUri [edgeABKey] as GasEdge;

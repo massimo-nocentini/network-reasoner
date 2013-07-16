@@ -10,7 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		public void equipping_a_node_with_a_supply_it_returns_one_only_for_its_diagonal_position_in_matrix ()
 		{
 			long height = 40;
-			GasNodeAbstract node = new GasNode {
+			GasNodeAbstract node = new GasNodeTopological {
 				Identifier = "Dummy identifier",
 				Height = height
 			};
@@ -29,7 +29,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			// we really don't care about setting meaningful data here
 			// this node serve only to represent a new node object 
 			// with a completely different identity from the equipped one.
-			GasNodeAbstract anotherNode = new GasNode{ Identifier="another identifier"};
+			GasNodeAbstract anotherNode = new GasNodeTopological{ Identifier="another identifier"};
 			GasNodeGadget gadgetForAnotherNode = new GasNodeGadgetLoad{ 
 				Load= 38};
 			GasNodeWithGadget wrapperForAnotherNode = new GasNodeWithGadget ();
@@ -58,7 +58,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		public void equipping_a_node_with_a_load_it_returns_little_ks_for_both_columns_position_in_matrix ()
 		{
 			long height = 40;
-			GasNodeAbstract node = new GasNode {
+			GasNodeAbstract node = new GasNodeTopological {
 				Identifier = "Dummy identifier",
 				Height = height
 			};
@@ -75,7 +75,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			// we really don't care about setting meaningful data here
 			// this node serve only to represent a new node object 
 			// with a completely different identity from the equipped one.
-			GasNodeAbstract anotherNode = new GasNode{ Identifier="another identifier"};
+			GasNodeAbstract anotherNode = new GasNodeTopological{ Identifier="another identifier"};
 			GasNodeGadget gadgetForAnotherNode = new GasNodeGadgetLoad{ 
 				Load= 38};
 			GasNodeWithGadget wrapperForAnotherNode = new GasNodeWithGadget ();

@@ -11,7 +11,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		public void equipping_a_node_with_a_load_it_produce_the_load_as_coefficient ()
 		{
 			long height = 40;
-			GasNodeAbstract node = new GasNode {
+			GasNodeAbstract node = new GasNodeTopological {
 				Identifier = "Dummy identifier",
 				Height = height
 			};
@@ -39,7 +39,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		public void equipping_a_node_with_a_supply_it_produce_the_setup_pressure_as_coefficient ()
 		{
 			long height = 40;
-			GasNodeAbstract node = new GasNode {
+			GasNodeAbstract node = new GasNodeTopological {
 				Identifier = "Dummy identifier",
 				Height = height
 			};

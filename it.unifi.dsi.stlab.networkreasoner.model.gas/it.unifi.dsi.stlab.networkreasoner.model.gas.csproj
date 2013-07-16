@@ -51,9 +51,9 @@
     <Compile Include="validators\DotRepresentationValidator.cs" />
     <Compile Include="validators\ValidatorAbstract.cs" />
     <Compile Include="parameters\AmbientParameters.cs" />
-    <Compile Include="node-hierarchy\GasNode.cs" />
     <Compile Include="node-hierarchy\GasNodeAbstract.cs" />
     <Compile Include="node-hierarchy\GasNodeWithGadget.cs" />
+    <Compile Include="node-hierarchy\GasNodeTopological.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
