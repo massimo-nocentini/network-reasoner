@@ -47,7 +47,25 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			Assert.AreEqual (height, basicNode.Height);
 		}
 
+		[Test()]
+		public void load_a_complete_network_with_a_main_object_defined_in_specification ()
+		{
+			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
 
+			var filenameToParse = "../../nturtle-specifications/specification-for-loading-ambient-parameters.nt";
+
+			var network = loader.Load<GasNetwork> (filenameToParse);
+
+			Assert.IsNotNull (network.AmbientParameters);
+			Assert.AreEqual ("Methane", network.AmbientParameters.GasName);
+			Assert.AreEqual (1013.25, network.AmbientParameters.RefPressure);
+			Assert.AreEqual (1013.25, network.AmbientParameters.AirPressure);
+			Assert.AreEqual (15.0, network.AmbientParameters.GasTemperature);
+			Assert.AreEqual (15.0, network.AmbientParameters.AirTemperature);
+			Assert.AreEqual (16.0, network.AmbientParameters.MolWeight);
+			Assert.AreEqual (0.0108, network.AmbientParameters.Viscosity);
+
+		}
 
 	}
 }

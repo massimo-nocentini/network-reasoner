@@ -1,5 +1,6 @@
 using System;
 using it.unifi.dsi.stlab.networkreasoner.systemsolver;
+using it.unifi.dsi.stlab.exceptions;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
@@ -14,8 +15,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeAbstract
 		public override NodeMatrixConstruction adapterForMatrixConstruction ()
 		{
-			// this method should not be implement here at all
-			throw new System.NotImplementedException ();
+			throw new ShouldNotImplementException ();
 		}
 		#endregion
 

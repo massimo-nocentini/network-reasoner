@@ -39,10 +39,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			var unknownsAtPreviousStep = Unknowns;
 			var QvectorAtPreviousStep = Qvector;
+			Dictionary<GasEdge, Double> VvectorAtPreviousStep = null;
+
+
+
+
 
 			var KvectorAtCurrentStep = computeKvector (
 				unknownsAtPreviousStep,
-				QvectorAtPreviousStep);
+				QvectorAtPreviousStep,
+				null,
+				null);
 
 			var coefficientsVectorAtCurrentStep = new Dictionary<NodeMatrixConstruction, double> ();
 
@@ -91,9 +98,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		protected Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> 
 			computeKvector (
 			Dictionary<NodeMatrixConstruction, double> unknowns,
-			Dictionary<GasEdge, Double> Qvector)
+			Dictionary<GasEdge, Double> Qvector, // questo possiamo non passarlo
+			Dictionary<GasEdge, Double> Vvector, // questo possiamo non passarlo
+			Dictionary<GasEdge, Double> Fvector) // di default 0.015, per ogni arco
 		{
-			throw new NotImplementedException ();
+			foreach (var edge in this.Edges) {
+				var f = Fvector[edge];
+				var A = 4837.00;
+				var l = edge.Length;
+				//unknowns[edge.StartNode.adapterForMatrixConstruction()] - unknowns[edge.EndNode.adapterForMatrixConstruction()]
+			}
+
+			return null;
 		}
 
 		protected Dictionary<NodeMatrixConstruction, double> Solve (

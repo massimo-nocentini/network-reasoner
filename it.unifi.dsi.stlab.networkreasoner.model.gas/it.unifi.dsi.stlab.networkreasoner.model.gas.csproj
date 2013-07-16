@@ -53,6 +53,7 @@
     <Compile Include="validators\NetworkNotConnectedException.cs" />
     <Compile Include="validators\DotRepresentationValidator.cs" />
     <Compile Include="validators\ValidatorAbstract.cs" />
+    <Compile Include="parameters\AmbientParameters.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,6 +62,7 @@
     <Folder Include="gadgets\for-edges\" />
     <Folder Include="system-solver\" />
     <Folder Include="validators\" />
+    <Folder Include="parameters\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">
@@ -70,6 +72,10 @@
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.systemsolver\it.unifi.dsi.stlab.networkreasoner.systemsolver.csproj">
       <Project>{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.systemsolver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.exceptions\it.unifi.dsi.stlab.exceptions.csproj">
+      <Project>{14D86C4D-1649-4987-A74F-3044C20AD2E5}</Project>
+      <Name>it.unifi.dsi.stlab.exceptions</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

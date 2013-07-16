@@ -12,6 +12,7 @@
 @prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
 @prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
 @prefix validator: <http://stlab.dsi.unifi.it/networkreasoner/validator/> .
+@prefix parameter: <http://stlab.dsi.unifi.it/networkreasoner/parameter/> .
 
 network:nodeB
   a				type:node ;
@@ -36,13 +37,19 @@ network:nodeA
   property:Identifier		"node A" ;
   property:Height		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Comment		"a mountain node." .
+  
+network:island
+  a				type:node ;
+  property:Identifier		"island" ;
+  property:Height		"43"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"an isolated node." .
 
 
 # we want to represent the following topology:
 # A -> D
 # A -> B
 # B -> C
-# D -> B
+# B -> B
 
 network:edgeAD
   a				type:edge ;
@@ -90,12 +97,24 @@ network:main
   a						type:gas-network ;
   property:Description				"This network represent a gas network" ;
   property:ReachabilityValidator		validator:reachability ;
+  property:AmbientParameters			parameter:gas ;
   tag:ParserResultReceiverPropertyName		"ParserResultReceiver" ;
   tag:MainNetwork				"" .
   
+parameter:gas
+  a				type:gas-ambient-parameter ;
+  property:GasName		"Methane" ;
+  property:RefPressure		"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:AirPressure		"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:GasTemperature	"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:AirTemperature	"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MolWeight		"16.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Viscosity		"0.0108"^^<http://www.w3.org/2001/XMLSchema#double> .
+  
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
-type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:edge		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNode, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:reachability-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.ReachabilityValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:gas-network	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-network		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-ambient-parameter	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.AmbientParameters, it.unifi.dsi.stlab.networkreasoner.model.gas" .

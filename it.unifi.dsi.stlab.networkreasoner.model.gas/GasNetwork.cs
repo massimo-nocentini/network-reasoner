@@ -39,6 +39,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public String Description { get; set; }
 
+		public AmbientParameters AmbientParameters{ get; set; }
+
 		public Dictionary<String, GasNodeAbstract> Nodes { get; private set; }
 
 		public Dictionary<String, GasEdge> Edges { get; private set; }
@@ -56,13 +58,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Dictionary<NodeMatrixConstruction, double> makeInitialGuessForUnknowns ()
 		{
-			throw new NotImplementedException ();
+			var initialGuess = new  Dictionary<NodeMatrixConstruction, double> ();
+			var rand = new Random (DateTime.Now.Millisecond);
+			// a better strategy would be for node with supply gadget to 
+			// set the setup pressure.
+			foreach (GasNodeAbstract node in Nodes.Values) {
+				var value = rand.NextDouble () / 10;
+				initialGuess.Add (node.adapterForMatrixConstruction (), value + 1);
+			}
+			return initialGuess;
 		}
 
 		public void applyValidators ()
 		{
 			this.ReachabilityValidator.validate (this);
-			this.DotRepresentationValidator.validate(this);
+			this.DotRepresentationValidator.validate (this);
 		}
 	}
 }
