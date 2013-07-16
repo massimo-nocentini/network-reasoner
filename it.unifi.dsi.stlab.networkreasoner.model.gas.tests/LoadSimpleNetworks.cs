@@ -18,6 +18,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			loader.Load ("../../nturtle-specifications/specification-for-loading-a-simple-gas-network.nt",
 			            network.ParserResultReceiver);
 
+			Assert.IsNotNull (network);
 			Assert.AreEqual (4, network.Edges.Count);
 			Assert.AreEqual (4, network.Nodes.Count);
 		}

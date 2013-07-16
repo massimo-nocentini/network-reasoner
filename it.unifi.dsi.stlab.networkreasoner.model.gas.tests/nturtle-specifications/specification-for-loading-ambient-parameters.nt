@@ -54,38 +54,22 @@ network:island
 network:edgeAD
   a				type:edge ;
   property:StartNode		network:nodeA ;
-  property:EndNode		network:nodeD ;
-  property:Length		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"1.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"45.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"12.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeD .
   
 network:edgeAB
   a				type:edge ;
   property:StartNode		network:nodeA ;
-  property:EndNode		network:nodeB ;
-  property:Length		"150"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"4.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"4.8"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"4.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeB .
   
 network:edgeBC
   a				type:edge ;
   property:StartNode		network:nodeB ;
-  property:EndNode		network:nodeC ;
-  property:Length		"3400"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"5.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"2.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeC .
   
 network:edgeDB
   a				type:edge ;
   property:StartNode		network:nodeD ;
-  property:EndNode		network:nodeB ;
-  property:Length		"15000"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"459.68"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"123"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeB .
   
 validator:reachability
   a				type:reachability-validator ;
@@ -114,7 +98,7 @@ parameter:gas
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
 type:node			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:edge			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:reachability-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.ReachabilityValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:gas-network		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:gas-ambient-parameter	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.AmbientParameters, it.unifi.dsi.stlab.networkreasoner.model.gas" .
