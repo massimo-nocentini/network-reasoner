@@ -144,7 +144,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			nodes = new List<NodeForReachabilityValidator> ();
 
-			var buildingNodes = new Dictionary<String, NodeForReachabilityValidator> ();
+
+
+			var newNodesByKey = new Dictionary<GasNodeAbstract, NodeForReachabilityValidator> ();
 
 			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 			(aKey, aNode) => {
@@ -154,10 +156,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				};
 
 				aNode.accept (newNode);
-				buildingNodes.Add (aKey, newNode);
+			
+
+				newNodesByKey.Add (aNode, newNode);
 			}
 			)
 			);
+
+			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+				anEdge => {
+
+				// here we have to dispatch on the edge in order to inspect
+				// if they are feasible or not.
+			}
+			)
+			);
+
 		}
 
 		public void validate (GasNetwork gasNetwork)

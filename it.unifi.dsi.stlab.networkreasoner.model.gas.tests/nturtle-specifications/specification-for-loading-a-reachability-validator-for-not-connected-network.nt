@@ -19,11 +19,23 @@ network:nodeB
   property:Height		"35"^^<http://www.w3.org/2001/XMLSchema#integer> ;
   property:Comment		"another useless comment." .
   
-network:nodeD
+network:nodeD-topological
   a				type:node ;
   property:Identifier		"node D" ;
   property:Height		"43"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Comment		"some useless comment." .
+  property:Comment		"some useless comment." ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+network:nodeD-supplier
+  a				type:node-with-gadget ;
+  property:Equipped		network:nodeD-topological  ;
+  property:Gadget		gadget:supply .
+  
+gadget:supply
+  a				type:supplier ;
+  property:SetupPressure	"157.34"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxQ			"785.23"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MinQ			"100.00"^^<http://www.w3.org/2001/XMLSchema#double> .  
   
 network:nodeC
   a				type:node ;
@@ -53,38 +65,22 @@ network:island
 network:edgeAD
   a				type:edge ;
   property:StartNode		network:nodeA ;
-  property:EndNode		network:nodeD ;
-  property:Length		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"1.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"45.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"12.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeD-supplier .
   
 network:edgeAB
   a				type:edge ;
   property:StartNode		network:nodeA ;
-  property:EndNode		network:nodeB ;
-  property:Length		"150"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"4.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"4.8"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"4.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeB .
   
 network:edgeBC
   a				type:edge ;
   property:StartNode		network:nodeB ;
-  property:EndNode		network:nodeC ;
-  property:Length		"3400"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"5.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"2.35"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:EndNode		network:nodeC .
   
 network:edgeDB
   a				type:edge ;
-  property:StartNode		network:nodeD ;
-  property:EndNode		network:nodeB ;
-  property:Length		"15000"^^<http://www.w3.org/2001/XMLSchema#integer> ;
-  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Diameter		"459.68"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MaxSpeed		"123"^^<http://www.w3.org/2001/XMLSchema#double> .
+  property:StartNode		network:nodeD-supplier ;
+  property:EndNode		network:nodeB .
   
 validator:reachability
   a				type:reachability-validator ;
@@ -101,7 +97,9 @@ network:main
   
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
-type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:edge		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdge, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node-with-gadget	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeWithGadget, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:reachability-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.ReachabilityValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:gas-network	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-network		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:supplier			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetSupply, it.unifi.dsi.stlab.networkreasoner.model.gas" .
