@@ -16,33 +16,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public String ImageEncoding{ get; set; }
 
-		protected virtual void BuildRepresentation (
+		void BuildRepresentationForVertices (
+			List<NodeForDotRepresentationValidator> vertices, 
+			StringBuilder dotRepresentation)
+		{
+			foreach (var vertex in vertices) {
+				dotRepresentation.AppendLine (vertex.dotRepresentation ());
+			}
+		}
+
+		protected virtual void BuildRepresentationForEdges (
 			List<EdgeForDotRepresentationValidator> edges, 
 			StringBuilder dotRepresentation)
 		{
-			// we draw an undirected graph
-			dotRepresentation.AppendLine ("graph G {");
 			foreach (var edge in edges) {
 				dotRepresentation.AppendLine (edge.dotRepresentation ());
 			}
-			dotRepresentation.AppendLine ("}");
 		}
 
 		protected interface EdgeState
 		{
-			string dotRepresentationFor (EdgeForDotRepresentationValidator anEdge);
+			string propertyForEdge (EdgeForDotRepresentationValidator anEdge);
 		}
 
 		class EdgeStateOn : EdgeState
 		{
 			#region EdgeState implementation
-			public string dotRepresentationFor (
+			public string propertyForEdge (
 				EdgeForDotRepresentationValidator anEdge)
 			{
-				string start = anEdge.StartNode.Identifier.Replace (" ", "");
-				string end = anEdge.EndNode.Identifier.Replace (" ", "");
-				
-				return start + " -- " + end;
+				return "";
 			}
 			#endregion
 		}
@@ -50,20 +53,50 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		class EdgeStateOff : EdgeState
 		{
 			#region EdgeState implementation
-			public string dotRepresentationFor (EdgeForDotRepresentationValidator anEdge)
+			public string propertyForEdge (
+				EdgeForDotRepresentationValidator anEdge)
 			{
-				string start = anEdge.StartNode.Identifier.Replace (" ", "");
-				string end = anEdge.EndNode.Identifier.Replace (" ", "");
-
-				// append as suffix the grey color in order to distinguish
-				// the edge that is switched off.
-				return start + " -- " + end;
+				return "color=\"gray\"";
 			}
 			#endregion
 		}
 
-		protected class NodeForDotRepresentationValidator : GasNodeVisitor
+		protected class NodeForDotRepresentationValidator : 
+			GasNodeVisitor, GasNodeGadgetVisitor
 		{
+			interface VertexRole
+			{
+				string propertyFor (
+					NodeForDotRepresentationValidator nodeForDotRepresentationValidator);
+			}
+
+			class VertexRoleSupplier : VertexRole
+			{
+				#region VertexRole implementation
+				public string propertyFor (
+					NodeForDotRepresentationValidator nodeForDotRepresentationValidator)
+				{
+					return "fillcolor=yellow, style=\"rounded,filled\", shape=diamond";
+				}
+				#endregion
+			}
+
+			class VertexRoleLoader : VertexRole
+			{
+				#region VertexRole implementation
+				public string propertyFor (
+					NodeForDotRepresentationValidator nodeForDotRepresentationValidator)
+				{
+					return "";
+				}
+				#endregion
+			}
+
+			// by default we assume that all vertices have a load gadget,
+			// recursion will fix this assumption if necessary due to the
+			// input structure of the vertex.
+			VertexRole aVertexRole = new VertexRoleLoader ();
+
 			public String Identifier { get; set; }
 
 			#region GasNodeVisitor implementation
@@ -74,12 +107,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
 			{
-				// for now we don't care to represent in a different way
-				// the vertex with a supply gadget respect to vertex with
-				// a load gadget.
+				gasNodeWithGadget.Gadget.accept (this);
 				gasNodeWithGadget.Equipped.accept (this);
 			}
 			#endregion
+			public string dotRepresentation ()
+			{
+				return this.Identifier.Replace (" ", "") +
+					" [" + aVertexRole.propertyFor (this) + "];";
+			}	
+			#region GasNodeGadgetVisitor implementation
+			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
+			{
+				this.aVertexRole = new VertexRoleLoader ();
+			}
+
+			public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
+			{
+				this.aVertexRole = new VertexRoleSupplier ();
+			}
+			#endregion
+
+
 		}
 
 		protected class EdgeForDotRepresentationValidator : 
@@ -121,9 +170,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 			#endregion
 
+
+
 			public string dotRepresentation ()
 			{
-				return this.State.dotRepresentationFor (this);
+				string start = this.StartNode.Identifier.Replace (" ", "");
+				string end = this.EndNode.Identifier.Replace (" ", "");
+
+				// append as suffix the grey color in order to distinguish
+				// the edge that is switched off.
+				return start + " -- " + end + " [" + this.State.propertyForEdge (this) + "];";
 			}
 
 
@@ -132,10 +188,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public void validate (GasNetwork gasNetwork)
 		{
 			List<EdgeForDotRepresentationValidator> edges;
-			this.setupValidatorFor (gasNetwork, out edges);
+			List<NodeForDotRepresentationValidator> vertices;
+			this.setupValidatorFor (gasNetwork, out edges, out vertices);
 
 			StringBuilder dotRepresentation = new StringBuilder ();
-			BuildRepresentation (edges, dotRepresentation);
+
+			// we draw an undirected graph
+			dotRepresentation.AppendLine ("graph G {");
+			dotRepresentation.AppendLine ("edge [arrowsize=.5, weight=.1, color=\"black\", fontsize=8];");
+			//dotRepresentation.AppendLine ("node [label=\"\",shape=circle,height=0.12,width=0.12,fontsize=1]");
+			BuildRepresentationForVertices (vertices, dotRepresentation);
+			BuildRepresentationForEdges (edges, dotRepresentation);
+			dotRepresentation.AppendLine ("}");
 
 			this.CreateFileForDotRepresentation (dotRepresentation.ToString ());
 
@@ -144,9 +208,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		void setupValidatorFor (
 			GasNetwork gasNetwork, 
-			out List<EdgeForDotRepresentationValidator> edges)
+			out List<EdgeForDotRepresentationValidator> edges,
+			out List<NodeForDotRepresentationValidator> vertices)
 		{
-			var result = new List<EdgeForDotRepresentationValidator> ();
+			var resultEdges = new List<EdgeForDotRepresentationValidator> ();
 
 			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode<
 			                      GasEdgeAbstract> (
@@ -157,12 +222,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 				anEdge.accept (newEdge);
 
-				result.Add (newEdge);
+				resultEdges.Add (newEdge);
 			}
 			)
 			);
 
-			edges = result;
+			var resultVertices = new List<NodeForDotRepresentationValidator> ();
+			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+				aVertex => {
+
+				var newVertex = new NodeForDotRepresentationValidator ();
+
+				aVertex.accept (newVertex);
+
+				resultVertices.Add (newVertex);
+			}
+			)
+			);
+
+			edges = resultEdges;
+			vertices = resultVertices;
 		}
 
 		protected virtual void CreateFileForDotRepresentation (string content)

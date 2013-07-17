@@ -53,6 +53,6 @@ gadget:supply
 # the following is the really interesting line to instantiate an object for
 # the subjects above.
 type:loader		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetLoad, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node-with-gadget	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeWithGadget, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:supplier		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetSupply, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:node		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:node-with-gadget	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeWithGadget, it.unifi.dsi.stlab.networkreasoner.model.gas" .

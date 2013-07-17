@@ -182,7 +182,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 		protected virtual void setProperty (
 			PropertyInfo property, Object instance, Object value)
 		{
-			property.SetValue (instance, value, null);
+			try {
+				property.SetValue (instance, value, null);
+			} catch (Exception e) {
+				throw e;
+			}
 		}
 
 		protected virtual Object ValueOfUriNode (IUriNode node, 
@@ -293,7 +297,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 						if (reallyDelete) {
 							String objKeyToDelete = triple.Subject.AsValuedNode ().AsString ();
 							objectsByUri.Remove (objKeyToDelete);
-			//				g.Retract (triple);
+							//				g.Retract (triple);
 						}
 
 					}

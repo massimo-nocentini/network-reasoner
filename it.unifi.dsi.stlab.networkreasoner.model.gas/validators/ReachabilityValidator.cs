@@ -101,7 +101,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				this.Identifier = gasNodeTopological.Identifier;
 			}
 
-			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+			public void forNodeWithGadget (
+				GasNodeWithGadget gasNodeWithGadget)
 			{
 				gasNodeWithGadget.Gadget.accept (this);
 				gasNodeWithGadget.Equipped.accept (this);
@@ -151,7 +152,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			#region GasEdgeVisitor implementation
 			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
 			{
-				throw new System.NotImplementedException ();
+				// we don't care about the physical properties.
+				gasEdgePhysical.Described.accept (this);
 			}
 
 			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
@@ -166,7 +168,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
 			{
 				gasEdgeWithGadget.Gadget.accept (
-					new GasEdgeGadgetVisitorStopRecursionOnSwitchOff (this, gasEdgeWithGadget.Equipped));
+					new GasEdgeGadgetVisitorStopRecursionOnSwitchOff (
+					this, gasEdgeWithGadget.Equipped)
+				);
 			}
 			#endregion
 
@@ -199,7 +203,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				// (which it doesn't exists up to now).
 //				#region GasEdgeGadgetVisitor implementation
 //				public void forSwitchOnGadget (
-//					GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
+//					GasEdgeGadgetSwitchOn gasEdgeGadgetSwitchOn)
 //				{
 //					this.equipped.accept (this.edgeForReachabilityValidator);
 //				}
@@ -213,17 +217,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			GasNetwork gasNetwork, 
 			out List<NodeForReachabilityValidator> nodes)
 		{
-			nodes = new List<NodeForReachabilityValidator> ();
-
-
-
 			var newNodesByKey = new Dictionary<GasNodeAbstract, NodeForReachabilityValidator> ();
 
 			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 			(aKey, aNode) => {
 
 				var newNode = new NodeForReachabilityValidator {
-					State = new NodeStateNotVisited ()
+					State = new NodeStateNotVisited (),
+					Role = new NodeRoleLoader(),
+					Neighborhood = new List<NodeForReachabilityValidator>()
 				};
 
 				aNode.accept (newNode);
@@ -232,15 +234,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			)
 			);
 
-			EdgeForReachabilityValidator edgeVisitor = new EdgeForReachabilityValidator (newNodesByKey);
-			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
-				anEdge => {
+			EdgeForReachabilityValidator edgeVisitor = 
+				new EdgeForReachabilityValidator (newNodesByKey);
 
-				// here we have to dispatch on the edge in order to inspect
-				// if they are feasible or not.
-			}
-			)
+			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+				anEdge => anEdge.accept (edgeVisitor))
 			);
+
+			nodes = new List<NodeForReachabilityValidator> (newNodesByKey.Values);
 
 		}
 
@@ -262,7 +263,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			NodeForReachabilityValidator aNotVisitedNode)
 		{
 			throw new NetworkNotConnectedException (string.Format (
-					"The node ``{0}'' isn't connected to the others.", 
+					"The node ``{0}'' isn't connected to a vertex with a supply gadget.", 
 						aNotVisitedNode.Identifier)
 			);
 		}

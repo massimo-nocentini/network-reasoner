@@ -23,7 +23,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 		}
 
 		[Test()]
-		public void validate_a_connected_graph ()
+		[ExpectedException( typeof(ReachabilityValidator.NetworkNotConnectedException ) )]
+		public void validate_a_connected_graph_but_without_a_vertex_with_supply_gadget_should_raise_exception ()
 		{
 			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
 
