@@ -134,7 +134,7 @@ validator:dot-viewer
   
 network:main
   a						type:gas-network ;
-  property:Description				"This network represent a gas network" ;
+  property:Description				"This network represents a gas network" ;
   property:DotRepresentationValidator		validator:dot-viewer ;
   tag:ParserResultReceiverPropertyName		"ParserResultReceiver" ;
   tag:MainNetwork				"" .

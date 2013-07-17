@@ -51,22 +51,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public DotRepresentationValidator DotRepresentationValidator { get; set; }
 
-		public Dictionary<GasEdgeAbstract, double> makeInitialGuessForQvector ()
+		public Dictionary<GasEdgeAbstract, double> makeInitialGuessForFvector ()
 		{
-			throw new NotImplementedException ();
+			var initialFvector = new Dictionary<GasEdgeAbstract, double> ();
+			doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+				anEdge => initialFvector.Add (anEdge, .015))
+			);
+
+			return initialFvector;
 		}
 
-		public Dictionary<NodeMatrixConstruction, double> makeInitialGuessForUnknowns ()
+		public Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns ()
 		{
-			var initialGuess = new  Dictionary<NodeMatrixConstruction, double> ();
+			var initialUnknowns = new  Dictionary<GasNodeAbstract, double> ();
 			var rand = new Random (DateTime.Now.Millisecond);
-			// a better strategy would be for node with supply gadget to 
-			// set the setup pressure.
-			foreach (GasNodeAbstract node in Nodes.Values) {
+
+			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+				aVertex => {
 				var value = rand.NextDouble () / 10;
-				initialGuess.Add (node.adapterForMatrixConstruction (), value + 1);
+				initialUnknowns.Add (aVertex, value + 1);
 			}
-			return initialGuess;
+			)
+			);
+
+			return initialUnknowns;
 		}
 
 		public void applyValidators ()
@@ -113,6 +121,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				this.aBlock.Invoke (aNode);
 			}
 			#endregion
+			public NodeHandlerWithDelegateOnRawNode (object par)
+			{
+				throw new NotImplementedException ();
+			}
+
 		}
 
 		public class NodeHandlerWithDelegateOnKeyedNode<T> : NodeHandlerAbstract<T>

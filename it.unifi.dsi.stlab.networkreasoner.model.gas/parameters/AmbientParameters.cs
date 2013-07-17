@@ -18,9 +18,25 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Double Viscosity { get; set; }
 
+		public Double GravitationalAcceleration {
+			get {
+				return 9.806;
+			}
+		}
+
 		public Double Aconstant {
 			get {
-				throw new NotImplementedException ("The ``A'' constant should be calculated using the above fields.");
+				var numerator = 16 * GasTemperature;
+				var denominator = Math.Pow (Math.PI, 2) * 
+					Math.Pow (AirTemperature, 2);
+
+				return numerator / denominator;
+			}
+		}
+
+		public Double Rconstant {
+			get {
+				return 8314.0 / MolWeight;
 			}
 		}
 
