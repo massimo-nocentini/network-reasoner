@@ -138,6 +138,77 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		}
 
+		protected class EdgeForReachabilityValidator : GasEdgeVisitor
+		{
+			Dictionary<GasNodeAbstract, NodeForReachabilityValidator> newNodesByKey{ get; set; }
+
+			public EdgeForReachabilityValidator (
+				Dictionary<GasNodeAbstract, NodeForReachabilityValidator> newNodesByKey)
+			{
+				this.newNodesByKey = newNodesByKey;
+			}
+
+			#region GasEdgeVisitor implementation
+			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
+			{
+				throw new System.NotImplementedException ();
+			}
+
+			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
+			{
+				var startVertex = newNodesByKey [gasEdgeTopological.StartNode];
+				var endVertex = newNodesByKey [gasEdgeTopological.EndNode];
+
+				startVertex.Neighborhood.Add (endVertex);
+				endVertex.Neighborhood.Add (startVertex);
+			}
+
+			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
+			{
+				gasEdgeWithGadget.Gadget.accept (
+					new GasEdgeGadgetVisitorStopRecursionOnSwitchOff (this, gasEdgeWithGadget.Equipped));
+			}
+			#endregion
+
+			class GasEdgeGadgetVisitorStopRecursionOnSwitchOff : GasEdgeGadgetVisitor
+			{
+				EdgeForReachabilityValidator edgeForReachabilityValidator{ get; set; }
+
+				GasEdgeAbstract equipped{ get; set; }
+
+				public GasEdgeGadgetVisitorStopRecursionOnSwitchOff (
+					EdgeForReachabilityValidator edgeForReachabilityValidator, 
+					GasEdgeAbstract equipped)
+				{
+					this.edgeForReachabilityValidator = edgeForReachabilityValidator;
+					this.equipped = equipped;
+				}
+
+				#region GasEdgeGadgetVisitor implementation
+				public void forSwitchOffGadget (
+					GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
+				{
+					// since this gadget turns off the edge we do not proceed
+					// the recursive application of the visitor, so we
+					// do not reach the very bottom case of TopologicalEdge
+					// where the neighborhoods are updated.
+				}
+				#endregion
+
+				// the following is the code for an edge with a switch on gadget
+				// (which it doesn't exists up to now).
+//				#region GasEdgeGadgetVisitor implementation
+//				public void forSwitchOnGadget (
+//					GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
+//				{
+//					this.equipped.accept (this.edgeForReachabilityValidator);
+//				}
+//				#endregion
+			}
+
+
+		}
+
 		void setupValidatorFor (
 			GasNetwork gasNetwork, 
 			out List<NodeForReachabilityValidator> nodes)
@@ -156,13 +227,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				};
 
 				aNode.accept (newNode);
-			
-
 				newNodesByKey.Add (aNode, newNode);
 			}
 			)
 			);
 
+			EdgeForReachabilityValidator edgeVisitor = new EdgeForReachabilityValidator (newNodesByKey);
 			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
 				anEdge => {
 
