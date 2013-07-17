@@ -5,37 +5,120 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class NetwonRaphsonSystem
 	{
-		private Dictionary<GasEdgeTopological, Double> Qvector{ get; set; }
+		private Dictionary<EdgeForNetwonRaphsonSystem, Double> Fvector{ get; set; }
 
-		private Dictionary<NodeMatrixConstruction, double> Unknowns { get; set; }
+		private Dictionary<NodeForNetwonRaphsonSystem, Double> Unknowns { get; set; }
 
-		private List<NodeMatrixConstruction> Nodes{ get; set; }
+		private List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
-		private List<GasEdgeTopological> Edges{ get; set; }
+		private List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
 		private MatrixComputationDataProvider ComputationDataProvider { get; set; }
 
 		private Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double>
 			LittleK { get; set; }
 
-		class NodeForNetwonRaphsonSystem : GasNodeVisitor
+		class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
 		{
-			public long Height {
-				get;
-				set;
+			interface NodeRole
+			{
+				void updateMatrixIfNodeWithSupplyGadgetFor (
+					NodeForNetwonRaphsonSystem aNode, 
+					NodeForNetwonRaphsonSystem respectToAnotherNode, 
+					object matrixToUpdate);
+
+				double coefficient ();
 			}
+
+			class NodeRoleSupplier:NodeRole
+			{
+				public double SetupPressure { get; set; }
+
+				#region NodeRole implementation
+				public double coefficient ()
+				{
+					return SetupPressure;
+				}
+
+				public void updateMatrixIfNodeWithSupplyGadgetFor (
+					NodeForNetwonRaphsonSystem aNode, 
+					NodeForNetwonRaphsonSystem respectToAnotherNode, 
+					object matrixToUpdate)
+				{
+					// update here the matrix
+					throw new System.NotImplementedException ();
+				}
+				#endregion
+			}
+
+			class NodeRoleLoader:NodeRole
+			{
+				public double Load { get; set; }
+
+				#region NodeRole implementation
+				public double coefficient ()
+				{
+					return Load;
+				}
+
+				public void updateMatrixIfNodeWithSupplyGadgetFor (
+					NodeForNetwonRaphsonSystem aNode, 
+					NodeForNetwonRaphsonSystem respectToAnotherNode, 
+					object matrixToUpdate)
+				{
+					// here we do not need to do anything because
+					// the receiver node has a load gadget hence
+					// its row is already computed and doesn't need
+					// to be fixed in this case.
+				}
+				#endregion
+			}
+
+			public long Height { get; set; }
+
+			public NodeRole Role{ get; set; }
 
 			#region GasNodeVisitor implementation
 			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 			{
-				throw new System.NotImplementedException ();
+				this.Height = gasNodeTopological.Height;
 			}
 
 			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
 			{
-				throw new System.NotImplementedException ();
+				gasNodeWithGadget.Gadget.accept (this);
+				gasNodeWithGadget.Equipped.accept (this);
 			}
 			#endregion
+
+			#region GasNodeGadgetVisitor implementation
+			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
+			{
+				var role = new NodeRoleLoader ();
+				role.Load = aLoadGadget.Load;
+				this.Role = role;
+			}
+
+			public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
+			{
+				var role = new NodeRoleSupplier ();
+				role.SetupPressure = aSupplyGadget.SetupPressure;
+				this.Role = role;
+			}
+			#endregion
+
+			public double coefficient ()
+			{
+				return this.Role.coefficient ();
+			}
+
+			public void updateMatrixIfNodeWithSupplyGadget (
+				NodeForNetwonRaphsonSystem respectToAnotherNode, object matrixToUpdate)
+			{
+				this.Role.updateMatrixIfNodeWithSupplyGadgetFor (
+					this, respectToAnotherNode, matrixToUpdate);
+			}
+
 		}
 
 		class EdgeForNetwonRaphsonSystemBuilder : 
@@ -92,6 +175,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			{
 				CustomEdgeUnderBuilding.Diameter = gasEdgePhysical.Diameter;
 				CustomEdgeUnderBuilding.Length = gasEdgePhysical.Length;
+				gasEdgePhysical.Described.accept (this);
 			}
 
 			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
@@ -125,6 +209,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				GasEdgeAbstract anEdge, List<EdgeForNetwonRaphsonSystem> collector)
 			{
 				anEdge.accept (this);
+				this.CustomEdgeUnderBuilding.AmbientParameters = AmbientParameters;
 
 				this.EdgeIsAllowed.buildCustomEdgeFor (this, collector);
 			}
@@ -145,7 +230,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			public AmbientParameters AmbientParameters{ get; set; }
 
-			public double covariantLittleK ()
+			public double coVariantLittleK ()
 			{
 				return AmbientParameters.Rconstant + weightedHeightsDifference;
 			}
@@ -188,39 +273,42 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public OneStepMutationResults mutate ()
 		{
 			var unknownsAtPreviousStep = Unknowns;
-			var QvectorAtPreviousStep = Qvector;
-			Dictionary<GasEdgeTopological, Double> VvectorAtPreviousStep = null;
+			var FvectorAtPreviousStep = Fvector;
+
+			// Do the following vector is really necessary?
+			Dictionary<EdgeForNetwonRaphsonSystem, Double> VvectorAtPreviousStep = null;
 
 			var KvectorAtCurrentStep = computeKvector (
 				unknownsAtPreviousStep,
-				QvectorAtPreviousStep,
-				null,
-				null);
+				FvectorAtPreviousStep);
 
-			var coefficientsVectorAtCurrentStep = new Dictionary<NodeMatrixConstruction, double> ();
+			var coefficientsVectorAtCurrentStep = new Dictionary<NodeForNetwonRaphsonSystem, double> ();
 
 			var matrixAtCurrentStep = new Dictionary<
-				KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> ();
+				KeyValuePair<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem>, Double> ();
 
-			var dataProviderAtCurrentStep = new MatrixComputationDataProviderDictionaryImplementation (
-				LittleK, KvectorAtCurrentStep);
+			foreach (var anEdge in this.Edges) {
+			}
 
 			foreach (var nodeInRow in Nodes) {
 				foreach (var nodeInColumn in Nodes) {
 
 					var nodePair = new KeyValuePair<
-						NodeMatrixConstruction,NodeMatrixConstruction> (
+						NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> (
 							nodeInRow, nodeInColumn);
 
-					double value = nodeInRow.matrixValueRespect (
-						nodeInColumn, dataProviderAtCurrentStep);
-
-					matrixAtCurrentStep.Add (nodePair, value);
-
+					nodeInRow.updateMatrixIfNodeWithSupplyGadget (
+						respectTo: nodeInColumn, 
+						matrixToUpdate: matrixAtCurrentStep);
 				}
 
 				coefficientsVectorAtCurrentStep [nodeInRow] = nodeInRow.coefficient ();
 			}
+
+			var dataProviderAtCurrentStep = new MatrixComputationDataProviderDictionaryImplementation (
+				LittleK, KvectorAtCurrentStep);
+
+
 
 			var unknownsAtCurrentStep = Solve (
 				matrixAtCurrentStep, coefficientsVectorAtCurrentStep);
@@ -241,12 +329,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			return result;
 		}
 
-		protected Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double> 
+		protected Dictionary<KeyValuePair<NodeForNetwonRaphsonSystem,NodeForNetwonRaphsonSystem>, Double> 
 			computeKvector (
-			Dictionary<NodeMatrixConstruction, double> unknowns,
-			Dictionary<GasEdgeTopological, Double> Qvector, // questo possiamo non passarlo
-			Dictionary<GasEdgeTopological, Double> Vvector, // questo possiamo non passarlo
-				Dictionary<GasEdgeTopological, Double> Fvector) // di default 0.015, per ogni arco
+			Dictionary<NodeForNetwonRaphsonSystem, double> unknowns,
+			Dictionary<EdgeForNetwonRaphsonSystem, Double> Fvector)
 		{
 			foreach (var edge in this.Edges) {
 				var f = Fvector [edge];
