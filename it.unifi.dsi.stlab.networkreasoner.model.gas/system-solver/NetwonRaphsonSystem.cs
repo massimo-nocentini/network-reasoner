@@ -46,7 +46,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					NodeForNetwonRaphsonSystem aRowNode, 
 					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
 				{
-					aMatrix.doOnRowOf (aRowNode, aColumnNode => aRowNode.Equals (aColumnNode) ? 1 : 0);
+					aMatrix.doOnRowOf (aRowNode, 
+					                   (aColumnNode, cumulate) => aRowNode.Equals (aColumnNode) ? 1 : 0);
 				}
 				#endregion
 
@@ -293,10 +294,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				coefficientsVectorAtCurrentStep.atPut (aNode, aNode.coefficient ());
 			}
 
-
-
 			var result = new OneStepMutationResults ();
 
+			// the following assignments need revision
 			result.Matrix = matrixAtCurrentStep;
 			result.Unknowns = unknownVectorAtPreviousStep;
 			result.Coefficients = coefficientsVectorAtCurrentStep;
@@ -316,10 +316,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
 				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * (-1) * anEdge.controVariantLittleK ();
 
-				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, -coVariant);
-				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, controVariant);
-				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, coVariant);
-				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, -controVariant);
+				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant + cumulate, 0);
+				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant + cumulate, 0);
+				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, cumulate => coVariant + cumulate, 0);
+				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, cumulate => -controVariant + cumulate, 0);
 			}
 
 			return aMatrix;

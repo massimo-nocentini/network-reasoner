@@ -5,16 +5,21 @@ namespace it.unifi.dsi.stlab.math.algebra
 {
 	public class Vector<IndexType, VType>
 	{
-		Dictionary<IndexType, VType> aVector;
+		Dictionary<IndexType, VType> aVector{ get; set; }
+
+		public Vector ()
+		{
+			this.aVector = new Dictionary<IndexType, VType> ();
+		}
 
 		public VType valueAt (IndexType index)
 		{
-			throw new NotImplementedException ();
+			return this.aVector [index];
 		}
 
 		public void atPut (IndexType index, VType value)
 		{
-			throw new NotImplementedException ();
+			this.aVector.Add (index, value);
 		}
 
 	}
