@@ -1,31 +1,33 @@
 using System;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class NetwonRaphsonSystem
 	{
-		private Dictionary<EdgeForNetwonRaphsonSystem, Double> Fvector{ get; set; }
+		Vector<EdgeForNetwonRaphsonSystem, Double> Fvector{ get; set; }
 
-		private Dictionary<NodeForNetwonRaphsonSystem, Double> Unknowns { get; set; }
+		Vector<NodeForNetwonRaphsonSystem, Double> UnknownVector { get; set; }
 
-		private List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
+		List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
-		private List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
+		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
-		private MatrixComputationDataProvider ComputationDataProvider { get; set; }
+		MatrixComputationDataProvider ComputationDataProvider { get; set; }
+
+		AmbientParameters AmbientParameters { get; set; }
 
 		private Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double>
 			LittleK { get; set; }
 
-		class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
+		internal class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
 		{
 			interface NodeRole
 			{
-				void updateMatrixIfNodeWithSupplyGadgetFor (
+				void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
-					NodeForNetwonRaphsonSystem respectToAnotherNode, 
-					object matrixToUpdate);
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix);
 
 				double coefficient ();
 			}
@@ -40,15 +42,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					return SetupPressure;
 				}
 
-				public void updateMatrixIfNodeWithSupplyGadgetFor (
-					NodeForNetwonRaphsonSystem aNode, 
-					NodeForNetwonRaphsonSystem respectToAnotherNode, 
-					object matrixToUpdate)
+				public void fixMatrixIfYouHaveSupplyGadgetFor (
+					NodeForNetwonRaphsonSystem aRowNode, 
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
 				{
-					// update here the matrix
-					throw new System.NotImplementedException ();
+					aMatrix.doOnRowOf (aRowNode, aColumnNode => aRowNode.Equals (aColumnNode) ? 1 : 0);
 				}
 				#endregion
+
 			}
 
 			class NodeRoleLoader:NodeRole
@@ -61,10 +62,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					return Load;
 				}
 
-				public void updateMatrixIfNodeWithSupplyGadgetFor (
+				public void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
-					NodeForNetwonRaphsonSystem respectToAnotherNode, 
-					object matrixToUpdate)
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
 				{
 					// here we do not need to do anything because
 					// the receiver node has a load gadget hence
@@ -76,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			public long Height { get; set; }
 
-			public NodeRole Role{ get; set; }
+			NodeRole Role{ get; set; }
 
 			#region GasNodeVisitor implementation
 			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
@@ -112,11 +112,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				return this.Role.coefficient ();
 			}
 
-			public void updateMatrixIfNodeWithSupplyGadget (
-				NodeForNetwonRaphsonSystem respectToAnotherNode, object matrixToUpdate)
+			public void fixMatrixIfYouHaveSupplyGadget (
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double>  aMatrix)
 			{
-				this.Role.updateMatrixIfNodeWithSupplyGadgetFor (
-					this, respectToAnotherNode, matrixToUpdate);
+				this.Role.fixMatrixIfYouHaveSupplyGadgetFor (this, aMatrix);
 			}
 
 		}
@@ -218,7 +217,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		// the following is a merely data class with some little behavior
 		// attached to it.
-		class EdgeForNetwonRaphsonSystem
+		internal class EdgeForNetwonRaphsonSystem
 		{
 			public long Length { get; set; }
 
@@ -253,6 +252,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public void initializeWith (GasNetwork network)
 		{
+			this.AmbientParameters = network.AmbientParameters;
+
 			// before build the nodes
 
 			// now we can build the edges
@@ -272,76 +273,81 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public OneStepMutationResults mutate ()
 		{
-			var unknownsAtPreviousStep = Unknowns;
+			var unknownVectorAtPreviousStep = UnknownVector;
+
 			var FvectorAtPreviousStep = Fvector;
 
-			// Do the following vector is really necessary?
-			Dictionary<EdgeForNetwonRaphsonSystem, Double> VvectorAtPreviousStep = null;
-
 			var KvectorAtCurrentStep = computeKvector (
-				unknownsAtPreviousStep,
+				unknownVectorAtPreviousStep,
 				FvectorAtPreviousStep);
 
-			var coefficientsVectorAtCurrentStep = new Dictionary<NodeForNetwonRaphsonSystem, double> ();
+			var coefficientsVectorAtCurrentStep = new Vector<NodeForNetwonRaphsonSystem, Double> ();
 
-			var matrixAtCurrentStep = new Dictionary<
-				KeyValuePair<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem>, Double> ();
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, Double> matrixAtCurrentStep =
+				computeMatrix (KvectorAtCurrentStep);
 
-			foreach (var anEdge in this.Edges) {
+			foreach (var aNode in Nodes) {
+
+				aNode.fixMatrixIfYouHaveSupplyGadget (matrixAtCurrentStep);
+
+				coefficientsVectorAtCurrentStep.atPut (aNode, aNode.coefficient ());
 			}
 
-			foreach (var nodeInRow in Nodes) {
-				foreach (var nodeInColumn in Nodes) {
 
-					var nodePair = new KeyValuePair<
-						NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> (
-							nodeInRow, nodeInColumn);
-
-					nodeInRow.updateMatrixIfNodeWithSupplyGadget (
-						respectTo: nodeInColumn, 
-						matrixToUpdate: matrixAtCurrentStep);
-				}
-
-				coefficientsVectorAtCurrentStep [nodeInRow] = nodeInRow.coefficient ();
-			}
-
-			var dataProviderAtCurrentStep = new MatrixComputationDataProviderDictionaryImplementation (
-				LittleK, KvectorAtCurrentStep);
-
-
-
-			var unknownsAtCurrentStep = Solve (
-				matrixAtCurrentStep, coefficientsVectorAtCurrentStep);
-
-			var QvectorAtCurrentStep = computeQvector (
-				unknownsAtCurrentStep, dataProviderAtCurrentStep);
-
-			Unknowns = unknownsAtCurrentStep;
-			Qvector = QvectorAtCurrentStep;
 
 			var result = new OneStepMutationResults ();
 
 			result.Matrix = matrixAtCurrentStep;
-			result.Unknowns = unknownsAtCurrentStep;
+			result.Unknowns = unknownVectorAtPreviousStep;
 			result.Coefficients = coefficientsVectorAtCurrentStep;
-			result.Qvector = QvectorAtCurrentStep;
+			//result.Qvector = QvectorAtCurrentStep;
 
 			return result;
 		}
 
-		protected Dictionary<KeyValuePair<NodeForNetwonRaphsonSystem,NodeForNetwonRaphsonSystem>, Double> 
-			computeKvector (
-			Dictionary<NodeForNetwonRaphsonSystem, double> unknowns,
-			Dictionary<EdgeForNetwonRaphsonSystem, Double> Fvector)
+		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> 
+			computeMatrix (Vector<EdgeForNetwonRaphsonSystem, double> kvectorAtCurrentStep)
 		{
-			foreach (var edge in this.Edges) {
-				var f = Fvector [edge];
-				var A = 4837.00;
-				//var l = edge.Length;
-				//unknowns[edge.StartNode.adapterForMatrixConstruction()] - unknowns[edge.EndNode.adapterForMatrixConstruction()]
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix =
+				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> ();
+
+			foreach (var anEdge in this.Edges) {
+			
+				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
+				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * (-1) * anEdge.controVariantLittleK ();
+
+				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, -coVariant);
+				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, controVariant);
+				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, coVariant);
+				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, -controVariant);
 			}
 
-			return null;
+			return aMatrix;
+		}
+
+		Vector<EdgeForNetwonRaphsonSystem, Double> computeKvector (
+			Vector<NodeForNetwonRaphsonSystem, Double> unknownVector,
+			Vector<EdgeForNetwonRaphsonSystem, Double> Fvector)
+		{
+			var Kvector = new Vector<EdgeForNetwonRaphsonSystem, double> ();
+
+			foreach (var anEdge in this.Edges) {
+
+				var f = Fvector.valueAt (anEdge);
+				var A = this.AmbientParameters.Aconstant / Math.Pow (anEdge.Diameter, 5);
+				var unknownForStartNode = unknownVector.valueAt (anEdge.StartNode);
+				var unknownForEndNode = unknownVector.valueAt (anEdge.EndNode);
+				
+				var weightedHeightsDifference = 
+					anEdge.coVariantLittleK () * unknownForStartNode - 
+					anEdge.controVariantLittleK () * unknownForEndNode;
+
+				var K = 1 / Math.Sqrt (f * A * anEdge.Length * weightedHeightsDifference);
+
+				Kvector.atPut (anEdge, K);
+			}
+
+			return Kvector;
 		}
 
 		protected Dictionary<NodeMatrixConstruction, double> Solve (

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.extensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.exceptions", "it.unifi.dsi.stlab.exceptions\it.unifi.dsi.stlab.exceptions.csproj", "{14D86C4D-1649-4987-A74F-3044C20AD2E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.math.algebra", "it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj", "{19F7F487-F948-4BCE-AE70-CE28D685552E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{192D5168-9F9B-4FC4-BD61-D3C32C8C52AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19F7F487-F948-4BCE-AE70-CE28D685552E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19F7F487-F948-4BCE-AE70-CE28D685552E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19F7F487-F948-4BCE-AE70-CE28D685552E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19F7F487-F948-4BCE-AE70-CE28D685552E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A93011C-4839-42D1-B6BB-6A96283291D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A93011C-4839-42D1-B6BB-6A96283291D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A93011C-4839-42D1-B6BB-6A96283291D5}.Release|Any CPU.ActiveCfg = Release|Any CPU

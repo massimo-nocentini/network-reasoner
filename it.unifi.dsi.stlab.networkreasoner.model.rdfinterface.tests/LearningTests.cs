@@ -130,10 +130,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 			var filename_to_parse = "../../nturtle-specifications/file-to-load-from-w3c-nturtle-page.nt";
 			ttlparser.Load (g, filename_to_parse);
 
-			foreach (Triple triple in g.Triples) {
-				String asString = triple.ToString ();
-			}
-
 			Assert.AreEqual (7, g.Triples.Count);
 
 
