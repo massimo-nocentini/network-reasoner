@@ -12,20 +12,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public virtual long Height{ get; set; }
 
-		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeAbstract
-		public override NodeMatrixConstruction adapterForMatrixConstruction ()
-		{
-			throw new ShouldNotImplementException ();
-		}
-
 		public override void accept (GasNodeVisitor visitor)
 		{
 			visitor.forNodeWithTopologicalInfo (this);
 		}
-		#endregion
-
-
-
 	}
 }
 

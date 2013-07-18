@@ -14,12 +14,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
-		MatrixComputationDataProvider ComputationDataProvider { get; set; }
-
 		AmbientParameters AmbientParameters { get; set; }
-
-		private Dictionary<KeyValuePair<NodeMatrixConstruction,NodeMatrixConstruction>, Double>
-			LittleK { get; set; }
 
 		internal class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
 		{
@@ -349,21 +344,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			return Kvector;
 		}
-
-		protected Dictionary<NodeMatrixConstruction, double> Solve (
-			Dictionary<KeyValuePair<NodeMatrixConstruction, NodeMatrixConstruction>, double> matrixAtCurrentStep, 
-			Dictionary<NodeMatrixConstruction, double> coefficientsVector)
-		{
-			throw new NotImplementedException ();
-		}
-
-		protected Dictionary<GasEdgeTopological, Double> computeQvector (
-			Dictionary<NodeMatrixConstruction, double> unknownsAtCurrentStep, 
-			MatrixComputationDataProviderDictionaryImplementation dataProviderAtCurrentStep)
-		{
-			throw new NotImplementedException ();
-		}
-
 
 
 	}

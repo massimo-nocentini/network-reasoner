@@ -41,8 +41,6 @@
     <Compile Include="gadgets\for-edges\GasEdgeGadget.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadgetSwitchOff.cs" />
     <Compile Include="GasNetwork.cs" />
-    <Compile Include="system-solver\NodeMatrixConstruction.cs" />
-    <Compile Include="system-solver\MatrixComputationDataProvider.cs" />
     <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
     <Compile Include="system-solver\OneStepMutationResults.cs" />
     <Compile Include="validators\ReachabilityValidator.cs" />

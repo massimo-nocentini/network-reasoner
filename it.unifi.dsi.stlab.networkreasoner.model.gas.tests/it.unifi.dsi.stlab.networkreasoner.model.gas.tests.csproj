@@ -37,8 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LoadSimpleNetworks.cs" />
-    <Compile Include="MessagingForMatrixConstructionDependentOnGadgets.cs" />
-    <Compile Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
     <Compile Include="AttemptSystemInteraction.cs" />
     <Compile Include="ReachabilityValidatorTests.cs" />
     <Compile Include="DotRepresentationValidatorTests.cs" />
@@ -57,5 +55,9 @@
       <Project>{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.systemsolver</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
+    <None Include="MessagingForMatrixConstructionDependentOnGadgets.cs" />
   </ItemGroup>
 </Project>
