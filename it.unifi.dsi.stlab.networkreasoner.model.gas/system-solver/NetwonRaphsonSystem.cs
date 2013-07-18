@@ -184,7 +184,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
 			{
-				gasEdgeWithGadget.accept (this);
+				gasEdgeWithGadget.Gadget.accept (this);
 
 				// here we continue the recursion just for elegance and 
 				// foreseeing in the future if we add a gadget for edges that 
@@ -330,6 +330,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 				var f = Fvector.valueAt (anEdge);
 				var A = this.AmbientParameters.Aconstant / Math.Pow (anEdge.Diameter, 5);
+
 				var unknownForStartNode = unknownVector.valueAt (anEdge.StartNode);
 				var unknownForEndNode = unknownVector.valueAt (anEdge.EndNode);
 				
