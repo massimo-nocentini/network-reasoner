@@ -4,3 +4,4 @@
 test-results/
 *.userprefs
 third-party-libraries/dotnetrdf_library_100_stable/
+third-party-libraries/
