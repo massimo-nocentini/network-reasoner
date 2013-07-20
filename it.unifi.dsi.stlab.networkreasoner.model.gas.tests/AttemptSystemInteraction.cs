@@ -8,22 +8,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 	[TestFixture()]
 	public class AttemptSystemInteraction
 	{
-		[Test()]
-		public void setup_newton_raphson_system ()
-		{
-			GasNetwork network = new GasNetwork ();
 
-			var loader = SpecificationLoader.MakeNTurtleSpecificationLoader ();
-
-			loader.Load ("../../nturtle-specifications/specification-for-loading-a-simple-gas-network.nt",
-			            network.ParserResultReceiver);
-
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
-			system.initializeWith (network);
-
-			OneStepMutationResults results = system.mutate ();
-
-		}
 
 		[Test()]
 		public void check_if_KeyValuePair_is_value_object ()

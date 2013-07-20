@@ -41,8 +41,6 @@
     <Compile Include="gadgets\for-edges\GasEdgeGadget.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadgetSwitchOff.cs" />
     <Compile Include="GasNetwork.cs" />
-    <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
-    <Compile Include="system-solver\OneStepMutationResults.cs" />
     <Compile Include="validators\ReachabilityValidator.cs" />
     <Compile Include="validators\DotRepresentationValidator.cs" />
     <Compile Include="validators\ValidatorAbstract.cs" />
@@ -64,7 +62,6 @@
     <Folder Include="gadgets\" />
     <Folder Include="gadgets\for-nodes\" />
     <Folder Include="gadgets\for-edges\" />
-    <Folder Include="system-solver\" />
     <Folder Include="validators\" />
     <Folder Include="parameters\" />
     <Folder Include="edge-hierarchy\" />
