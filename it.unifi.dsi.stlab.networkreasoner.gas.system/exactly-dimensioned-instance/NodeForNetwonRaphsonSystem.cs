@@ -4,9 +4,13 @@ using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
-	internal class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
+	public class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
 	{
-		interface NodeRole
+		public class NodeWithoutGadgetFound:Exception
+		{
+		}
+
+		public interface NodeRole
 		{
 			void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
@@ -17,14 +21,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<NodeForNetwonRaphsonSystem, Double> aVector);
 		}
 
-		class NodeRoleSupplier:NodeRole
+		public class NodeRoleSupplier:NodeRole
 		{
-			double SetupPressure { get; set; }
-
-			public NodeRoleSupplier (double aSetupPressure)
-			{
-				this.SetupPressure = aSetupPressure;
-			}
+			public double SetupPressure { get; set; }
 
 				#region NodeRole implementation
 			public void putYourCoefficientIntoFor (
@@ -44,14 +43,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		}
 
-		class NodeRoleLoader:NodeRole
+		public class NodeRoleLoader:NodeRole
 		{
-			double Load { get; set; }
-
-			public NodeRoleLoader (Double aLoad)
-			{
-				this.Load = aLoad;
-			}
+			public double Load { get; set; }
 
 				#region NodeRole implementation
 			public void putYourCoefficientIntoFor (
@@ -75,11 +69,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public long Height { get; set; }
 
-		NodeRole Role{ get; set; }
+		public NodeRole Role{ get; set; }
 
 		public void initializeWith (GasNodeAbstract aNode)
 		{
 			aNode.accept (this);
+
+			if (this.Role == null) {
+				throw new NodeWithoutGadgetFound ();
+			}
 		}
 
 			#region GasNodeVisitor implementation
@@ -98,12 +96,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#region GasNodeGadgetVisitor implementation
 		public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
 		{
-			this.Role = new NodeRoleLoader (aLoadGadget.Load);
+			this.Role = new NodeRoleLoader{ Load = aLoadGadget.Load};
 		}
 
 		public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
 		{
-			this.Role = new NodeRoleSupplier (aSupplyGadget.SetupPressure);
+			this.Role = new NodeRoleSupplier { SetupPressure = aSupplyGadget.SetupPressure};
 		}
 			#endregion
 
