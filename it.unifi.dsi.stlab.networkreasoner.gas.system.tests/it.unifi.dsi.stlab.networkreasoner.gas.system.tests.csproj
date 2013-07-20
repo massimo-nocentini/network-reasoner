@@ -34,9 +34,13 @@
       <Private>False</Private>
       <Package>mono-nunit</Package>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\third-party-libraries\MathNet.Numerics\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NodeForNetwonRaphsonSystemCreation.cs" />
+    <Compile Include="NodeForNetwonRaphsonSystemCoefficientVector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -47,6 +51,10 @@
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
       <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj">
+      <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
+      <Name>it.unifi.dsi.stlab.math.algebra</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

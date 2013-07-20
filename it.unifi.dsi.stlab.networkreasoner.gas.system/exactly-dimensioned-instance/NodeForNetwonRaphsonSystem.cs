@@ -6,9 +6,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
 	{
-		public class NodeWithoutGadgetFound:Exception
-		{
-		}
+
 
 		public interface NodeRole
 		{
@@ -48,14 +46,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public double Load { get; set; }
 
 				#region NodeRole implementation
-			public void putYourCoefficientIntoFor (
+			public virtual void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
 				Vector<NodeForNetwonRaphsonSystem, Double> aVector)
 			{
 				aVector.atPut (aNode, Load);
 			}
 
-			public void fixMatrixIfYouHaveSupplyGadgetFor (
+			public virtual void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
 					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
 			{
@@ -67,6 +65,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				#endregion
 		}
 
+		public class NodeRolePassive:NodeRoleLoader
+		{
+			public NodeRolePassive ()
+			{
+				this.Load = 0;
+			}
+
+			public override void putYourCoefficientIntoFor (
+				NodeForNetwonRaphsonSystem aNode, 
+				Vector<NodeForNetwonRaphsonSystem, double> aVector)
+			{
+				aVector.atPut (aNode, 0);
+			}
+		}
+
 		public long Height { get; set; }
 
 		public NodeRole Role{ get; set; }
@@ -76,7 +89,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			aNode.accept (this);
 
 			if (this.Role == null) {
-				throw new NodeWithoutGadgetFound ();
+				this.Role = new NodeRolePassive ();
 			}
 		}
 

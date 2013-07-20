@@ -63,8 +63,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		}
 
 		[Test()]
-		[ExpectedException(typeof(NodeForNetwonRaphsonSystem.NodeWithoutGadgetFound))]
-		public void creating_a_node_for_system_from_one_without_gadget_should_throw_exception ()
+		public void creating_a_node_for_system_from_one_without_gadget_should_produce_a_passive_node_with_load_zero()
 		{
 
 			var aComment = "a simple comment";
@@ -74,10 +73,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var aTopologicalNode = new GasNodeTopological { 
 				Comment= aComment,
 				Height = anHeight,
-				Identifier = anIdentifier};
+				Identifier = anIdentifier};			
 
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aTopologicalNode);
+
+			Assert.AreEqual (anHeight, nodeForSystem.Height);
+			Assert.IsInstanceOf (typeof(NodeForNetwonRaphsonSystem.NodeRolePassive), nodeForSystem.Role);
+
+			// since we know from the previous assert that the cast is safe.
+			var passiveRole = nodeForSystem.Role as NodeForNetwonRaphsonSystem.NodeRolePassive;
+			Assert.AreEqual (0, passiveRole.Load);
 		}
 	}
 }
