@@ -32,10 +32,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\OneStepMutationResults.cs" />
+    <Compile Include="exactly-dimensioned-instance\NodeForNetwonRaphsonSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

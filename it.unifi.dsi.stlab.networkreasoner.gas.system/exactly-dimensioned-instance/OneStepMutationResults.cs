@@ -6,17 +6,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public  class OneStepMutationResults
 	{
-		internal Matrix<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Amatrix {
+		internal Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> Amatrix {
 			get;
 			set;
 		}
 
-		internal Vector<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Unknowns {
+		internal Vector<NodeForNetwonRaphsonSystem, double> Unknowns {
 			get;
 			set;
 		}
 
-		internal Vector<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Coefficients {
+		internal Vector<NodeForNetwonRaphsonSystem, double> Coefficients {
 			get;
 			set;
 		}
@@ -26,8 +26,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-		internal Matrix<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, 
-					NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, 
+		internal Matrix<NodeForNetwonRaphsonSystem, 
+					NodeForNetwonRaphsonSystem, 
 					double> Jacobian {
 			get;
 			set;
