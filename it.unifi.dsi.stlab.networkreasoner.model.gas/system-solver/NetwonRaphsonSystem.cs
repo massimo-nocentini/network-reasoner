@@ -279,29 +279,60 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			var coefficientsVectorAtCurrentStep = new Vector<NodeForNetwonRaphsonSystem, Double> ();
 
-			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, Double> matrixAtCurrentStep =
-				computeMatrix (KvectorAtCurrentStep);
+			var AmatrixAtCurrentStep =
+				computeAmatrix (KvectorAtCurrentStep);
+
+			var JacobianMatrixAtCurrentStep =
+				computeJacobianMatrix (KvectorAtCurrentStep);
 
 			foreach (var aNode in Nodes) {
 
-				aNode.fixMatrixIfYouHaveSupplyGadget (matrixAtCurrentStep);
+				aNode.fixMatrixIfYouHaveSupplyGadget (AmatrixAtCurrentStep);
+
+				aNode.fixMatrixIfYouHaveSupplyGadget (JacobianMatrixAtCurrentStep);
 
 				coefficientsVectorAtCurrentStep.atPut (aNode, aNode.coefficient ());
 			}
 
-			var result = new OneStepMutationResults ();
+			Vector<NodeForNetwonRaphsonSystem, Double> matrixArightProductUnknownAtPreviousStep = 
+				AmatrixAtCurrentStep.rightProduct (unknownVectorAtPreviousStep);
 
-			// the following assignments need revision
-			result.Matrix = matrixAtCurrentStep;
-			result.Unknowns = unknownVectorAtPreviousStep;
+			Vector<NodeForNetwonRaphsonSystem, Double> coefficientVectorForJacobianSystemFactorization = 
+				matrixArightProductUnknownAtPreviousStep.minus (coefficientsVectorAtCurrentStep);
+
+			Vector<NodeForNetwonRaphsonSystem, Double> unknownVectorAtCurrentStep =
+				JacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
+
+			Random random = new Random ();
+			unknownVectorAtCurrentStep.doOnEach (
+				(key, currentValue) => 
+				currentValue <= 0 ? random.NextDouble () / 10 : currentValue
+			);
+
+			var QvectorAtCurrentStep = computeQvector (
+				unknownVectorAtCurrentStep, 
+				KvectorAtCurrentStep);
+
+			var FvectorAtCurrentStep = computeFvector (
+				FvectorAtPreviousStep, 
+				QvectorAtCurrentStep);
+
+			this.UnknownVector = unknownVectorAtCurrentStep;
+			this.Fvector = FvectorAtCurrentStep;
+
+			var result = new OneStepMutationResults ();
+			result.Amatrix = AmatrixAtCurrentStep;
+			result.Unknowns = unknownVectorAtCurrentStep;
 			result.Coefficients = coefficientsVectorAtCurrentStep;
-			//result.Qvector = QvectorAtCurrentStep;
+			result.Qvector = QvectorAtCurrentStep;
+			result.Jacobian = JacobianMatrixAtCurrentStep;
+			result.Fvector = FvectorAtCurrentStep;
 
 			return result;
 		}
 
 		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> 
-			computeMatrix (Vector<EdgeForNetwonRaphsonSystem, double> kvectorAtCurrentStep)
+			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem, double> kvectorAtCurrentStep)
 		{
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix =
 				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> ();
@@ -315,6 +346,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant + cumulate, 0);
 				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, cumulate => coVariant + cumulate, 0);
 				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, cumulate => -controVariant + cumulate, 0);
+			}
+
+			return aMatrix;
+		}
+
+		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> 
+			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem, double> kvectorAtCurrentStep)
+		{
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix =
+				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> ();
+
+			foreach (var anEdge in this.Edges) {
+			
+				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
+				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * (-1) * anEdge.controVariantLittleK ();
+
+				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant / 2 + cumulate, 0);
+				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant / 2 + cumulate, 0);
+				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, cumulate => coVariant / 2 + cumulate, 0);
+				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, cumulate => -controVariant / 2 + cumulate, 0);
 			}
 
 			return aMatrix;
@@ -346,7 +397,54 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			return Kvector;
 		}
 
+		Vector<EdgeForNetwonRaphsonSystem, double> computeQvector (
+			Vector<NodeForNetwonRaphsonSystem, double> unknownVector, 
+			Vector<EdgeForNetwonRaphsonSystem, double> Kvector)
+		{
+			Vector<EdgeForNetwonRaphsonSystem, double> Qvector = 
+				new Vector<EdgeForNetwonRaphsonSystem, double> ();
 
+			this.Edges.ForEach (anEdge => {
+
+				var weightedUnknownsDifference = 
+					anEdge.coVariantLittleK () * unknownVector.valueAt (anEdge.StartNode) -
+					anEdge.controVariantLittleK () * unknownVector.valueAt (anEdge.EndNode);
+
+				Qvector.atPut (anEdge, Kvector.valueAt (anEdge) * weightedUnknownsDifference);
+			}
+			);
+
+			return Qvector;
+		}
+
+		Vector<EdgeForNetwonRaphsonSystem, double> computeFvector (
+			Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
+			Vector<EdgeForNetwonRaphsonSystem, double> Qvector)
+		{
+			Vector<EdgeForNetwonRaphsonSystem, double> newFvector = 
+				new Vector<EdgeForNetwonRaphsonSystem, double> ();
+
+			this.Edges.ForEach (anEdge => {
+
+				var mu = 3.4; // to fix
+				var numeratorForRe = Qvector.valueAt (anEdge) * this.AmbientParameters.Viscosity;
+				var denominatorForRe = Math.PI * anEdge.Diameter * mu / 4;
+				var Re = numeratorForRe / denominatorForRe;
+
+				var epsilon = 3.4; // to fix
+				var augend = epsilon / anEdge.Diameter;
+				var addend = 2.51 / (Re * Math.Sqrt (Fvector.valueAt (anEdge)));
+
+				var toInvert = -2 * Math.Log10 (augend + addend);
+
+				var Fvalue = Math.Pow (1 / toInvert, 2);
+
+				newFvector.atPut (anEdge, Fvalue);
+			}
+			);
+
+			return newFvector;
+		}
 	}
 }
 

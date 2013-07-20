@@ -62,6 +62,20 @@ namespace it.unifi.dsi.stlab.math.algebra
 				this.aMatrix [matrixKey] = updatedValue;
 			}
 		}
+
+		public Vector<RowIndexType, VType> rightProduct (
+			Vector<RowIndexType, VType> aVector)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Vector<RowIndexType, double> Solve (
+			Vector<RowIndexType, double> aVector)
+		{
+			throw new NotImplementedException ();
+		}
+
+
 	}
 }
 

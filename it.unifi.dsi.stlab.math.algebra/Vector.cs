@@ -22,6 +22,19 @@ namespace it.unifi.dsi.stlab.math.algebra
 			this.aVector.Add (index, value);
 		}
 
+		public Vector<IndexType, VType> minus (
+			Vector<IndexType, VType> aVector)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void doOnEach (Func<IndexType, VType, VType> updater)
+		{
+			var keys = aVector.Keys;
+			foreach (var key in keys) {
+				aVector [key] = updater.Invoke (key, aVector [key]);
+			}
+		}
 	}
 }
 

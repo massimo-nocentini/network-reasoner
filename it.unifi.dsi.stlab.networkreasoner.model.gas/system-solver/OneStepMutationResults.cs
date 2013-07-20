@@ -6,7 +6,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public  class OneStepMutationResults
 	{
-		internal Matrix<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Matrix {
+		internal Matrix<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Amatrix {
 			get;
 			set;
 		}
@@ -14,12 +14,32 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		internal Vector<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Unknowns {
 			get;
 			set;
-		}	
+		}
 
 		internal Vector<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, double> Coefficients {
 			get;
 			set;
 		}
+
+		internal Vector<NetwonRaphsonSystem.EdgeForNetwonRaphsonSystem, double> Qvector {
+			get;
+			set;
+		}
+
+		internal Matrix<NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, 
+					NetwonRaphsonSystem.NodeForNetwonRaphsonSystem, 
+					double> Jacobian {
+			get;
+			set;
+		}
+
+		internal Vector<NetwonRaphsonSystem.EdgeForNetwonRaphsonSystem, double> Fvector {
+			get;
+			set;
+		}
+
+
+
 
 
 
