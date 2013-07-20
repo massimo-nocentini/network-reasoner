@@ -10,27 +10,35 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix);
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, Double> aMatrix);
 
-			double coefficient ();
+			void putYourCoefficientIntoFor (
+				NodeForNetwonRaphsonSystem aNode, 
+				Vector<NodeForNetwonRaphsonSystem, Double> aVector);
 		}
 
 		class NodeRoleSupplier:NodeRole
 		{
-			public double SetupPressure { get; set; }
+			double SetupPressure { get; set; }
+
+			public NodeRoleSupplier (double aSetupPressure)
+			{
+				this.SetupPressure = aSetupPressure;
+			}
 
 				#region NodeRole implementation
-			public double coefficient ()
+			public void putYourCoefficientIntoFor (
+				NodeForNetwonRaphsonSystem aNode, 
+				Vector<NodeForNetwonRaphsonSystem, Double> aVector)
 			{
-				return SetupPressure;
+				aVector.atPut (aNode, SetupPressure);
 			}
 
 			public void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aRowNode, 
 					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
 			{
-				aMatrix.doOnRowOf (aRowNode, 
-					                   (aColumnNode, cumulate) => aRowNode.Equals (aColumnNode) ? 1 : 0);
+				aMatrix.doOnRowOf (aRowNode, (aColumnNode, cumulate) => aRowNode.Equals (aColumnNode) ? 1 : 0);
 			}
 				#endregion
 
@@ -38,12 +46,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		class NodeRoleLoader:NodeRole
 		{
-			public double Load { get; set; }
+			double Load { get; set; }
+
+			public NodeRoleLoader (Double aLoad)
+			{
+				this.Load = aLoad;
+			}
 
 				#region NodeRole implementation
-			public double coefficient ()
+			public void putYourCoefficientIntoFor (
+				NodeForNetwonRaphsonSystem aNode, 
+				Vector<NodeForNetwonRaphsonSystem, Double> aVector)
 			{
-				return Load;
+				aVector.atPut (aNode, Load);
 			}
 
 			public void fixMatrixIfYouHaveSupplyGadgetFor (
@@ -83,22 +98,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#region GasNodeGadgetVisitor implementation
 		public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
 		{
-			var role = new NodeRoleLoader ();
-			role.Load = aLoadGadget.Load;
-			this.Role = role;
+			this.Role = new NodeRoleLoader (aLoadGadget.Load);
 		}
 
 		public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
 		{
-			var role = new NodeRoleSupplier ();
-			role.SetupPressure = aSupplyGadget.SetupPressure;
-			this.Role = role;
+			this.Role = new NodeRoleSupplier (aSupplyGadget.SetupPressure);
 		}
 			#endregion
 
-		public double coefficient ()
+		public void putYourCoefficientInto (Vector<NodeForNetwonRaphsonSystem, Double> aVector)
 		{
-			return this.Role.coefficient ();
+			this.Role.putYourCoefficientIntoFor (this, aVector);
 		}
 
 		public void fixMatrixIfYouHaveSupplyGadget (

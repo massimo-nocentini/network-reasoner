@@ -78,7 +78,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				aNode.fixMatrixIfYouHaveSupplyGadget (JacobianMatrixAtCurrentStep);
 
-				coefficientsVectorAtCurrentStep.atPut (aNode, aNode.coefficient ());
+				aNode.putYourCoefficientInto (coefficientsVectorAtCurrentStep);
 			}
 
 			Vector<NodeForNetwonRaphsonSystem, Double> matrixArightProductUnknownAtPreviousStep = 

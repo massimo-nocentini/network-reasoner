@@ -142,8 +142,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			
             var matrixB = new DenseMatrix(2, 3, new[] { 1.0, 4.0, 2.0, 5.0, 3.0, 6.0 });
 
-			var matrixD = DenseMatrix.OfArray(new[,] { { 65.00, 2.01, -4.54 }, { 33.00, -7.63, 56.00 }, { 4.01, 12.00, 54 } });
-            
+			var matrixD = DenseMatrix.OfArray(new[,] { { 65.00, 2.01, -4.54 }, { 33.00, -7.63, 56.00 }, { 4.01, 12.00, 54 } });            
 
 			Assert.AreEqual(matrixA, matrixC);
 			Assert.AreNotEqual(matrixA, matrixB);
