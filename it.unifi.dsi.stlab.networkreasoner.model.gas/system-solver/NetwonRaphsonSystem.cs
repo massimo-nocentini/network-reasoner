@@ -74,6 +74,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			NodeRole Role{ get; set; }
 
+			public void initializeWith (GasNodeAbstract aNode)
+			{
+				aNode.accept (this);
+			}
+
 			#region GasNodeVisitor implementation
 			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 			{
@@ -238,7 +243,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			protected virtual double weightedHeightsDifference {
 				get {
 					var difference = StartNode.Height - EndNode.Height;
-					var rate = AmbientParameters.GravitationalAcceleration / AmbientParameters.GasTemperature;
+					var rate = AmbientParameters.GravitationalAcceleration / 
+						AmbientParameters.GasTemperature;
 					return rate * difference;
 				}
 			}
@@ -250,21 +256,40 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			this.AmbientParameters = network.AmbientParameters;
 
+			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode =
+				new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
+
+			network.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+				aNode => {
+
+				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
+				newtonRaphsonNode.initializeWith (aNode);
+
+				newtonRaphsonNodesByOriginalNode.Add (aNode, newtonRaphsonNode);
+			}
+			)
+			);
+
 			// before build the nodes
 
-			// now we can build the edges
+//			// now we can build the edges
 			List<EdgeForNetwonRaphsonSystem> collector = 
 				new List<EdgeForNetwonRaphsonSystem> ();
 
-//			network.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
-//				anEdge => {
-//				var aBuilder = new EdgeForNetwonRaphsonSystemBuilder ();
-//				aBuilder.AmbientParameters = network.AmbientParameters;
-//
-//				var customEdge = aBuilder.buildCustomEdgeFrom (anEdge, collector);
-//			}
-//			)
-//			);
+			network.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+				anEdge => {
+
+				var aBuilder = new EdgeForNetwonRaphsonSystemBuilder ();
+				aBuilder.AmbientParameters = network.AmbientParameters;
+				aBuilder.customNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
+
+				aBuilder.buildCustomEdgeFrom (anEdge, collector);
+
+			}
+			)
+			);
+
+			this.Edges = collector;
 		}
 
 		public OneStepMutationResults mutate ()

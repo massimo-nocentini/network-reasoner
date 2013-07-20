@@ -108,6 +108,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public class NodeHandlerWithDelegateOnRawNode<T> : NodeHandlerAbstract<T>
 		{
+
+
 			Action<T> aBlock { get; set; }
 
 			public NodeHandlerWithDelegateOnRawNode (Action<T> aBlock)
