@@ -155,7 +155,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				#endregion
 			}
 
-			public Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> customNodesByGeneralNodes{ get; set; }
+			public Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> 
+				customNodesByGeneralNodes{ get; set; }
 
 			public AmbientParameters AmbientParameters{ get; set; }
 
@@ -270,9 +271,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			)
 			);
 
-			// before build the nodes
-
-//			// now we can build the edges
 			List<EdgeForNetwonRaphsonSystem> collector = 
 				new List<EdgeForNetwonRaphsonSystem> ();
 

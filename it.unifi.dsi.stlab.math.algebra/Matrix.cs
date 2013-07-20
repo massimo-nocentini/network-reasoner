@@ -69,8 +69,8 @@ namespace it.unifi.dsi.stlab.math.algebra
 			throw new NotImplementedException ();
 		}
 
-		public Vector<RowIndexType, double> Solve (
-			Vector<RowIndexType, double> aVector)
+		public Vector<RowIndexType, VType> Solve (
+			Vector<RowIndexType, VType> aVector)
 		{
 			throw new NotImplementedException ();
 		}
