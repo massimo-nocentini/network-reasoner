@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.model.gas;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.gas
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
 	public class NetwonRaphsonSystem
 	{

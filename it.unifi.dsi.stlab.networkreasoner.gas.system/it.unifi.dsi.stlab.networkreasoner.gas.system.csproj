@@ -34,8 +34,8 @@
   <ItemGroup>
     <Compile Include="MyClass.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="system-solver\NetwonRaphsonSystem.cs" />
-    <Compile Include="system-solver\OneStepMutationResults.cs" />
+    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\OneStepMutationResults.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
