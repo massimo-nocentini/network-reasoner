@@ -21,7 +21,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-		internal Vector<NetwonRaphsonSystem.EdgeForNetwonRaphsonSystem, double> Qvector {
+		internal Vector<EdgeForNetwonRaphsonSystem, double> Qvector {
 			get;
 			set;
 		}
@@ -33,7 +33,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-		internal Vector<NetwonRaphsonSystem.EdgeForNetwonRaphsonSystem, double> Fvector {
+		internal Vector<EdgeForNetwonRaphsonSystem, double> Fvector {
 			get;
 			set;
 		}

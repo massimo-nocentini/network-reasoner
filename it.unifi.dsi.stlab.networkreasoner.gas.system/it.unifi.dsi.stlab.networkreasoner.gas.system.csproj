@@ -36,6 +36,8 @@
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\OneStepMutationResults.cs" />
     <Compile Include="exactly-dimensioned-instance\NodeForNetwonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystemBuilder.cs" />
+    <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
