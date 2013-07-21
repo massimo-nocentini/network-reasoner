@@ -167,19 +167,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			foreach (var anEdge in this.Edges) {
 
-				var f = Fvector.valueAt (anEdge);
-				var A = this.AmbientParameters.Aconstant / Math.Pow (anEdge.Diameter, 5);
+				anEdge.putKvalueIntoUsing(Kvector, Fvector, unknownVector);
 
-				var unknownForStartNode = unknownVector.valueAt (anEdge.StartNode);
-				var unknownForEndNode = unknownVector.valueAt (anEdge.EndNode);
-				
-				var weightedHeightsDifference = 
-					anEdge.coVariantLittleK () * unknownForStartNode - 
-					anEdge.controVariantLittleK () * unknownForEndNode;
 
-				var K = 1 / Math.Sqrt (f * A * anEdge.Length * weightedHeightsDifference);
-
-				Kvector.atPut (anEdge, K);
 			}
 
 			return Kvector;
