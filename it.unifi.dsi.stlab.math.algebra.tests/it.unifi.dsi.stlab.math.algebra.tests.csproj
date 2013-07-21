@@ -40,6 +40,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MathDotNetLearningTest.cs" />
+    <Compile Include="VectorTest.cs" />
+    <Compile Include="Vector_forComputationAmongMethodTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system\it.unifi.dsi.stlab.networkreasoner.gas.system.csproj">
+      <Project>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj">
+      <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
+      <Name>it.unifi.dsi.stlab.math.algebra</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

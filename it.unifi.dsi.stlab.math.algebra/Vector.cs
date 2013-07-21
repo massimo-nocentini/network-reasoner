@@ -7,6 +7,11 @@ namespace it.unifi.dsi.stlab.math.algebra
 {
 	public class Vector<IndexType, VType>
 	{
+		public class IndexNotCoveredByContextException : Exception
+		{
+			public IndexType IndexNotCovered{ get; set; }
+		}
+
 		Dictionary<IndexType, VType> aVector{ get; set; }
 
 		public Vector ()
@@ -19,9 +24,9 @@ namespace it.unifi.dsi.stlab.math.algebra
 			return this.aVector [index];
 		}
 
-		public void atPut (IndexType index, VType value)
+		public void atPut (IndexType index, VType aValue)
 		{
-			this.aVector.Add (index, value);
+			this.aVector.Add (index, aValue);
 		}
 
 		public Vector<IndexType, VType> minus (
@@ -50,22 +55,25 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 				if (aVector.ContainsKey (aTuple.Item1)) {
 					orderedEnumerable.Add (new Tuple<int, double> (
-						aTuple.Item2, aTuple.Item3.Invoke (aVector [aTuple.Item1])));
+						aTuple.Item2, aTuple.Item3.Invoke (aVector [aTuple.Item1]))
+					);
 
 					coveredIndices.Add (aTuple.Item1);
 				} else {
 					orderedEnumerable.Add (new Tuple<int, double> (
-						aTuple.Item2, defaultForMissingIndices));
+						aTuple.Item2, defaultForMissingIndices)
+					);
 				}
 			}
 			);
 
-			var allKeysInVectorAreCovered = this.aVector.Keys.ToList ().TrueForAll (
-				aKey => coveredIndices.Contains (aKey));
+			this.aVector.Keys.ToList ().ForEach (
+				aKey => {
+				if (coveredIndices.Contains (aKey) == false) {
+					throw new IndexNotCoveredByContextException{ IndexNotCovered = aKey};
+				}}
+			);
 
-			if (allKeysInVectorAreCovered == false) {
-				throw new Exception ("<<put here a meaningful exception for keys not covered");
-			}
 
 			return DenseVector.OfIndexedEnumerable (orderedEnumerable.Count, orderedEnumerable);
 		}
