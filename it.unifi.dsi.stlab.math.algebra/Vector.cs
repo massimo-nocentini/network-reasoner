@@ -30,7 +30,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 			throw new NotImplementedException ();
 		}
 
-		public void doOnEach (Func<IndexType, VType, VType> updater)
+		public void updateEach (Func<IndexType, VType, VType> updater)
 		{
 			var keys = aVector.Keys;
 			foreach (var key in keys) {
@@ -38,7 +38,9 @@ namespace it.unifi.dsi.stlab.math.algebra
 			}
 		}
 
-		public Vector forComputationAmong (List<Tuple<IndexType, int, Func<VType, double>>> someIndices, double defaultForMissingIndices)
+		public Vector forComputationAmong (
+			List<Tuple<IndexType, int, Func<VType, double>>> someIndices, 
+			double defaultForMissingIndices)
 		{
 			List<Tuple<int, double>> orderedEnumerable = new List<Tuple<int, double>> ();
 
@@ -47,10 +49,13 @@ namespace it.unifi.dsi.stlab.math.algebra
 			someIndices.ForEach (aTuple => {
 
 				if (aVector.ContainsKey (aTuple.Item1)) {
-					orderedEnumerable.Add (new Tuple<int, double> (aTuple.Item2, aTuple.Item3.Invoke (aVector [aTuple.Item1])));
+					orderedEnumerable.Add (new Tuple<int, double> (
+						aTuple.Item2, aTuple.Item3.Invoke (aVector [aTuple.Item1])));
+
 					coveredIndices.Add (aTuple.Item1);
 				} else {
-					orderedEnumerable.Add (new Tuple<int, double> (aTuple.Item2, defaultForMissingIndices));
+					orderedEnumerable.Add (new Tuple<int, double> (
+						aTuple.Item2, defaultForMissingIndices));
 				}
 			}
 			);

@@ -298,8 +298,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 
 
-			var aLoad1 = 387.291;
-			var aLoad2 = 3.29;
+			var aLoad1 = 243.2191;
+			var aLoad2 = 233.239;
 			
 
 			var aLoader1 = new GasNodeWithGadget ();

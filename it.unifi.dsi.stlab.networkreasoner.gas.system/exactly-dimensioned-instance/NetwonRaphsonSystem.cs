@@ -64,7 +64,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				unknownVectorAtPreviousStep,
 				FvectorAtPreviousStep);
 
-			var coefficientsVectorAtCurrentStep = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var coefficientsVectorAtCurrentStep = 
+				new Vector<NodeForNetwonRaphsonSystem, Double> ();
 
 			var AmatrixAtCurrentStep =
 				computeAmatrix (KvectorAtCurrentStep);
@@ -91,7 +92,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				JacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
 
 			Random random = new Random ();
-			unknownVectorAtCurrentStep.doOnEach (
+			unknownVectorAtCurrentStep.updateEach (
 				(key, currentValue) => 
 				currentValue <= 0 ? random.NextDouble () / 10 : currentValue
 			);
