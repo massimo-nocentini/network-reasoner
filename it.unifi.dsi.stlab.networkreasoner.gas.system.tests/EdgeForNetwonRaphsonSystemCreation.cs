@@ -9,6 +9,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 	[TestFixture()]
 	public class EdgeForNetwonRaphsonSystemCreation
 	{
+		/********************************************************
+		 *	In this tests we don't care about the correct setup
+		 *	of original nodes since there will exists tests that
+		 *	cover that topic. Nevertheless we should check the
+		 *	properties of the constructed node from the original
+		 *	ones.
+		 *******************************************************/
+
+
 		[Test()]
 		public void creating_switched_on_edge ()
 		{
@@ -65,13 +74,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var newtonRaphsonStartNode = new NodeForNetwonRaphsonSystem ();
 			var newtonRaphsonEndNode = new NodeForNetwonRaphsonSystem ();
 
-			newtonRaphsonNodesByOriginalNode.Add (originalStartNode, newtonRaphsonStartNode);
-			newtonRaphsonNodesByOriginalNode.Add (originalEndNode, newtonRaphsonEndNode);
-
 			var aDiameter = 4873.298;
 			long aLength = 8476;
 			var aMaxSpeed = 3524.09;
 			var aRoughness = 9487.093;
+
+			newtonRaphsonNodesByOriginalNode.Add (originalStartNode, newtonRaphsonStartNode);
+			newtonRaphsonNodesByOriginalNode.Add (originalEndNode, newtonRaphsonEndNode);
+
+
 
 			GasEdgeAbstract aTopologicalEdge = new GasEdgeTopological{ 
 				StartNode = originalStartNode, 

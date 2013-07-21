@@ -88,8 +88,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem, Double> coefficientVectorForJacobianSystemFactorization = 
 				matrixArightProductUnknownAtPreviousStep.minus (coefficientsVectorAtCurrentStep);
 
-			Vector<NodeForNetwonRaphsonSystem, Double> unknownVectorAtCurrentStep =
+			Vector<NodeForNetwonRaphsonSystem, Double> unknownVectorFromJacobianSystemAtCurrentStep =
 				JacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
+
+			Vector<NodeForNetwonRaphsonSystem, Double> unknownVectorAtCurrentStep = 
+				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
 
 			Random random = new Random ();
 			unknownVectorAtCurrentStep.updateEach (
@@ -165,12 +168,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			var Kvector = new Vector<EdgeForNetwonRaphsonSystem, double> ();
 
-			foreach (var anEdge in this.Edges) {
-
-				anEdge.putKvalueIntoUsing(Kvector, Fvector, unknownVector);
-
-
-			}
+			this.Edges.ForEach (anEdge => anEdge.putKvalueIntoUsing (
+				Kvector, Fvector, unknownVector)
+			);
 
 			return Kvector;
 		}

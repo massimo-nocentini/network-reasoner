@@ -22,6 +22,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge);
 		}
 
+		/**
+		 * We introduce this class since it allow to factor the behavior
+		 * for the computation of coVariantLittleKFor and controVariantLittleKFor,
+		 * since this behavior doesn't depend on the edge's switch state.
+		 */
 		public abstract class EdgeStateAbstract : EdgeState
 		{
 			protected virtual double weightedHeightsDifferenceFor (
