@@ -45,8 +45,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				aBuilder.AmbientParameters = network.AmbientParameters;
 				aBuilder.customNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
 
-				aBuilder.buildCustomEdgeFrom (anEdge, collector);
-
+				var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
+				collector.Add (edgeForNetwonRaphsonSystem);
 			}
 			)
 			);

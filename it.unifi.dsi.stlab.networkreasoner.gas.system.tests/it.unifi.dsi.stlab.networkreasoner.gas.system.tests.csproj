@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="NodeForNetwonRaphsonSystemCreation.cs" />
     <Compile Include="NodeForNetwonRaphsonSystemCoefficientVector.cs" />
+    <Compile Include="EdgeForNetwonRaphsonSystemCreation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
