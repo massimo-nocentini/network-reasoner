@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -17,6 +18,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		AmbientParameters AmbientParameters { get; set; }
 
+		GasFormulaVisitor FormulaVisitor{ get; set; }
+
+		public void useFormulaVisitor (GasFormulaVisitor aFormulaVisitor)
+		{
+			this.FormulaVisitor = aFormulaVisitor;
+		}
+
 		public void initializeWith (GasNetwork network)
 		{
 			this.AmbientParameters = network.AmbientParameters;
@@ -29,6 +37,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
 				newtonRaphsonNode.initializeWith (aNode);
+
+				// un prelievo positivo implica che stiamo prelevando dalla rete
+				// quindi i bilanci dei nodi di supply saranno negativi.
 
 				newtonRaphsonNodesByOriginalNode.Add (aNode, newtonRaphsonNode);
 			}
@@ -79,7 +90,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				aNode.fixMatrixIfYouHaveSupplyGadget (JacobianMatrixAtCurrentStep);
 
-				aNode.putYourCoefficientInto (coefficientsVectorAtCurrentStep);
+				aNode.putYourCoefficientInto (coefficientsVectorAtCurrentStep,
+				                              this.FormulaVisitor);
 			}
 
 			Vector<NodeForNetwonRaphsonSystem, Double> matrixArightProductUnknownAtPreviousStep = 
@@ -111,6 +123,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.UnknownVector = unknownVectorAtCurrentStep;
 			this.Fvector = FvectorAtCurrentStep;
 
+			// alla fine di ogni passo di mutate su tutto il vettore
+			// delle unknown (quindi sia per nodi di supply che di load)
+			// dobbiamo fare il procedimento inverso per restituire le pressioni relative.
+
 			var result = new OneStepMutationResults ();
 			result.Amatrix = AmatrixAtCurrentStep;
 			result.Unknowns = unknownVectorAtCurrentStep;
@@ -131,7 +147,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			foreach (var anEdge in this.Edges) {
 			
 				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
-				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * (-1) * anEdge.controVariantLittleK ();
+				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK ();
 
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant + cumulate, 0);
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant + cumulate, 0);
@@ -151,7 +167,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			foreach (var anEdge in this.Edges) {
 			
 				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
-				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * (-1) * anEdge.controVariantLittleK ();
+				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK ();
 
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant / 2 + cumulate, 0);
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant / 2 + cumulate, 0);
@@ -204,13 +220,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			this.Edges.ForEach (anEdge => {
 
-				var mu = 3.4; // to fix
-				var numeratorForRe = Qvector.valueAt (anEdge) * this.AmbientParameters.Viscosity;
-				var denominatorForRe = Math.PI * anEdge.Diameter * mu / 4;
+				var numeratorForRe = 4 * Qvector.valueAt (anEdge) * 
+					this.AmbientParameters.RefDensity ();
+				var denominatorForRe = Math.PI * anEdge.DiameterInMillimeters * 
+					AmbientParameters.ViscosityInPascalTimesSecond;
 				var Re = numeratorForRe / denominatorForRe;
 
-				var epsilon = 3.4; // to fix
-				var augend = epsilon / anEdge.Diameter;
+				var augend = anEdge.RoughnessInMicron / (anEdge.DiameterInMillimeters * 1000 * 3.71);
 				var addend = 2.51 / (Re * Math.Sqrt (Fvector.valueAt (anEdge)));
 
 				var toInvert = -2 * Math.Log10 (augend + addend);

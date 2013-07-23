@@ -86,14 +86,14 @@ network:main
   tag:MainNetwork				"" .
   
 parameter:gas
-  a				type:gas-ambient-parameter ;
-  property:GasName		"Methane" ;
-  property:RefPressure		"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:AirPressure		"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:GasTemperature	"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:AirTemperature	"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:MolWeight		"16.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:Viscosity		"0.0108"^^<http://www.w3.org/2001/XMLSchema#double> .
+  a						type:gas-ambient-parameter ;
+  property:GasName				"Methane" ;
+  property:RefPressureInBar			"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:AirPressureInBar			"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:GasTemperatureInKelvin		"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:AirTemperatureInKelvin		"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MolWeight				"16.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:ViscosityInPascalTimesSecond		"0.0108"^^<http://www.w3.org/2001/XMLSchema#double> .
   
 # the following is the really interesting line to instantiate an object for
 # the subjects above.

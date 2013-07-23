@@ -54,7 +54,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
 
-			Assert.AreEqual (aDiameter, edgeForNetwonRaphsonSystem.Diameter);
+			Assert.AreEqual (aDiameter, edgeForNetwonRaphsonSystem.DiameterInMillimeters);
 			Assert.AreEqual (aLength, edgeForNetwonRaphsonSystem.Length);
 			Assert.AreSame (newtonRaphsonStartNode, edgeForNetwonRaphsonSystem.StartNode);
 			Assert.AreSame (newtonRaphsonEndNode, edgeForNetwonRaphsonSystem.EndNode);
@@ -104,13 +104,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (switchedOffEdge);
 
-			Assert.AreEqual (aDiameter, edgeForNetwonRaphsonSystem.Diameter);
+			Assert.AreEqual (aDiameter, edgeForNetwonRaphsonSystem.DiameterInMillimeters);
 			Assert.AreEqual (aLength, edgeForNetwonRaphsonSystem.Length);
 			Assert.AreSame (newtonRaphsonStartNode, edgeForNetwonRaphsonSystem.StartNode);
 			Assert.AreSame (newtonRaphsonEndNode, edgeForNetwonRaphsonSystem.EndNode);
 			Assert.IsInstanceOf (typeof(EdgeForNetwonRaphsonSystem.EdgeStateOff), 
 			                     edgeForNetwonRaphsonSystem.SwitchState);
 		}
+
+
 	}
 }
 

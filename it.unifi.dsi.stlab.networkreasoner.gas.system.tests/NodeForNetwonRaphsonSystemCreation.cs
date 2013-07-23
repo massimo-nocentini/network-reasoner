@@ -32,7 +32,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			// since we know from the previous assert that the cast is safe.
 			var supplierRole = nodeForSystem.Role as NodeForNetwonRaphsonSystem.NodeRoleSupplier;
-			Assert.AreEqual (aSetupPressure, supplierRole.SetupPressure);
+			Assert.AreEqual (aSetupPressure, supplierRole.SetupPressureInMillibar);
 		}
 
 		[Test()]

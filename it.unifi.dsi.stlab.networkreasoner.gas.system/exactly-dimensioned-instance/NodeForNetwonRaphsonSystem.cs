@@ -1,6 +1,7 @@
 using System;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -16,26 +17,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, Double> aVector);
+				Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+				GasFormulaVisitor aFormulaVisitor);
 		}
 
 		public class NodeRoleSupplier:NodeRole
 		{
-			public double SetupPressure { get; set; }
+			public double SetupPressureInMillibar { get; set; }
 
 				#region NodeRole implementation
 			public void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, Double> aVector)
-			{
-				aVector.atPut (aNode, SetupPressure);
+				Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+				GasFormulaVisitor aFormulaVisitor)
+			{				
+				var formula = new CoefficientFormulaForNodeWithSupplyGadget ();
+				formula.NodeHeight = aNode.Height;
+				formula.GadgetSetupPressureInMillibar = this.SetupPressureInMillibar;
+
+				double Hsetup = formula.accept (aFormulaVisitor);
+				aVector.atPut (aNode, Hsetup);
 			}
 
 			public void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aRowNode, 
 					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
 			{
-				aMatrix.doOnRowOf (aRowNode, (aColumnNode, cumulate) => aRowNode.Equals (aColumnNode) ? 1 : 0);
+				aMatrix.doOnRowOf (aRowNode, 
+				                   (aColumnNode, cumulate) => 
+				                   		aRowNode.Equals (aColumnNode) ? 1 : 0
+				);
 			}
 				#endregion
 
@@ -48,7 +59,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				#region NodeRole implementation
 			public virtual void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, Double> aVector)
+				Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+				GasFormulaVisitor aFormulaVisitor)
 			{
 				aVector.atPut (aNode, Load);
 			}
@@ -74,7 +86,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			public override void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, double> aVector)
+				Vector<NodeForNetwonRaphsonSystem, double> aVector,
+				GasFormulaVisitor aFormulaVisitor)
 			{
 				aVector.atPut (aNode, 0);
 			}
@@ -109,18 +122,23 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#region GasNodeGadgetVisitor implementation
 		public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
 		{
-			this.Role = new NodeRoleLoader{ Load = aLoadGadget.Load};
+			this.Role = new NodeRoleLoader{ 
+				Load = aLoadGadget.Load};
 		}
 
 		public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
 		{
-			this.Role = new NodeRoleSupplier { SetupPressure = aSupplyGadget.SetupPressure};
+			this.Role = new NodeRoleSupplier { 
+				SetupPressureInMillibar = aSupplyGadget.SetupPressure};
 		}
 			#endregion
 
-		public void putYourCoefficientInto (Vector<NodeForNetwonRaphsonSystem, Double> aVector)
+		public void putYourCoefficientInto (
+			Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+			GasFormulaVisitor aFormulaVisitor)
 		{
-			this.Role.putYourCoefficientIntoFor (this, aVector);
+			this.Role.putYourCoefficientIntoFor (
+				this, aVector, aFormulaVisitor);
 		}
 
 		public void fixMatrixIfYouHaveSupplyGadget (

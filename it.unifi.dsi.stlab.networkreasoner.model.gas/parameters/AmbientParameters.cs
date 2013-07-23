@@ -4,19 +4,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class AmbientParameters
 	{
+		// for gas
 		public String GasName { get; set; }
-
-		public Double RefPressure { get; set; }
-
-		public Double AirPressure { get; set; }
-
-		public Double AirTemperature { get; set; }
-
-		public Double GasTemperature { get; set; }
 
 		public Double MolWeight { get; set; }
 
-		public Double Viscosity { get; set; }
+		public Double GasTemperatureInKelvin { get; set; }
+
+		public Double ViscosityInPascalTimesSecond { get; set; }
+
+		// ref state
+		public Double RefPressureInBar { get; set; }
+
+		public Double RefTemperatureInKelvin { get; set; }
+
+		// air
+		public Double AirPressureInBar { get; set; }
+	
+		public Double AirTemperatureInKelvin { get; set; }
 
 		public Double GravitationalAcceleration {
 			get {
@@ -26,9 +31,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Double Aconstant {
 			get {
-				var numerator = 16 * GasTemperature;
+				var numerator = 16 * GasTemperatureInKelvin;
 				var denominator = Math.Pow (Math.PI, 2) * 
-					Math.Pow (AirTemperature, 2);
+					Math.Pow (this.RefTemperatureInKelvin, 2);
 
 				return numerator / denominator;
 			}
@@ -40,9 +45,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		public AmbientParameters ()
+		public Double RefDensity ()
 		{
+			return Math.Pow (10, 5) * RefPressureInBar * MolWeight / 
+				(Rconstant * RefTemperatureInKelvin);
 		}
+	
 	}
 }
 

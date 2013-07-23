@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</ProjectGuid>
+    <ProjectGuid>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.gas.system</RootNamespace>
-    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.gas.system</AssemblyName>
+    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</RootNamespace>
+    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,25 +33,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystem.cs" />
-    <Compile Include="exactly-dimensioned-instance\OneStepMutationResults.cs" />
-    <Compile Include="exactly-dimensioned-instance\NodeForNetwonRaphsonSystem.cs" />
-    <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystemBuilder.cs" />
-    <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystem.cs" />
+    <Compile Include="GasFormulaAbstract.cs" />
+    <Compile Include="GasFormulaVisitor.cs" />
+    <Compile Include="variants\CoefficientFormulaForNodeWithSupplyGadget.cs" />
+    <Compile Include="visitors\GasFormulaVisitorExactlyDimensioned.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj">
-      <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
-      <Name>it.unifi.dsi.stlab.math.algebra</Name>
-    </ProjectReference>
+    <Folder Include="exactly-dimensioned-instance\" />
+    <Folder Include="variants\" />
+    <Folder Include="visitors\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
       <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.csproj">
-      <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
-      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

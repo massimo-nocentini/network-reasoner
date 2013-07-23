@@ -7,6 +7,14 @@ namespace it.unifi.dsi.stlab.math.algebra
 {
 	public class Vector<IndexType, VType>
 	{
+		/**
+		 *	Defining here this exception isn't correct because we're mixing
+		 *	some precondition-checking logic with the logic of the vector. 
+		 *	As always we should delegate to another hierarchy to do the check 
+		 *	for us, in this way we can use a "false" checker that does nothing
+		 *	at all, while we can implement a "full" checker that is really rigorous
+		 *	to ensure required working conditions are satisfied.
+		 */
 		public class IndexNotCoveredByContextException : Exception
 		{
 			public IndexType IndexNotCovered{ get; set; }

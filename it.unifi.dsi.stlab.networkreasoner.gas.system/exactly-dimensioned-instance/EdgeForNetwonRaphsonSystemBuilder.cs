@@ -17,8 +17,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#region GasEdgeVisitor implementation
 		public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
 		{
-			CustomEdgeUnderBuilding.Diameter = gasEdgePhysical.Diameter;
+			CustomEdgeUnderBuilding.DiameterInMillimeters = gasEdgePhysical.Diameter;
 			CustomEdgeUnderBuilding.Length = gasEdgePhysical.Length;
+			CustomEdgeUnderBuilding.RoughnessInMicron = gasEdgePhysical.Roughness;
 			gasEdgePhysical.Described.accept (this);
 		}
 

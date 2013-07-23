@@ -35,7 +35,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				var difference = anEdge.StartNode.Height - anEdge.EndNode.Height;
 				var rate = anEdge.AmbientParameters.GravitationalAcceleration / 
-					anEdge.AmbientParameters.GasTemperature;
+					anEdge.AmbientParameters.GasTemperatureInKelvin;
 
 				return rate * difference;
 
@@ -45,7 +45,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				return anEdge.AmbientParameters.Rconstant + 
-					weightedHeightsDifferenceFor(anEdge);
+					weightedHeightsDifferenceFor (anEdge);
 				
 			}
 
@@ -53,7 +53,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				return anEdge.AmbientParameters.Rconstant - 
-					weightedHeightsDifferenceFor(anEdge);
+					weightedHeightsDifferenceFor (anEdge);
 			}
 
 			public abstract void putKvalueIntoUsingFor (
@@ -76,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				var f = Fvector.valueAt (anEdge);
-				var A = anEdge.AmbientParameters.Aconstant / Math.Pow (anEdge.Diameter, 5);
+				var A = anEdge.AmbientParameters.Aconstant / Math.Pow (anEdge.DiameterInMillimeters, 5);
 
 				var unknownForStartNode = unknownVector.valueAt (anEdge.StartNode);
 				var unknownForEndNode = unknownVector.valueAt (anEdge.EndNode);
@@ -110,7 +110,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public long Length { get; set; }
 
-		public double Diameter { get; set; }
+		public double DiameterInMillimeters { get; set; }
+
+		public double RoughnessInMicron { get; set; }
 
 		public NodeForNetwonRaphsonSystem StartNode{ get; set; }
 

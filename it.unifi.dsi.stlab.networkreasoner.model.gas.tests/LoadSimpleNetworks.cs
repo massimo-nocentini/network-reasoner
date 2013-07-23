@@ -59,12 +59,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 
 			Assert.IsNotNull (network.AmbientParameters);
 			Assert.AreEqual ("Methane", network.AmbientParameters.GasName);
-			Assert.AreEqual (1013.25, network.AmbientParameters.RefPressure);
-			Assert.AreEqual (1013.25, network.AmbientParameters.AirPressure);
-			Assert.AreEqual (15.0, network.AmbientParameters.GasTemperature);
-			Assert.AreEqual (15.0, network.AmbientParameters.AirTemperature);
+			Assert.AreEqual (1013.25, network.AmbientParameters.RefPressureInBar);
+			Assert.AreEqual (1013.25, network.AmbientParameters.AirPressureInBar);
+			Assert.AreEqual (15.0, network.AmbientParameters.GasTemperatureInKelvin);
+			Assert.AreEqual (15.0, network.AmbientParameters.AirTemperatureInKelvin);
 			Assert.AreEqual (16.0, network.AmbientParameters.MolWeight);
-			Assert.AreEqual (0.0108, network.AmbientParameters.Viscosity);
+			Assert.AreEqual (0.0108, network.AmbientParameters.ViscosityInPascalTimesSecond);
 
 		}
 
