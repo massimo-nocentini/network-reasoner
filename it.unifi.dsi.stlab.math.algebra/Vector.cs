@@ -8,6 +8,20 @@ namespace it.unifi.dsi.stlab.math.algebra
 {
 	public class Vector<IndexType>
 	{
+		public abstract class MissingKeyAbstractException : Exception
+		{
+			public IndexType MissingIndex{ get; set; }
+		}
+
+		public class RightVectorHasMissingIndexException:MissingKeyAbstractException
+		{
+
+		}
+
+		public class LeftVectorHasMissingIndexException:MissingKeyAbstractException
+		{
+
+		}
 
 		/**
 		 *	Defining here this exception isn't correct because we're mixing
@@ -42,6 +56,20 @@ namespace it.unifi.dsi.stlab.math.algebra
 		public Vector<IndexType> minus (
 			Vector<IndexType> anotherVector)
 		{
+			foreach (var keyInLeftVector in this.aVector.Keys) {
+				if (anotherVector.aVector.Keys.Contains (keyInLeftVector) == false) {
+					throw new RightVectorHasMissingIndexException{ 
+						MissingIndex = keyInLeftVector};
+				}
+			}
+
+			foreach (var keyInRightVector in anotherVector.aVector.Keys) {
+				if (this.aVector.Keys.Contains (keyInRightVector) == false) {
+					throw new LeftVectorHasMissingIndexException{ 
+						MissingIndex = keyInRightVector};
+				}
+			}
+
 			Vector<IndexType> result = 
 				new Vector<IndexType> ();
 
