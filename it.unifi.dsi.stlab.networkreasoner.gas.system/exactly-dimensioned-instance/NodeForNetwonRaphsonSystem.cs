@@ -7,7 +7,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
 	{
-
+		public class HeightPropertyMissingException : Exception
+		{
+		}
 
 		public interface NodeRole
 		{
@@ -109,7 +111,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#region GasNodeVisitor implementation
 		public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 		{
-			this.Height = gasNodeTopological.Height;
+			if (gasNodeTopological.Height.HasValue == false) {
+				throw new HeightPropertyMissingException ();
+			}
+			this.Height = gasNodeTopological.Height.Value;
 		}
 
 		public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)

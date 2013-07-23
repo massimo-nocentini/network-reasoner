@@ -10,7 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public virtual String Comment{ get; set; }
 
-		public virtual long Height{ get; set; }
+		public virtual Nullable<long> Height{ get; set; }
 
 		public override void accept (GasNodeVisitor visitor)
 		{
