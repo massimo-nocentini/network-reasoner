@@ -40,7 +40,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="exactly-dimensioned-instance\" />
     <Folder Include="variants\" />
     <Folder Include="visitors\" />
   </ItemGroup>

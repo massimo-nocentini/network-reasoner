@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.math.algebra
 {
-	public class Matrix<RowIndexType, ColumnIndexType, VType>
+	public class Matrix<RowIndexType, ColumnIndexType>
 	{
-		Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, VType> aMatrix{ get; set; }
+		Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, Double> aMatrix{ get; set; }
 
 		Dictionary<RowIndexType, SortedSet<KeyValuePair<RowIndexType, ColumnIndexType>>> keysByRowIndex{ get; set; }
 
 		public Matrix ()
 		{
-			aMatrix = new Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, VType> ();
+			aMatrix = new Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, Double> ();
 			keysByRowIndex = new Dictionary<RowIndexType, SortedSet<KeyValuePair<RowIndexType, ColumnIndexType>>> ();
 		}
 
@@ -28,8 +28,8 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 		void mutateMatrix (
 			KeyValuePair<RowIndexType, ColumnIndexType> key,
-			Func<VType, VType> aSetBlock, 
-			VType initialValue)
+			Func<Double, Double> aSetBlock, 
+			Double initialValue)
 		{
 			if (aMatrix.ContainsKey (key) == false) {
 				aMatrix.Add (key, initialValue);
@@ -40,8 +40,8 @@ namespace it.unifi.dsi.stlab.math.algebra
 		public void atRowAtColumnPut (
 			RowIndexType row,
 			ColumnIndexType column, 
-			Func<VType, VType> aSetBlock, 
-			VType initialValue)
+			Func<Double, Double> aSetBlock, 
+			Double initialValue)
 		{
 			var key = new KeyValuePair<RowIndexType, ColumnIndexType> (row, column);
 
@@ -52,7 +52,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 		public void doOnRowOf (
 			RowIndexType rowIndex, 
-			Func<ColumnIndexType, VType, VType> anUpdateBlock)
+			Func<ColumnIndexType, Double, Double> anUpdateBlock)
 		{
 			foreach (var matrixKey in keysByRowIndex[rowIndex]) {
 
@@ -63,14 +63,14 @@ namespace it.unifi.dsi.stlab.math.algebra
 			}
 		}
 
-		public Vector<RowIndexType, VType> rightProduct (
-			Vector<RowIndexType, VType> aVector)
+		public Vector<RowIndexType> rightProduct (
+			Vector<RowIndexType> aVector)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public Vector<RowIndexType, VType> Solve (
-			Vector<RowIndexType, VType> aVector)
+		public Vector<RowIndexType> Solve (
+			Vector<RowIndexType> aVector)
 		{
 			throw new NotImplementedException ();
 		}

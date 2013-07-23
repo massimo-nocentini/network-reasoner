@@ -15,7 +15,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var anIndex = new Object ();
 			Boolean closureCalledForAnIndex = false;
 
-			var aVector = new Vector<Object, Double> ();
+			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 
 			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
@@ -42,7 +42,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var anIndex = new Object ();
 			Boolean closureCalledForAnIndex = false;
 
-			var aVector = new Vector<Object, Double> ();
+			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 
 			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
@@ -75,7 +75,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var defaultForOthers = 1;
 
-			var aVector = new Vector<Object, Double> ();
+			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 			aVector.atPut (anotherIndex, anotherDouble);
 
@@ -133,7 +133,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var defaultForOthers = 1;
 
-			var aVector = new Vector<Object, Double> ();
+			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 			aVector.atPut (anotherIndex, anotherDouble);
 
@@ -190,7 +190,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var defaultForOthers = 1;
 
-			var aVector = new Vector<Object, Double> ();
+			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 			aVector.atPut (anotherIndex, anotherDouble);
 
@@ -221,7 +221,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			);
 
 			var anIndexIsntCoveredException = Assert.Catch<
-				Vector<Object, Double>.IndexNotCoveredByContextException> (
+				Vector<Object>.IndexNotCoveredByContextException> (
 				() => aVector.forComputationAmong (aList, defaultForOthers));
 
 			Assert.AreSame (anotherIndex, anIndexIsntCoveredException.IndexNotCovered);

@@ -8,9 +8,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class NetwonRaphsonSystem
 	{
-		Vector<EdgeForNetwonRaphsonSystem, Double> Fvector{ get; set; }
+		Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
-		Vector<NodeForNetwonRaphsonSystem, Double> UnknownVector { get; set; }
+		Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
 
 		List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
@@ -76,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				FvectorAtPreviousStep);
 
 			var coefficientsVectorAtCurrentStep = 
-				new Vector<NodeForNetwonRaphsonSystem, Double> ();
+				new Vector<NodeForNetwonRaphsonSystem> ();
 
 			var AmatrixAtCurrentStep =
 				computeAmatrix (KvectorAtCurrentStep);
@@ -94,16 +94,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				                              this.FormulaVisitor);
 			}
 
-			Vector<NodeForNetwonRaphsonSystem, Double> matrixArightProductUnknownAtPreviousStep = 
+			Vector<NodeForNetwonRaphsonSystem> matrixArightProductUnknownAtPreviousStep = 
 				AmatrixAtCurrentStep.rightProduct (unknownVectorAtPreviousStep);
 
-			Vector<NodeForNetwonRaphsonSystem, Double> coefficientVectorForJacobianSystemFactorization = 
+			Vector<NodeForNetwonRaphsonSystem> coefficientVectorForJacobianSystemFactorization = 
 				matrixArightProductUnknownAtPreviousStep.minus (coefficientsVectorAtCurrentStep);
 
-			Vector<NodeForNetwonRaphsonSystem, Double> unknownVectorFromJacobianSystemAtCurrentStep =
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
 				JacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
 
-			Vector<NodeForNetwonRaphsonSystem, Double> unknownVectorAtCurrentStep = 
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
 
 			Random random = new Random ();
@@ -138,11 +138,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return result;
 		}
 
-		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> 
-			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem, double> kvectorAtCurrentStep)
+		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
-			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix =
-				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> ();
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
+				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
 			foreach (var anEdge in this.Edges) {
 			
@@ -158,11 +158,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return aMatrix;
 		}
 
-		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> 
-			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem, double> kvectorAtCurrentStep)
+		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
-			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix =
-				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> ();
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
+				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
 			foreach (var anEdge in this.Edges) {
 			
@@ -178,11 +178,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return aMatrix;
 		}
 
-		Vector<EdgeForNetwonRaphsonSystem, Double> computeKvector (
-			Vector<NodeForNetwonRaphsonSystem, Double> unknownVector,
-			Vector<EdgeForNetwonRaphsonSystem, Double> Fvector)
+		Vector<EdgeForNetwonRaphsonSystem> computeKvector (
+			Vector<NodeForNetwonRaphsonSystem> unknownVector,
+			Vector<EdgeForNetwonRaphsonSystem> Fvector)
 		{
-			var Kvector = new Vector<EdgeForNetwonRaphsonSystem, double> ();
+			var Kvector = new Vector<EdgeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => anEdge.putKvalueIntoUsing (
 				Kvector, Fvector, unknownVector)
@@ -191,12 +191,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Kvector;
 		}
 
-		Vector<EdgeForNetwonRaphsonSystem, double> computeQvector (
-			Vector<NodeForNetwonRaphsonSystem, double> unknownVector, 
-			Vector<EdgeForNetwonRaphsonSystem, double> Kvector)
+		Vector<EdgeForNetwonRaphsonSystem> computeQvector (
+			Vector<NodeForNetwonRaphsonSystem> unknownVector, 
+			Vector<EdgeForNetwonRaphsonSystem> Kvector)
 		{
-			Vector<EdgeForNetwonRaphsonSystem, double> Qvector = 
-				new Vector<EdgeForNetwonRaphsonSystem, double> ();
+			Vector<EdgeForNetwonRaphsonSystem> Qvector = 
+				new Vector<EdgeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => {
 
@@ -211,12 +211,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Qvector;
 		}
 
-		Vector<EdgeForNetwonRaphsonSystem, double> computeFvector (
-			Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
-			Vector<EdgeForNetwonRaphsonSystem, double> Qvector)
+		Vector<EdgeForNetwonRaphsonSystem> computeFvector (
+			Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+			Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{
-			Vector<EdgeForNetwonRaphsonSystem, double> newFvector = 
-				new Vector<EdgeForNetwonRaphsonSystem, double> ();
+			Vector<EdgeForNetwonRaphsonSystem> newFvector = 
+				new Vector<EdgeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => {
 

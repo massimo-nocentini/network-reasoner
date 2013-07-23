@@ -16,9 +16,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge);
 
 			void putKvalueIntoUsingFor (
-				Vector<EdgeForNetwonRaphsonSystem, double> Kvector, 
-				Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
-				Vector<NodeForNetwonRaphsonSystem, double> unknownVector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 				EdgeForNetwonRaphsonSystem anEdge);
 		}
 
@@ -57,9 +57,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 
 			public abstract void putKvalueIntoUsingFor (
-				Vector<EdgeForNetwonRaphsonSystem, double> Kvector, 
-				Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
-				Vector<NodeForNetwonRaphsonSystem, double> unknownVector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 				EdgeForNetwonRaphsonSystem anEdge);
 
 			#endregion
@@ -70,9 +70,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			#region EdgeState implementation
 			public override void putKvalueIntoUsingFor (
-				Vector<EdgeForNetwonRaphsonSystem, double> Kvector, 
-				Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
-				Vector<NodeForNetwonRaphsonSystem, double> unknownVector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				var f = Fvector.valueAt (anEdge);
@@ -96,9 +96,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			#region EdgeState implementation
 			public override void putKvalueIntoUsingFor (
-				Vector<EdgeForNetwonRaphsonSystem, double> Kvector, 
-				Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
-				Vector<NodeForNetwonRaphsonSystem, double> unknownVector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				// here we don't need to do anything since the edge is switched off.
@@ -131,9 +131,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public void putKvalueIntoUsing (
-			Vector<EdgeForNetwonRaphsonSystem, double> Kvector, 
-			Vector<EdgeForNetwonRaphsonSystem, double> Fvector, 
-			Vector<NodeForNetwonRaphsonSystem, double> unknownVector)
+			Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+			Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+			Vector<NodeForNetwonRaphsonSystem> unknownVector)
 		{
 			this.SwitchState.putKvalueIntoUsingFor (
 				Kvector, Fvector, unknownVector, this);

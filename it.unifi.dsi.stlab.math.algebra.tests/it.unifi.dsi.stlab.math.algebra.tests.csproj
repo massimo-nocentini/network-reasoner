@@ -42,6 +42,7 @@
     <Compile Include="MathDotNetLearningTest.cs" />
     <Compile Include="VectorTest.cs" />
     <Compile Include="Vector_forComputationAmongMethodTest.cs" />
+    <Compile Include="Vector_minusMethodTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

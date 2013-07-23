@@ -15,11 +15,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, Double> aMatrix);
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix);
 
 			void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+				Vector<NodeForNetwonRaphsonSystem> aVector,
 				GasFormulaVisitor aFormulaVisitor);
 		}
 
@@ -30,7 +30,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				#region NodeRole implementation
 			public void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+				Vector<NodeForNetwonRaphsonSystem> aVector,
 				GasFormulaVisitor aFormulaVisitor)
 			{				
 				var formula = new CoefficientFormulaForNodeWithSupplyGadget ();
@@ -43,7 +43,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			public void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aRowNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
 			{
 				aMatrix.doOnRowOf (aRowNode, 
 				                   (aColumnNode, cumulate) => 
@@ -61,7 +61,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				#region NodeRole implementation
 			public virtual void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+				Vector<NodeForNetwonRaphsonSystem> aVector,
 				GasFormulaVisitor aFormulaVisitor)
 			{
 				aVector.atPut (aNode, Load);
@@ -69,7 +69,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			public virtual void fixMatrixIfYouHaveSupplyGadgetFor (
 					NodeForNetwonRaphsonSystem aNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double> aMatrix)
+					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
 			{
 				// here we do not need to do anything because
 				// the receiver node has a load gadget hence
@@ -88,7 +88,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			public override void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem, double> aVector,
+				Vector<NodeForNetwonRaphsonSystem> aVector,
 				GasFormulaVisitor aFormulaVisitor)
 			{
 				aVector.atPut (aNode, 0);
@@ -139,7 +139,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#endregion
 
 		public void putYourCoefficientInto (
-			Vector<NodeForNetwonRaphsonSystem, Double> aVector,
+			Vector<NodeForNetwonRaphsonSystem> aVector,
 			GasFormulaVisitor aFormulaVisitor)
 		{
 			this.Role.putYourCoefficientIntoFor (
@@ -147,7 +147,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public void fixMatrixIfYouHaveSupplyGadget (
-				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem, double>  aMatrix)
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem>  aMatrix)
 		{
 			this.Role.fixMatrixIfYouHaveSupplyGadgetFor (this, aMatrix);
 		}

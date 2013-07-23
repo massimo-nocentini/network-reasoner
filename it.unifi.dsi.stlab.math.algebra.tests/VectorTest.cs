@@ -13,8 +13,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 		public void add_an_element_to_vector_should_produce_a_vector_of_dimension_one ()
 		{
 			NodeForNetwonRaphsonSystem aNode = new NodeForNetwonRaphsonSystem ();
-			Vector<NodeForNetwonRaphsonSystem, double> aVector = 
-				new Vector<NodeForNetwonRaphsonSystem, double> ();
+			Vector<NodeForNetwonRaphsonSystem> aVector = 
+				new Vector<NodeForNetwonRaphsonSystem> ();
 
 			var aValue = 45.32;
 
@@ -34,8 +34,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 		public void after_adding_a_key_to_a_vector_isnt_possible_to_update_the_key_value ()
 		{
 			NodeForNetwonRaphsonSystem aNode = new NodeForNetwonRaphsonSystem ();
-			Vector<NodeForNetwonRaphsonSystem, double> aVector = 
-				new Vector<NodeForNetwonRaphsonSystem, double> ();
+			Vector<NodeForNetwonRaphsonSystem> aVector = 
+				new Vector<NodeForNetwonRaphsonSystem> ();
 
 			var aFirstValue = 45.32;
 			var aSecondValue = 145.32;
@@ -54,8 +54,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			 */
 
 			NodeForNetwonRaphsonSystem aNode = new NodeForNetwonRaphsonSystem ();
-			Vector<NodeForNetwonRaphsonSystem, double> aVector = 
-				new Vector<NodeForNetwonRaphsonSystem, double> ();
+			Vector<NodeForNetwonRaphsonSystem> aVector = 
+				new Vector<NodeForNetwonRaphsonSystem> ();
 
 			var aValue = 45.32;
 
@@ -79,8 +79,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			 */
 
 			NodeForNetwonRaphsonSystem aNode = new NodeForNetwonRaphsonSystem ();
-			Vector<NodeForNetwonRaphsonSystem, double> aVector = 
-				new Vector<NodeForNetwonRaphsonSystem, double> ();
+			Vector<NodeForNetwonRaphsonSystem> aVector = 
+				new Vector<NodeForNetwonRaphsonSystem> ();
 
 			var aValue = 45.32;
 

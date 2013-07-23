@@ -67,7 +67,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aSupplier);
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
 			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
@@ -93,7 +93,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aSupplier);
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
 			var anotherNode1 = new NodeForNetwonRaphsonSystem ();
@@ -145,7 +145,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem2 = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem2.initializeWith (aSupplier2);
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
 			nodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
 			
@@ -191,7 +191,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aLoader);
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
 			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
@@ -218,7 +218,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aLoader);
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
 			var anotherNode1 = new NodeForNetwonRaphsonSystem ();
@@ -270,7 +270,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem2 = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem2.initializeWith (aLoader2);
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
 			nodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
 			
@@ -310,7 +310,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (new GasNodeTopological  {Height = 1});
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
 			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
@@ -363,7 +363,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var passiveNodeForSystem = new NodeForNetwonRaphsonSystem ();
 			passiveNodeForSystem.initializeWith (new GasNodeTopological {Height = 1});
 
-			var aVector = new Vector<NodeForNetwonRaphsonSystem, Double> ();
+			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			loadNodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
 			loadNodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
 			supplyNodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);

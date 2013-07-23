@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
+using System.Globalization;
 
 namespace it.unifi.dsi.stlab.math.algebra
 {
-	public class Vector<IndexType, VType>
+	public class Vector<IndexType>
 	{
+
 		/**
 		 *	Defining here this exception isn't correct because we're mixing
 		 *	some precondition-checking logic with the logic of the vector. 
@@ -20,30 +22,41 @@ namespace it.unifi.dsi.stlab.math.algebra
 			public IndexType IndexNotCovered{ get; set; }
 		}
 
-		Dictionary<IndexType, VType> aVector{ get; set; }
+		Dictionary<IndexType, Double> aVector{ get; set; }
 
 		public Vector ()
 		{
-			this.aVector = new Dictionary<IndexType, VType> ();
+			this.aVector = new Dictionary<IndexType, Double> ();
 		}
 
-		public VType valueAt (IndexType index)
+		public Double valueAt (IndexType index)
 		{
 			return this.aVector [index];
 		}
 
-		public void atPut (IndexType index, VType aValue)
+		public void atPut (IndexType index, Double aValue)
 		{
 			this.aVector.Add (index, aValue);
 		}
 
-		public Vector<IndexType, VType> minus (
-			Vector<IndexType, VType> aVector)
+		public Vector<IndexType> minus (
+			Vector<IndexType> anotherVector)
 		{
-			throw new NotImplementedException ();
+			Vector<IndexType> result = 
+				new Vector<IndexType> ();
+
+			foreach (IndexType key in this.aVector.Keys) {
+				var valueForKeyInOtherVector = 
+					anotherVector.valueAt (key);
+
+				result.atPut (key, this.valueAt (key) - 
+					valueForKeyInOtherVector
+				);
+			}
+			return result;
 		}
 
-		public void updateEach (Func<IndexType, VType, VType> updater)
+		public void updateEach (Func<IndexType, Double, Double> updater)
 		{
 			var keys = aVector.Keys;
 			foreach (var key in keys) {
@@ -52,7 +65,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 		}
 
 		public Vector forComputationAmong (
-			List<Tuple<IndexType, int, Func<VType, double>>> someIndices, 
+			List<Tuple<IndexType, int, Func<Double, double>>> someIndices, 
 			double defaultForMissingIndices)
 		{
 			List<Tuple<int, double>> orderedEnumerable = new List<Tuple<int, double>> ();
