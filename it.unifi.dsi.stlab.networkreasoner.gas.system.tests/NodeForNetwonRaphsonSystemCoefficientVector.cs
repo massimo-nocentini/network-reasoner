@@ -70,8 +70,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem, 0, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem, 0));
 			var a = aVector.forComputationAmong (aList, 0);
 
 			var expectedVector = new DenseVector (new[] { 1.9103690569894831 });
@@ -105,11 +105,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
 			anotherNode3.initializeWith (new GasNodeTopological {Height = 1});
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode1, 0, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode2, 1, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem, 2, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode3, 3, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int > (anotherNode1, 0));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode2, 1));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem, 2));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode3, 3));
 			var a = aVector.forComputationAmong (aList, defaultForOthers);
 
 			var expectedVector = new DenseVector (new[] {
@@ -158,12 +158,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
 			anotherNode3.initializeWith (new GasNodeTopological  {Height = 1});
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode1, 0, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode2, 1, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem1, 2, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode3, 3, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem2, 4, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode1, 0));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode2, 1));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem1, 2));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode3, 3));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem2, 4));
 			
 			var a = aVector.forComputationAmong (aList, defaultForOthers);
 
@@ -194,10 +194,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (
-				nodeForSystem, 0, aDouble => aDouble)
-			);
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem, 0));
 			var a = aVector.forComputationAmong (aList, 0);
 
 			var expectedVector = new DenseVector (new[] { aLoad });
@@ -230,11 +228,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
 			anotherNode3.initializeWith (new GasNodeTopological  {Height = 1});
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode1, 0, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode2, 1, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem, 2, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode3, 3, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode1, 0));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode2, 1));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem, 2));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode3, 3));
 			var a = aVector.forComputationAmong (aList, defaultForOthers);
 
 			var expectedVector = new DenseVector (new[] {
@@ -283,12 +281,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
 			anotherNode3.initializeWith (new GasNodeTopological {Height=1});
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode1, 0, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode2, 1, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem1, 2, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (anotherNode3, 3, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem2, 4, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode1, 0));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode2, 1));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem1, 2));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (anotherNode3, 3));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem2, 4));
 			
 			var a = aVector.forComputationAmong (aList, defaultForOthers);
 
@@ -313,8 +311,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
 			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (nodeForSystem, 0, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (nodeForSystem, 0));
 			var a = aVector.forComputationAmong (aList, 0);
 
 			var expectedVector = new DenseVector (new[] { 0.0 });
@@ -370,12 +368,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			supplyNodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
 			passiveNodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (loadNodeForSystem1, 0, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (supplyNodeForSystem2, 1, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (passiveNodeForSystem, 2, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (loadNodeForSystem2, 3, aDouble => aDouble));
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (supplyNodeForSystem1, 4, aDouble => aDouble));
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (loadNodeForSystem1, 0));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (supplyNodeForSystem2, 1));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (passiveNodeForSystem, 2));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (loadNodeForSystem2, 3));
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (supplyNodeForSystem1, 4));
 			
 			var a = aVector.forComputationAmong (aList, 0);
 

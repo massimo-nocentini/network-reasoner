@@ -42,19 +42,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (secondColumnIndex, 4);
 			aVector.atPut (thirdColumnIndex, 5);
 
-			var aList = new List<Tuple<object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				firstRowIndex, 0, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				secondRowIndex, 1, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				thirdRowIndex, 2, fromVector => fromVector
-			)
-			);
+			var aList = new List<Tuple<object, int>> ();
+			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
+			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
+			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
 
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
@@ -130,19 +121,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (secondColumnIndex, secondVectorComponent);
 			aVector.atPut (thirdColumnIndex, thirdVectorComponent);
 
-			var aList = new List<Tuple<object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				firstRowIndex, 0, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				secondRowIndex, 1, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				thirdRowIndex, 2, fromVector => fromVector
-			)
-			);
+			var aList = new List<Tuple<object, int>> ();
+			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
+			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
+			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
 
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
@@ -229,19 +211,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (secondColumnIndex, zeroValue);
 			aVector.atPut (thirdColumnIndex, zeroValue);
 
-			var aList = new List<Tuple<object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				firstRowIndex, 0, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				secondRowIndex, 1, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<object, int, Func<Double, Double>> (
-				thirdRowIndex, 2, fromVector => fromVector
-			)
-			);
+			var aList = new List<Tuple<object, int>> ();
+			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
+			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
+			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
 
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 

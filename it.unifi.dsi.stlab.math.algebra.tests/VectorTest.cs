@@ -22,9 +22,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var expectedVector = new DenseVector (new []{aValue});
 
-			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int, Func<double, double>> (
-				aNode, 0, aDouble => aDouble)
+			var aList = new List<Tuple<NodeForNetwonRaphsonSystem, int>> ();
+			aList.Add (new Tuple<NodeForNetwonRaphsonSystem, int> (aNode, 0)
 			);
 			Assert.AreEqual (expectedVector, aVector.forComputationAmong (aList, 0));
 		}

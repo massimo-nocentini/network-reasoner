@@ -13,25 +13,18 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 		{
 			var aDouble = 387.291;
 			var anIndex = new Object ();
-			Boolean closureCalledForAnIndex = false;
 
 			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anIndex, 0, fromVector => {
-				closureCalledForAnIndex = true;
-				return fromVector;}
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (anIndex, 0));
 
 			var vectorForComputation = aVector.forComputationAmong (aList, 0);
 
 			var expectedVector = new DenseVector (new[] { aDouble });
 
 			Assert.AreEqual (expectedVector, vectorForComputation);
-			Assert.IsTrue (closureCalledForAnIndex);
 		}
 
 		[Test()]
@@ -45,13 +38,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anIndex, 1, fromVector => {
-				closureCalledForAnIndex = true;
-				return fromVector;}
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (anIndex, 1));
 
 			var vectorForComputation = aVector.forComputationAmong (aList, 0);
 
@@ -63,11 +51,9 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 		{
 			var aDouble = 387.291;
 			var anIndex = new Object ();
-			Boolean closureCalledForAnIndex = false;
 
 			var anotherDouble = 23.291;
 			var anotherIndex = new Object ();
-			Boolean closureCalledForAnotherIndex = false;
 
 			var defaultForOthers = 1;
 
@@ -75,29 +61,11 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (anIndex, aDouble);
 			aVector.atPut (anotherIndex, anotherDouble);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anIndex, 0, fromVector => {
-				closureCalledForAnIndex = true;
-				return fromVector;}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				new object (), 1, fromVector => {
-				throw new ClosureCallbackNotExpectedException ();}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anotherIndex, 2, fromVector => {
-				closureCalledForAnotherIndex = true;
-				return fromVector;}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				new object (), 3, fromVector => {
-				throw new ClosureCallbackNotExpectedException ();}
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (anIndex, 0));
+			aList.Add (new Tuple<Object, int> (new object (), 1));
+			aList.Add (new Tuple<Object, int> (anotherIndex, 2));
+			aList.Add (new Tuple<Object, int> (new object (), 3));
 
 			var vectorForComputation = aVector.forComputationAmong (aList, defaultForOthers);
 
@@ -110,8 +78,6 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			);
 
 			Assert.AreEqual (expectedVector, vectorForComputation);
-			Assert.IsTrue (closureCalledForAnIndex);
-			Assert.IsTrue (closureCalledForAnotherIndex);
 			
 		}
 
@@ -133,29 +99,11 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (anIndex, aDouble);
 			aVector.atPut (anotherIndex, anotherDouble);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anIndex, 0, fromVector => {
-				closureCalledForAnIndex = true;
-				return fromVector;}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				new object (), 1, fromVector => {
-				throw new ClosureCallbackNotExpectedException ();}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anotherIndex, 2, fromVector => {
-				closureCalledForAnotherIndex = true;
-				return fromVector;}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				new object (), 4, fromVector => {
-				throw new ClosureCallbackNotExpectedException ();}
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (anIndex, 0));
+			aList.Add (new Tuple<Object, int> (new object (), 1));
+			aList.Add (new Tuple<Object, int> (anotherIndex, 2));
+			aList.Add (new Tuple<Object, int> (new object (), 4));
 
 			var vectorForComputation = aVector.forComputationAmong (aList, defaultForOthers);
 
@@ -190,18 +138,9 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (anIndex, aDouble);
 			aVector.atPut (anotherIndex, anotherDouble);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				anIndex, 0, fromVector => {
-				closureCalledForAnIndex = true;
-				return fromVector;}
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				new object (), 1, fromVector => {
-				throw new ClosureCallbackNotExpectedException ();}
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (anIndex, 0));
+			aList.Add (new Tuple<Object, int> (new object (), 1));
 			// here we do not add the anotherIndex object to the context in order
 			// to produce a contradiction.
 //			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
@@ -210,11 +149,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 //				return fromVector;}
 //			)
 //			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				new object (), 2, fromVector => {
-				throw new ClosureCallbackNotExpectedException ();}
-			)
-			);
+			aList.Add (new Tuple<Object, int> (new object (), 2));
 
 			var anIndexIsntCoveredException = Assert.Catch<
 				Vector<Object>.IndexNotCoveredByContextException> (

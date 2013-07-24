@@ -33,19 +33,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVectorRight.atPut (aSecondIndex, aSecondDoubleRight);
 			aVectorRight.atPut (aThirdIndex, aThirdDoubleRight);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aFirstIndex, 0, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aSecondIndex, 1, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aThirdIndex, 2, fromVector => fromVector
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (aFirstIndex, 0));
+			aList.Add (new Tuple<Object, int> (aSecondIndex, 1));
+			aList.Add (new Tuple<Object, int> (aThirdIndex, 2));
 
 			var leftMinusRightVector = aVectorLeft.minus (aVectorRight)
 				.forComputationAmong (aList, 0);
@@ -85,19 +76,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVectorRight.atPut (aFirstIndex, aFirstDoubleRight);
 			aVectorRight.atPut (aSecondIndex, aSecondDoubleRight);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aFirstIndex, 0, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aSecondIndex, 1, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aThirdIndex, 2, fromVector => fromVector
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (aFirstIndex, 0));
+			aList.Add (new Tuple<Object, int> (aSecondIndex, 1));
+			aList.Add (new Tuple<Object, int> (aThirdIndex, 2));
 
 			var expectedException = Assert.Catch<Vector<Object>.RightVectorHasMissingIndexException> (
 				() => aVectorLeft.minus (aVectorRight)
@@ -132,19 +114,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVectorRight.atPut (aSecondIndex, aSecondDoubleRight);
 			aVectorRight.atPut (aThirdIndex, aThirdDoubleRight);
 
-			var aList = new List<Tuple<Object, int, Func<Double, Double>>> ();
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aFirstIndex, 0, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aSecondIndex, 1, fromVector => fromVector
-			)
-			);
-			aList.Add (new Tuple<Object, int, Func<Double, Double>> (
-				aThirdIndex, 2, fromVector => fromVector
-			)
-			);
+			var aList = new List<Tuple<Object, int>> ();
+			aList.Add (new Tuple<Object, int> (aFirstIndex, 0));
+			aList.Add (new Tuple<Object, int> (aSecondIndex, 1));
+			aList.Add (new Tuple<Object, int> (aThirdIndex, 2));
 
 			var expectedException = Assert.Catch<Vector<Object>.LeftVectorHasMissingIndexException> (
 				() => aVectorLeft.minus (aVectorRight)

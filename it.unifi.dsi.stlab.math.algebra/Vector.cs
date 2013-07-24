@@ -93,7 +93,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 		}
 
 		public Vector forComputationAmong (
-			List<Tuple<IndexType, int, Func<Double, double>>> someIndices, 
+			List<Tuple<IndexType, int>> someIndices, 
 			double defaultForMissingIndices)
 		{
 			List<Tuple<int, double>> orderedEnumerable = new List<Tuple<int, double>> ();
@@ -104,7 +104,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 				if (aVector.ContainsKey (aTuple.Item1)) {
 					orderedEnumerable.Add (new Tuple<int, double> (
-						aTuple.Item2, aTuple.Item3.Invoke (aVector [aTuple.Item1]))
+						aTuple.Item2, aVector [aTuple.Item1])
 					);
 
 					coveredIndices.Add (aTuple.Item1);
