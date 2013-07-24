@@ -7,12 +7,12 @@ namespace it.unifi.dsi.stlab.math.algebra
 	{
 		Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, Double> aMatrix{ get; set; }
 
-		Dictionary<RowIndexType, SortedSet<KeyValuePair<RowIndexType, ColumnIndexType>>> keysByRowIndex{ get; set; }
+		Dictionary<RowIndexType, HashSet<KeyValuePair<RowIndexType, ColumnIndexType>>> keysByRowIndex{ get; set; }
 
 		public Matrix ()
 		{
 			aMatrix = new Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, Double> ();
-			keysByRowIndex = new Dictionary<RowIndexType, SortedSet<KeyValuePair<RowIndexType, ColumnIndexType>>> ();
+			keysByRowIndex = new Dictionary<RowIndexType, HashSet<KeyValuePair<RowIndexType, ColumnIndexType>>> ();
 		}
 
 		void memoizeKeyByRowIndex (
@@ -20,7 +20,8 @@ namespace it.unifi.dsi.stlab.math.algebra
 			KeyValuePair<RowIndexType, ColumnIndexType> key)
 		{
 			if (keysByRowIndex.ContainsKey (row) == false) {
-				keysByRowIndex.Add (row, new SortedSet<KeyValuePair<RowIndexType, ColumnIndexType>> ());
+				keysByRowIndex.Add (
+					row, new HashSet<KeyValuePair<RowIndexType, ColumnIndexType>> ());
 			}
 
 			keysByRowIndex [row].Add (key);
@@ -64,9 +65,21 @@ namespace it.unifi.dsi.stlab.math.algebra
 		}
 
 		public Vector<RowIndexType> rightProduct (
-			Vector<RowIndexType> aVector)
+			Vector<ColumnIndexType> aVector)
 		{
-			throw new NotImplementedException ();
+			Vector<RowIndexType> result =
+				new Vector<RowIndexType> ();
+
+			foreach (var rowKey in this.keysByRowIndex.Keys) {
+				var valueForRowKeyResultVectorComponent = 0.0;
+				foreach (var matrixIndex in this.keysByRowIndex[rowKey]) {
+					valueForRowKeyResultVectorComponent +=
+						aVector.valueAt (matrixIndex.Value) * this.aMatrix [matrixIndex];
+				}
+				result.atPut (rowKey, valueForRowKeyResultVectorComponent);
+			}
+
+			return result;
 		}
 
 		public Vector<RowIndexType> Solve (

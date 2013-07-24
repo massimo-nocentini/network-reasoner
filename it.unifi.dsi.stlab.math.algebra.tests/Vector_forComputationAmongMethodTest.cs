@@ -58,10 +58,6 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 		}
 
-		class ClosureCallbackNotExpectedException:Exception
-		{
-		}
-
 		[Test()]
 		public void inserting_two_values_and_asking_for_rich_context_should_return_a_big_vector ()
 		{

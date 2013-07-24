@@ -73,7 +73,6 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var aSecondIndex = new Object ();
 
 			var aThirdDoubleLeft = 0;
-			var aThirdDoubleRight = 1.5;
 			var aThirdIndex = new Object ();
 
 			var aVectorLeft = new Vector<Object> ();
@@ -120,7 +119,6 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var aSecondDoubleRight = 1;	
 			var aSecondIndex = new Object ();
 
-			var aThirdDoubleLeft = 0;
 			var aThirdDoubleRight = 1.5;
 			var aThirdIndex = new Object ();
 
