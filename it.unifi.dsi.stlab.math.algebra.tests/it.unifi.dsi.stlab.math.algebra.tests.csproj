@@ -45,6 +45,7 @@
     <Compile Include="Vector_minusMethodTest.cs" />
     <Compile Include="Matrix_rightProductMethodTest.cs" />
     <Compile Include="ClosureCallbackNotExpectedException.cs" />
+    <Compile Include="Matrix_solveMethodTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

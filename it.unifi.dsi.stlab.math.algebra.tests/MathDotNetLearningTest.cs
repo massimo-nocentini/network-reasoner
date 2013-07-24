@@ -5,6 +5,7 @@ using System.Globalization;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers.StopCriterium;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers.Iterative;
+using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.math.algebra.tests
 {
@@ -149,6 +150,30 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			Assert.AreNotEqual(matrixA, matrixD);
 		}
 
+		[Test()]
+		public void creating_a_sparse_matrix_from_an_indexed_collection(){
+
+			List<Tuple<int, int, double>> indices = 
+				new List<Tuple<int, int, double>>();
+
+			var firstRowThirdColumn = 4.3;
+			var secondRowFirstColumn = 1.2;
+			var thirdRowSecondColumn = 47.93;
+
+			indices.Add(new Tuple<int, int, double>(0,2,firstRowThirdColumn));
+			indices.Add(new Tuple<int, int, double>(1,0,secondRowFirstColumn));
+			indices.Add(new Tuple<int, int, double>(2,1,thirdRowSecondColumn));
+			
+
+			var aMatrix = SparseMatrix.OfIndexed(3,3,indices);
+
+			var expectedMatrix = DenseMatrix.OfArray(new[,] { 
+				{ 0.00, 0.00, firstRowThirdColumn }, 
+				{ secondRowFirstColumn, 0.00, 0.00 }, 
+				{ 0.00, thirdRowSecondColumn, 0.00 } });
+			
+			Assert.AreEqual(expectedMatrix, aMatrix);
+		}
 	}
 }
 

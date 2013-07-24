@@ -33,7 +33,6 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 		{
 			var aDouble = 387.291;
 			var anIndex = new Object ();
-			Boolean closureCalledForAnIndex = false;
 
 			var aVector = new Vector<Object> ();
 			aVector.atPut (anIndex, aDouble);
@@ -126,11 +125,9 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 		{
 			var aDouble = 387.291;
 			var anIndex = new Object ();
-			Boolean closureCalledForAnIndex = false;
 
 			var anotherDouble = 23.291;
 			var anotherIndex = new Object ();
-			Boolean closureCalledForAnotherIndex = false;
 
 			var defaultForOthers = 1;
 
