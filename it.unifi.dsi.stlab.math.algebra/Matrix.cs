@@ -137,32 +137,34 @@ namespace it.unifi.dsi.stlab.math.algebra
 				);
 			}
 
-			var aMatrixForSolving = SparseMatrix.OfIndexed (
+			var aMatrixForSolving = DenseMatrix.OfIndexed (
 				rowsEnumeration.Count,
 				columnsEnumeration.Count,
 				indices);
 
 			var aVectorForSolving = aVector.forComputationAmong (
 				aListOfIndicesForCoefficientVector, 0);
-			
-			// Stop calculation if 1000 iterations reached during calculation
-			var iterationCountStopCriterium = new IterationCountStopCriterium (100000000);
 
-			// Stop calculation if residuals are below 1E-10 --> the calculation is considered converged
-			var residualStopCriterium = new ResidualStopCriterium (1e-10);
- 
-			// Create monitor with defined stop criteriums
-			var monitor = new Iterator (new IIterationStopCriterium[] {
-				iterationCountStopCriterium,
-				residualStopCriterium
-			}
-			);
+			var resultX = aMatrixForSolving.LU ().Solve (aVectorForSolving);
 
-			// Create Bi-Conjugate Gradient Stabilized solver
-			var solver = new BiCgStab (monitor);
-
-			// 1. Solve the matrix equation
-			var resultX = solver.Solve (aMatrixForSolving, aVectorForSolving);
+//			// Stop calculation if 1000 iterations reached during calculation
+//			var iterationCountStopCriterium = new IterationCountStopCriterium (100000000);
+//
+//			// Stop calculation if residuals are below 1E-10 --> the calculation is considered converged
+//			var residualStopCriterium = new ResidualStopCriterium (1e-10);
+// 
+//			// Create monitor with defined stop criteriums
+//			var monitor = new Iterator (new IIterationStopCriterium[] {
+//				iterationCountStopCriterium,
+//				residualStopCriterium
+//			}
+//			);
+//
+//			// Create Bi-Conjugate Gradient Stabilized solver
+//			var solver = new BiCgStab (monitor);
+//
+//			// 1. Solve the matrix equation
+//			var resultX = solver.Solve (aMatrixForSolving, aVectorForSolving);
 
 			Vector<RowIndexType> result = new Vector<RowIndexType> ();
 			for (int i = 0; i < resultX.Count; i = i + 1) {

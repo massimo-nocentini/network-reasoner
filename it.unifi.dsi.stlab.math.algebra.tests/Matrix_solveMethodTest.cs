@@ -26,7 +26,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aMatrix.atRowAtColumnPut (firstRowIndex, secondColumnIndex, cumulate => cumulate, 2);
 			aMatrix.atRowAtColumnPut (firstRowIndex, thirdColumnIndex, cumulate => cumulate, -4);
 			aMatrix.atRowAtColumnPut (secondRowIndex, firstColumnIndex, cumulate => cumulate, 3);
-			aMatrix.atRowAtColumnPut (secondRowIndex, secondColumnIndex, cumulate => cumulate, 7);
+			aMatrix.atRowAtColumnPut (secondRowIndex, secondColumnIndex, cumulate => cumulate, -7);
 			aMatrix.atRowAtColumnPut (secondRowIndex, thirdColumnIndex, cumulate => cumulate, 6);
 			aMatrix.atRowAtColumnPut (thirdRowIndex, firstColumnIndex, cumulate => cumulate, 4);
 			aMatrix.atRowAtColumnPut (thirdRowIndex, secondColumnIndex, cumulate => cumulate, 1);
