@@ -173,11 +173,6 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 			return result;
 		}
-
-		public Matrix forComputation ()
-		{
-			return null;
-		}
 	}
 }
 

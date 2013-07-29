@@ -14,15 +14,42 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public Double visitCoefficientFormulaForNodeWithSupplyGadget (
 			CoefficientFormulaForNodeWithSupplyGadget aSupplyNodeFormula)
 		{
-			var AirPressureInBar = AmbientParameters.AirPressureInBar * 
-				Math.Exp (-(AmbientParameters.GravitationalAcceleration * aSupplyNodeFormula.NodeHeight) / 
+			var airPressureFormula = new AirPressureFormulaForNodes ();
+			airPressureFormula.NodeHeight = aSupplyNodeFormula.NodeHeight;
+			var AirPressureInBar = airPressureFormula.accept (this);
+
+			var numerator = aSupplyNodeFormula.GadgetSetupPressureInMillibar / 1000 + 
+				AirPressureInBar;
+
+			var denominator = AmbientParameters.RefPressureInBar;
+
+			var Hsetup = Math.Pow (numerator / denominator, 2);
+		
+			return Hsetup;
+		}
+
+		public double visitAirPressureFormulaForNodes (
+			AirPressureFormulaForNodes anAirPressureFormula)
+		{
+			var airPressureInBar = AmbientParameters.AirPressureInBar * 
+				Math.Exp (-(AmbientParameters.GravitationalAcceleration * anAirPressureFormula.NodeHeight) / 
 				(AmbientParameters.Rconstant * AmbientParameters.AirTemperatureInKelvin)
 			);
 
-			var Hsetup = Math.Pow (((aSupplyNodeFormula.GadgetSetupPressureInMillibar / 1000 + AirPressureInBar) / 
-				AmbientParameters.RefPressureInBar), 2);
-		
-			return Hsetup;
+			return airPressureInBar;
+		}
+
+		public double visitRelativePressureFromAbsolutePressureFormulaForNodes (
+			RelativePressureFromAbsolutePressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
+		{
+			var airPressureFormula = new AirPressureFormulaForNodes ();
+			airPressureFormula.NodeHeight = aRelativePressureFromAbsolutePressureFormula.NodeHeight;
+			var AirPressureInBar = airPressureFormula.accept (this);
+
+			var result = Math.Sqrt (aRelativePressureFromAbsolutePressureFormula.AbsolutePressure) *
+				AmbientParameters.RefPressureInBar;
+
+			return (result - AirPressureInBar) * 1000;
 		}
 		#endregion
 	}

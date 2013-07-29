@@ -123,10 +123,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				this.aBlock.Invoke (aNode);
 			}
 			#endregion
-			public NodeHandlerWithDelegateOnRawNode (object par)
-			{
-				throw new NotImplementedException ();
-			}
 
 		}
 

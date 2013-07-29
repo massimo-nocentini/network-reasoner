@@ -37,6 +37,8 @@
     <Compile Include="GasFormulaVisitor.cs" />
     <Compile Include="variants\CoefficientFormulaForNodeWithSupplyGadget.cs" />
     <Compile Include="visitors\GasFormulaVisitorExactlyDimensioned.cs" />
+    <Compile Include="variants\RelativePressureFromAbsolutePressureFormulaForNodes.cs" />
+    <Compile Include="variants\AirPressureFormulaForNodes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

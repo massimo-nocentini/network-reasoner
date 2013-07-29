@@ -6,6 +6,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 	{
 		double visitCoefficientFormulaForNodeWithSupplyGadget (
 			CoefficientFormulaForNodeWithSupplyGadget aSupplyNodeFormula);
+
+		double visitAirPressureFormulaForNodes (
+			AirPressureFormulaForNodes anAirPressureFormula);
+
+		double visitRelativePressureFromAbsolutePressureFormulaForNodes (
+			RelativePressureFromAbsolutePressureFormulaForNodes 
+			aRelativePressureFromAbsolutePressureFormula
+		);
+
+
 	}
 }
 

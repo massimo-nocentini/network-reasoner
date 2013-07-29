@@ -120,12 +120,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				FvectorAtPreviousStep, 
 				QvectorAtCurrentStep);
 
+			// here we're assuming that the initial pressure vector for unknowns 
+			// is given in relative way, otherwise the following transformation
+			// isn't correct because mix values with different measure unit.
+			unknownVectorAtCurrentStep.updateEach (
+				(aNode, absolutePressure) => 
+				aNode.relativePressureOf (absolutePressure, FormulaVisitor)
+			);
+
 			this.UnknownVector = unknownVectorAtCurrentStep;
 			this.Fvector = FvectorAtCurrentStep;
-
-			// alla fine di ogni passo di mutate su tutto il vettore
-			// delle unknown (quindi sia per nodi di supply che di load)
-			// dobbiamo fare il procedimento inverso per restituire le pressioni relative.
 
 			var result = new OneStepMutationResults ();
 			result.Amatrix = AmatrixAtCurrentStep;
