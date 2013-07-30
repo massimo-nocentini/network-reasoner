@@ -14,9 +14,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public Double visitCoefficientFormulaForNodeWithSupplyGadget (
 			CoefficientFormulaForNodeWithSupplyGadget aSupplyNodeFormula)
 		{
-			var airPressureFormula = new AirPressureFormulaForNodes ();
-			airPressureFormula.NodeHeight = aSupplyNodeFormula.NodeHeight;
-			var AirPressureInBar = airPressureFormula.accept (this);
+			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
+				aSupplyNodeFormula);
 
 			var numerator = aSupplyNodeFormula.GadgetSetupPressureInMillibar / 1000 + 
 				AirPressureInBar;
@@ -42,9 +41,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public double visitRelativePressureFromAbsolutePressureFormulaForNodes (
 			RelativePressureFromAbsolutePressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
 		{
-			var airPressureFormula = new AirPressureFormulaForNodes ();
-			airPressureFormula.NodeHeight = aRelativePressureFromAbsolutePressureFormula.NodeHeight;
-			var AirPressureInBar = airPressureFormula.accept (this);
+			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
+				aRelativePressureFromAbsolutePressureFormula);
 
 			var result = Math.Sqrt (aRelativePressureFromAbsolutePressureFormula.AbsolutePressure) *
 				AmbientParameters.RefPressureInBar;
@@ -59,6 +57,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 				weightedHeightsDifferenceFor (covariantLittleKFormula);
 		}
 
+		public double visitControVariantLittleKFormula (
+			ControVariantLittleKFormula controVariantLittleKFormula)
+		{
+			return this.AmbientParameters.Rconstant - 
+				weightedHeightsDifferenceFor (controVariantLittleKFormula);
+		}
+		#endregion
+
+		#region Utility methods, most of them allow behavior factorization.
 		protected virtual double weightedHeightsDifferenceFor (
 				AbstractLittleKFormula abstractLittleKFormula)
 		{
@@ -72,11 +79,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 		}
 
-		public double visitControVariantLittleKFormula (
-			ControVariantLittleKFormula controVariantLittleKFormula)
+		protected virtual double computeAirPressureFromHeightHolder (
+			NodeHeightHolder nodeHeightHolder)
 		{
-			return this.AmbientParameters.Rconstant - 
-				weightedHeightsDifferenceFor (controVariantLittleKFormula);
+			var airPressureFormula = new AirPressureFormulaForNodes ();
+			airPressureFormula.NodeHeight = nodeHeightHolder.NodeHeight;
+			var AirPressureInBar = airPressureFormula.accept (this);
+
+			return AirPressureInBar;
 		}
 		#endregion
 	}

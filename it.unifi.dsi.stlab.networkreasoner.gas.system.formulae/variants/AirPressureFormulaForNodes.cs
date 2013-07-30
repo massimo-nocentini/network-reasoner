@@ -2,7 +2,7 @@ using System;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 {
-	public class AirPressureFormulaForNodes: GasFormulaAbstract<Double>
+	public class AirPressureFormulaForNodes: GasFormulaAbstract<Double>, NodeHeightHolder
 	{
 		public long NodeHeight {
 			get;

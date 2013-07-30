@@ -42,11 +42,13 @@
     <Compile Include="variants\CovariantLittleKFormula.cs" />
     <Compile Include="variants\ControVariantLittleKFormula.cs" />
     <Compile Include="variants\AbstractLittleKFormula.cs" />
+    <Compile Include="variants\interfaces\NodeHeightHolder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="variants\" />
     <Folder Include="visitors\" />
+    <Folder Include="variants\interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
