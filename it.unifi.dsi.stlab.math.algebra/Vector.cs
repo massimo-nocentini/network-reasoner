@@ -93,38 +93,47 @@ namespace it.unifi.dsi.stlab.math.algebra
 		}
 
 		public Vector forComputationAmong (
-			List<Tuple<IndexType, int>> someIndices, 
+			Dictionary<IndexType, int> someIndices, 
 			double defaultForMissingIndices)
 		{
-			List<Tuple<int, double>> orderedEnumerable = new List<Tuple<int, double>> ();
+			List<Tuple<int, double>> orderedEnumerable = 
+				new List<Tuple<int, double>> ();
 
 			List<IndexType> coveredIndices = new List<IndexType> ();
 
-			someIndices.ForEach (aTuple => {
+			foreach (var pair in someIndices) {
 
-				if (aVector.ContainsKey (aTuple.Item1)) {
+				var index = pair.Key;
+				var position = pair.Value;
+
+
+				if (aVector.ContainsKey (index)) {
+					var value = aVector [index];
+
 					orderedEnumerable.Add (new Tuple<int, double> (
-						aTuple.Item2, aVector [aTuple.Item1])
+						position, value)
 					);
 
-					coveredIndices.Add (aTuple.Item1);
+					coveredIndices.Add (index);
 				} else {
 					orderedEnumerable.Add (new Tuple<int, double> (
-						aTuple.Item2, defaultForMissingIndices)
+						position, defaultForMissingIndices)
 					);
 				}
 			}
-			);
+
 
 			this.aVector.Keys.ToList ().ForEach (
 				aKey => {
 				if (coveredIndices.Contains (aKey) == false) {
-					throw new IndexNotCoveredByContextException{ IndexNotCovered = aKey};
+					throw new IndexNotCoveredByContextException{ 
+						IndexNotCovered = aKey};
 				}}
 			);
 
 
-			return DenseVector.OfIndexedEnumerable (orderedEnumerable.Count, orderedEnumerable);
+			return DenseVector.OfIndexedEnumerable (
+				orderedEnumerable.Count, orderedEnumerable);
 		}
 	}
 }

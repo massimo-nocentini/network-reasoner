@@ -33,10 +33,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVectorRight.atPut (aSecondIndex, aSecondDoubleRight);
 			aVectorRight.atPut (aThirdIndex, aThirdDoubleRight);
 
-			var aList = new List<Tuple<Object, int>> ();
-			aList.Add (new Tuple<Object, int> (aFirstIndex, 0));
-			aList.Add (new Tuple<Object, int> (aSecondIndex, 1));
-			aList.Add (new Tuple<Object, int> (aThirdIndex, 2));
+			var aList = new Dictionary<Object, int> ();
+			aList.Add (aFirstIndex, 0);
+			aList.Add (aSecondIndex, 1);
+			aList.Add (aThirdIndex, 2);
 
 			var leftMinusRightVector = aVectorLeft.minus (aVectorRight)
 				.forComputationAmong (aList, 0);
@@ -76,10 +76,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVectorRight.atPut (aFirstIndex, aFirstDoubleRight);
 			aVectorRight.atPut (aSecondIndex, aSecondDoubleRight);
 
-			var aList = new List<Tuple<Object, int>> ();
-			aList.Add (new Tuple<Object, int> (aFirstIndex, 0));
-			aList.Add (new Tuple<Object, int> (aSecondIndex, 1));
-			aList.Add (new Tuple<Object, int> (aThirdIndex, 2));
+			var aList = new Dictionary<Object, int> ();
+			aList.Add (aFirstIndex, 0);
+			aList.Add (aSecondIndex, 1);
+			aList.Add (aThirdIndex, 2);
 
 			var expectedException = Assert.Catch<Vector<Object>.RightVectorHasMissingIndexException> (
 				() => aVectorLeft.minus (aVectorRight)
@@ -114,10 +114,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVectorRight.atPut (aSecondIndex, aSecondDoubleRight);
 			aVectorRight.atPut (aThirdIndex, aThirdDoubleRight);
 
-			var aList = new List<Tuple<Object, int>> ();
-			aList.Add (new Tuple<Object, int> (aFirstIndex, 0));
-			aList.Add (new Tuple<Object, int> (aSecondIndex, 1));
-			aList.Add (new Tuple<Object, int> (aThirdIndex, 2));
+			var aList = new Dictionary<Object, int> ();
+			aList.Add (aFirstIndex, 0);
+			aList.Add (aSecondIndex, 1);
+			aList.Add (aThirdIndex, 2);
 
 			var expectedException = Assert.Catch<Vector<Object>.LeftVectorHasMissingIndexException> (
 				() => aVectorLeft.minus (aVectorRight)

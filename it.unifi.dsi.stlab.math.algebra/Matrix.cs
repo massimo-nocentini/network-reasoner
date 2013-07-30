@@ -98,35 +98,45 @@ namespace it.unifi.dsi.stlab.math.algebra
 			Vector<RowIndexType> aVector)
 		{
 
+			Dictionary<RowIndexType, int> rowsEnumeration =
+				this.enumerate (this.RowIndices);
+
+			Dictionary<ColumnIndexType, int> columnsEnumeration = 
+				this.enumerate (this.ColumnIndices);
+
+			return this.SolveWithGivenEnumerations (
+				rowsEnumeration, columnsEnumeration, aVector);
+
+		}
+
+		protected virtual Dictionary<T, int> enumerate<T> (
+			HashSet<T> aSet)
+		{
+			Dictionary<T, int> anEnumeration = 
+				new Dictionary<T, int> ();
+
+			int anIndex = 0; 
+			foreach (var anElement in aSet) {
+				anEnumeration.Add (anElement, anIndex);
+				anIndex = anIndex + 1;
+			}
+
+			return anEnumeration;
+		}
+
+		public Vector<RowIndexType> SolveWithGivenEnumerations (
+			Dictionary<RowIndexType, int> rowsEnumeration,
+			Dictionary<ColumnIndexType, int> columnsEnumeration,
+			Vector<RowIndexType> aVector)
+		{
 			List<Tuple<int, int, double>> indices = 
 				new List<Tuple<int, int, double>> ();
 
-			Dictionary<RowIndexType, int> rowsEnumeration = 
-				new Dictionary<RowIndexType, int> ();
-
-			Dictionary<ColumnIndexType, int> columnsEnumeration = 
-				new Dictionary<ColumnIndexType, int> ();
-
-			Dictionary<int, RowIndexType> coefficientsEnumeration = 
+			Dictionary<int, RowIndexType> coefficientsInverseEnumeration = 
 				new Dictionary<int, RowIndexType> ();
 
-			var aListOfIndicesForCoefficientVector = 
-				new List<Tuple<RowIndexType, int>> ();
-
-			int rowIntIndex = 0; 
-			foreach (var rowIndex in this.RowIndices) {
-				rowsEnumeration.Add (rowIndex, rowIntIndex);
-				coefficientsEnumeration.Add (rowIntIndex, rowIndex);
-				aListOfIndicesForCoefficientVector.Add (
-					new Tuple<RowIndexType, int> (rowIndex, rowIntIndex));
-
-				rowIntIndex = rowIntIndex + 1;
-			}
-
-			int columnIntIndex = 0; 
-			foreach (var columnIndex in this.ColumnIndices) {
-				columnsEnumeration.Add (columnIndex, columnIntIndex);
-				columnIntIndex = columnIntIndex + 1;
+			foreach (var pair in rowsEnumeration) {
+				coefficientsInverseEnumeration.Add (pair.Value, pair.Key);
 			}
 
 			foreach (var matrixIndex in this.aMatrix.Keys) {
@@ -143,32 +153,13 @@ namespace it.unifi.dsi.stlab.math.algebra
 				indices);
 
 			var aVectorForSolving = aVector.forComputationAmong (
-				aListOfIndicesForCoefficientVector, 0);
+				rowsEnumeration, 0);
 
 			var resultX = aMatrixForSolving.LU ().Solve (aVectorForSolving);
 
-//			// Stop calculation if 1000 iterations reached during calculation
-//			var iterationCountStopCriterium = new IterationCountStopCriterium (100000000);
-//
-//			// Stop calculation if residuals are below 1E-10 --> the calculation is considered converged
-//			var residualStopCriterium = new ResidualStopCriterium (1e-10);
-// 
-//			// Create monitor with defined stop criteriums
-//			var monitor = new Iterator (new IIterationStopCriterium[] {
-//				iterationCountStopCriterium,
-//				residualStopCriterium
-//			}
-//			);
-//
-//			// Create Bi-Conjugate Gradient Stabilized solver
-//			var solver = new BiCgStab (monitor);
-//
-//			// 1. Solve the matrix equation
-//			var resultX = solver.Solve (aMatrixForSolving, aVectorForSolving);
-
 			Vector<RowIndexType> result = new Vector<RowIndexType> ();
 			for (int i = 0; i < resultX.Count; i = i + 1) {
-				result.atPut (coefficientsEnumeration [i], resultX [i]);
+				result.atPut (coefficientsInverseEnumeration [i], resultX [i]);
 			}
 
 			return result;

@@ -40,10 +40,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var result = aMatrix.Solve (aVector);
 
-			var aList = new List<Tuple<Object, int>> ();
-			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
-			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
-			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
+			var aList = new Dictionary<Object, int> ();
+			aList.Add (firstRowIndex, 0);
+			aList.Add (secondRowIndex, 1);
+			aList.Add (thirdRowIndex, 2);
 
 			var computedResult = result.forComputationAmong (aList, 0);
 

@@ -42,10 +42,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (secondColumnIndex, 4);
 			aVector.atPut (thirdColumnIndex, 5);
 
-			var aList = new List<Tuple<object, int>> ();
-			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
-			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
-			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
+			var aList = new Dictionary<object, int> ();
+			aList.Add (firstRowIndex, 0);
+			aList.Add (secondRowIndex, 1);
+			aList.Add (thirdRowIndex, 2);
 
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
@@ -121,10 +121,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (secondColumnIndex, secondVectorComponent);
 			aVector.atPut (thirdColumnIndex, thirdVectorComponent);
 
-			var aList = new List<Tuple<object, int>> ();
-			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
-			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
-			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
+			var aList = new Dictionary<object, int> ();
+			aList.Add (firstRowIndex, 0);
+			aList.Add (secondRowIndex, 1);
+			aList.Add (thirdRowIndex, 2);
 
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
@@ -211,10 +211,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aVector.atPut (secondColumnIndex, zeroValue);
 			aVector.atPut (thirdColumnIndex, zeroValue);
 
-			var aList = new List<Tuple<object, int>> ();
-			aList.Add (new Tuple<object, int> (firstRowIndex, 0));
-			aList.Add (new Tuple<object, int> (secondRowIndex, 1));
-			aList.Add (new Tuple<object, int> (thirdRowIndex, 2));
+			var aList = new Dictionary<object, int> ();
+			aList.Add (firstRowIndex, 0);
+			aList.Add (secondRowIndex, 1);
+			aList.Add (thirdRowIndex, 2);
 
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
