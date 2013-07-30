@@ -147,6 +147,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			return result;
 		}
+
+		public double visitQvalueFormula (
+			QvalueFormula QvalueFormula)
+		{
+			var weightedUnknownsDifference = 
+					QvalueFormula.EdgeCovariantLittleK * QvalueFormula.UnknownForEdgeStartNode -
+				QvalueFormula.EdgeControVariantLittleK * QvalueFormula.UnknownForEdgeEndNode;
+
+			return QvalueFormula.EdgeKvalue * weightedUnknownsDifference;		
+		}
+
 		#endregion
 
 		#region Utility methods, most of them allow behavior factorization.

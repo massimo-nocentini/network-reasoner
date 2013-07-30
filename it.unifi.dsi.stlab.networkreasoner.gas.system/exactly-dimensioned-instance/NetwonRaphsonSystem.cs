@@ -93,17 +93,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				                              this.FormulaVisitor);
 			}
 
-			Vector<NodeForNetwonRaphsonSystem> matrixArightProductUnknownAtPreviousStep = 
-				AmatrixAtCurrentStep.rightProduct (unknownVectorAtPreviousStep);
-
-			Vector<NodeForNetwonRaphsonSystem> coefficientVectorForJacobianSystemFactorization = 
-				matrixArightProductUnknownAtPreviousStep.minus (coefficientsVectorAtCurrentStep);
-
-			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
-				JacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
-
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
-				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
+				this.computeUnknowns (
+					AmatrixAtCurrentStep, 
+					unknownVectorAtPreviousStep, 
+					coefficientsVectorAtCurrentStep, 
+					JacobianMatrixAtCurrentStep);
 
 			Random random = new Random ();
 			unknownVectorAtCurrentStep.updateEach (
@@ -161,7 +156,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => anEdge.fillJacobianMatrixUsing (
-				aMatrix, kvectorAtCurrentStep, this.FormulaVisitor));
+				aMatrix, kvectorAtCurrentStep, this.FormulaVisitor)
+			);
 
 			return aMatrix;
 		}
@@ -179,6 +175,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Kvector;
 		}
 
+		Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep, 
+			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> jacobianMatrixAtCurrentStep)
+		{
+			Vector<NodeForNetwonRaphsonSystem> matrixArightProductUnknownAtPreviousStep = 
+				AmatrixAtCurrentStep.rightProduct (unknownVectorAtPreviousStep);
+
+			Vector<NodeForNetwonRaphsonSystem> coefficientVectorForJacobianSystemFactorization = 
+				matrixArightProductUnknownAtPreviousStep.minus (coefficientsVectorAtCurrentStep);
+
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
+				jacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
+
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
+				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
+
+			return unknownVectorAtCurrentStep;
+		}
+
 		Vector<EdgeForNetwonRaphsonSystem> computeQvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 			Vector<EdgeForNetwonRaphsonSystem> Kvector)
@@ -186,14 +203,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> Qvector = 
 				new Vector<EdgeForNetwonRaphsonSystem> ();
 
-			this.Edges.ForEach (anEdge => {
-
-				var weightedUnknownsDifference = 
-					anEdge.coVariantLittleK (this.FormulaVisitor) * unknownVector.valueAt (anEdge.StartNode) -
-					anEdge.controVariantLittleK (this.FormulaVisitor) * unknownVector.valueAt (anEdge.EndNode);
-
-				Qvector.atPut (anEdge, Kvector.valueAt (anEdge) * weightedUnknownsDifference);
-			}
+			this.Edges.ForEach (anEdge => anEdge.putQvalueIntoUsing (
+				Qvector, Kvector, unknownVector, this.FormulaVisitor)
 			);
 
 			return Qvector;

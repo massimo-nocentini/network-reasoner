@@ -34,6 +34,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			JacobianMatrixQuadrupletFormulaForSwitchedOnEdges
 			jacobianMatrixQuadrupletFormulaForSwitchedOnEdges
 		);
+
+		double visitQvalueFormula (
+			QvalueFormula qvalueFormula);
+
 	}
 }
 

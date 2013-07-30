@@ -13,9 +13,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			void putKvalueIntoUsingFor (
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
-				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge,
-				GasFormulaVisitor aFormulaVisitor);
+				Vector<NodeForNetwonRaphsonSystem> unknownVector,
+				GasFormulaVisitor aFormulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge);
 
 			void fillAmatrixUsingFor (
 				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix, 
@@ -29,7 +29,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				GasFormulaVisitor aFormulaVisitor, 
 				EdgeForNetwonRaphsonSystem anEdge);
 
-
+			void putQvalueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
+				GasFormulaVisitor aFormulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge);
 		}
 
 		public	class EdgeStateOn:EdgeState
@@ -39,8 +44,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge,
-				GasFormulaVisitor aFormulaVisitor)
+				GasFormulaVisitor aFormulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				KvalueFormula formula = new KvalueFormula ();
 
@@ -137,7 +142,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					quadruplet.EndNodeEndNodeUpdater, 
 					quadruplet.EndNodeEndNodeInitialValue);
 			}
+
+			public void putQvalueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
+				GasFormulaVisitor aFormulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				QvalueFormula formula = new QvalueFormula ();
+				formula.EdgeCovariantLittleK = anEdge.coVariantLittleK (aFormulaVisitor);
+				formula.EdgeControVariantLittleK = anEdge.controVariantLittleK (aFormulaVisitor);
+				formula.UnknownForEdgeStartNode = unknownVector.valueAt (anEdge.StartNode);
+				formula.UnknownForEdgeEndNode = unknownVector.valueAt (anEdge.EndNode);
+				formula.EdgeKvalue = Kvector.valueAt (anEdge);
+
+				var Qvalue = formula.accept (aFormulaVisitor);
+
+				Qvector.atPut (anEdge, Qvalue);
+			}
 			#endregion
+
 		}
 
 		public	class EdgeStateOff:EdgeState
@@ -147,8 +172,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge,
-				GasFormulaVisitor aFormulaVisitor)
+				GasFormulaVisitor aFormulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				// here we don't need to do anything since the edge is switched off.
 			}
@@ -166,6 +191,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aJacobianMatrix, 
 				Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
 				GasFormulaVisitor aFormulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				// here we don't need to do anything since the edge is switched off.
+			}
+
+			public void putQvalueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
+				GasFormulaVisitor aFormulaVisitor,
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				// here we don't need to do anything since the edge is switched off.
@@ -233,7 +268,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			GasFormulaVisitor aFormulaVisitor)
 		{
 			this.SwitchState.putKvalueIntoUsingFor (
-				Kvector, Fvector, unknownVector, this, aFormulaVisitor);
+				Kvector, Fvector, unknownVector, aFormulaVisitor, this);
 		}
 
 		public void fillAmatrixUsing (
@@ -253,6 +288,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.SwitchState.fillJacobianMatrixFor (
 				aJacobianMatrix, KvectorAtCurrentStep, aFormulaVisitor, this);
 		}
+
+		public void putQvalueIntoUsing (
+			Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+			Vector<EdgeForNetwonRaphsonSystem> Kvector, 
+			Vector<NodeForNetwonRaphsonSystem> unknownVector,
+			GasFormulaVisitor aFormulaVisitor)
+		{
+			this.SwitchState.putQvalueIntoUsingFor (
+				Qvector, Kvector, unknownVector, aFormulaVisitor, this);
+		}
+
 
 	}
 }
