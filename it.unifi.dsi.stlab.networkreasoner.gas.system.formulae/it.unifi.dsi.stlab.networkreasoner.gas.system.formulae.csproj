@@ -39,6 +39,9 @@
     <Compile Include="visitors\GasFormulaVisitorExactlyDimensioned.cs" />
     <Compile Include="variants\RelativePressureFromAbsolutePressureFormulaForNodes.cs" />
     <Compile Include="variants\AirPressureFormulaForNodes.cs" />
+    <Compile Include="variants\CovariantLittleKFormula.cs" />
+    <Compile Include="variants\ControVariantLittleKFormula.cs" />
+    <Compile Include="variants\AbstractLittleKFormula.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

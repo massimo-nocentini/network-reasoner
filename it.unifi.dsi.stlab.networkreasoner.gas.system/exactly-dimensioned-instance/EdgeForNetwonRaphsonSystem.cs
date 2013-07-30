@@ -2,6 +2,7 @@ using System;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -13,7 +14,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge);
+				EdgeForNetwonRaphsonSystem anEdge,
+				GasFormulaVisitor aFormulaVisitor);
 		}
 
 		public	class EdgeStateOn:EdgeState
@@ -23,17 +25,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge)
+				EdgeForNetwonRaphsonSystem anEdge,
+				GasFormulaVisitor aFormulaVisitor)
 			{
 				var f = Fvector.valueAt (anEdge);
-				var A = anEdge.AmbientParameters.Aconstant / Math.Pow (anEdge.DiameterInMillimeters, 5);
+				var A = anEdge.AmbientParameters.Aconstant / 
+					Math.Pow (anEdge.DiameterInMillimeters, 5);
 
 				var unknownForStartNode = unknownVector.valueAt (anEdge.StartNode);
 				var unknownForEndNode = unknownVector.valueAt (anEdge.EndNode);
 				
 				var weightedHeightsDifference = 
-					anEdge.coVariantLittleK () * unknownForStartNode - 
-					anEdge.controVariantLittleK () * unknownForEndNode;
+					anEdge.coVariantLittleK (aFormulaVisitor) * unknownForStartNode - 
+					anEdge.controVariantLittleK (aFormulaVisitor) * unknownForEndNode;
 
 				var K = 1 / Math.Sqrt (f * A * anEdge.Length * weightedHeightsDifference);
 
@@ -49,7 +53,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge)
+				EdgeForNetwonRaphsonSystem anEdge,
+				GasFormulaVisitor aFormulaVisitor)
 			{
 				// here we don't need to do anything since the edge is switched off.
 			}
@@ -70,37 +75,41 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public AmbientParameters AmbientParameters{ get; set; }
 
-		protected virtual double weightedHeightsDifferenceFor (
-				EdgeForNetwonRaphsonSystem anEdge)
+		public double coVariantLittleK (
+			GasFormulaVisitor aFormulaVisitor)
 		{
+			CovariantLittleKFormula formula = 
+				new CovariantLittleKFormula ();
 
-			var difference = anEdge.StartNode.Height - anEdge.EndNode.Height;
-			var rate = anEdge.AmbientParameters.GravitationalAcceleration / 
-				anEdge.AmbientParameters.GasTemperatureInKelvin;
+			formula.HeightOfStartNode = this.StartNode.Height;
+			formula.HeightOfEndNode = this.EndNode.Height;
 
-			return rate * difference;
+			return formula.accept (aFormulaVisitor);
 
 		}
 
-		public double coVariantLittleK ()
+		public double controVariantLittleK (
+			GasFormulaVisitor aFormulaVisitor)
 		{
-			return this.AmbientParameters.Rconstant + 
-				weightedHeightsDifferenceFor (this);
-		}
+			ControVariantLittleKFormula formula = 
+				new ControVariantLittleKFormula ();
 
-		public double controVariantLittleK ()
-		{
-			return this.AmbientParameters.Rconstant - 
-				weightedHeightsDifferenceFor (this);
+			formula.HeightOfStartNode = this.StartNode.Height;
+			formula.HeightOfEndNode = this.EndNode.Height;
+
+			return formula.accept (aFormulaVisitor);
+
+
 		}
 
 		public void putKvalueIntoUsing (
 			Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 			Vector<EdgeForNetwonRaphsonSystem> Fvector, 
-			Vector<NodeForNetwonRaphsonSystem> unknownVector)
+			Vector<NodeForNetwonRaphsonSystem> unknownVector,
+			GasFormulaVisitor aFormulaVisitor)
 		{
 			this.SwitchState.putKvalueIntoUsingFor (
-				Kvector, Fvector, unknownVector, this);
+				Kvector, Fvector, unknownVector, this, aFormulaVisitor);
 		}
 
 	}

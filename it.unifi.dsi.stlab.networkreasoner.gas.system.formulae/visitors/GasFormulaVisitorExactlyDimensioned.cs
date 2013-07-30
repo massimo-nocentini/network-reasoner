@@ -51,6 +51,33 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			return (result - AirPressureInBar) * 1000;
 		}
+
+		public double visitCovariantLittleKFormula (
+			CovariantLittleKFormula covariantLittleKFormula)
+		{
+			return this.AmbientParameters.Rconstant + 
+				weightedHeightsDifferenceFor (covariantLittleKFormula);
+		}
+
+		protected virtual double weightedHeightsDifferenceFor (
+				AbstractLittleKFormula abstractLittleKFormula)
+		{
+			var difference = abstractLittleKFormula.HeightOfStartNode - 
+				abstractLittleKFormula.HeightOfEndNode;
+
+			var rate = this.AmbientParameters.GravitationalAcceleration / 
+				this.AmbientParameters.GasTemperatureInKelvin;
+
+			return rate * difference;
+
+		}
+
+		public double visitControVariantLittleKFormula (
+			ControVariantLittleKFormula controVariantLittleKFormula)
+		{
+			return this.AmbientParameters.Rconstant - 
+				weightedHeightsDifferenceFor (controVariantLittleKFormula);
+		}
 		#endregion
 	}
 }

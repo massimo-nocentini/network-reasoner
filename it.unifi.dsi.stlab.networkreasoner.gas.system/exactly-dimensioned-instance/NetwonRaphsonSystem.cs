@@ -150,8 +150,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			foreach (var anEdge in this.Edges) {
 			
-				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
-				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK ();
+				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK (this.FormulaVisitor);
+				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK (this.FormulaVisitor);
 
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant + cumulate, 0);
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant + cumulate, 0);
@@ -170,8 +170,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			foreach (var anEdge in this.Edges) {
 			
-				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK ();
-				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK ();
+				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK (this.FormulaVisitor);
+				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK (this.FormulaVisitor);
 
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant / 2 + cumulate, 0);
 				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant / 2 + cumulate, 0);
@@ -189,7 +189,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var Kvector = new Vector<EdgeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => anEdge.putKvalueIntoUsing (
-				Kvector, Fvector, unknownVector)
+				Kvector, Fvector, unknownVector, this.FormulaVisitor)
 			);
 
 			return Kvector;
@@ -205,8 +205,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Edges.ForEach (anEdge => {
 
 				var weightedUnknownsDifference = 
-					anEdge.coVariantLittleK () * unknownVector.valueAt (anEdge.StartNode) -
-					anEdge.controVariantLittleK () * unknownVector.valueAt (anEdge.EndNode);
+					anEdge.coVariantLittleK (this.FormulaVisitor) * unknownVector.valueAt (anEdge.StartNode) -
+					anEdge.controVariantLittleK (this.FormulaVisitor) * unknownVector.valueAt (anEdge.EndNode);
 
 				Qvector.atPut (anEdge, Kvector.valueAt (anEdge) * weightedUnknownsDifference);
 			}

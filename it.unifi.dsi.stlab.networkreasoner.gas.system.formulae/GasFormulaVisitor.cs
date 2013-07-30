@@ -4,6 +4,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 {
 	public interface GasFormulaVisitor
 	{
+
 		double visitCoefficientFormulaForNodeWithSupplyGadget (
 			CoefficientFormulaForNodeWithSupplyGadget aSupplyNodeFormula);
 
@@ -14,6 +15,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			RelativePressureFromAbsolutePressureFormulaForNodes 
 			aRelativePressureFromAbsolutePressureFormula
 		);
+
+		double visitCovariantLittleKFormula (
+			CovariantLittleKFormula covariantLittleKFormula);
+
+		double visitControVariantLittleKFormula (
+			ControVariantLittleKFormula controVariantLittleKFormula);
 
 
 	}
