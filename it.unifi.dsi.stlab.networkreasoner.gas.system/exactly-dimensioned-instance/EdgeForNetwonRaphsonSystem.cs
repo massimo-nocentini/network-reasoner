@@ -35,6 +35,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 				GasFormulaVisitor aFormulaVisitor,
 				EdgeForNetwonRaphsonSystem anEdge);
+
+			void putNewFvalueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> newFvector,
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				GasFormulaVisitor formulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge);
+
 		}
 
 		public	class EdgeStateOn:EdgeState
@@ -161,7 +169,29 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				Qvector.atPut (anEdge, Qvalue);
 			}
+
+			public void putNewFvalueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> newFvector,
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				GasFormulaVisitor formulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				FvalueFormula formula = new FvalueFormula ();
+
+				formula.EdgeQvalue = Qvector.valueAt (anEdge);
+				formula.EdgeDiameterInMillimeters = anEdge.DiameterInMillimeters;
+				formula.EdgeRoughnessInMicron = anEdge.RoughnessInMicron;
+				formula.EdgeFvalue = Fvector.valueAt (anEdge);
+
+				var Fvalue = formula.accept (formulaVisitor);
+
+				newFvector.atPut (anEdge, Fvalue);
+
+
+			}
 			#endregion
+
 
 		}
 
@@ -201,6 +231,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 				GasFormulaVisitor aFormulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				// here we don't need to do anything since the edge is switched off.
+			}
+
+			public void putNewFvalueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> newFvector,
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
+				GasFormulaVisitor formulaVisitor, 
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				// here we don't need to do anything since the edge is switched off.
@@ -298,6 +338,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.SwitchState.putQvalueIntoUsingFor (
 				Qvector, Kvector, unknownVector, aFormulaVisitor, this);
 		}
+
+		public void putNewFvalueIntoUsing (
+			Vector<EdgeForNetwonRaphsonSystem> newFvector,
+			Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+			Vector<EdgeForNetwonRaphsonSystem> previousFvector, 
+			GasFormulaVisitor formulaVisitor)
+		{
+			this.SwitchState.putNewFvalueIntoUsingFor (
+				newFvector, Qvector, previousFvector, formulaVisitor, this);
+		}
+
 
 
 	}

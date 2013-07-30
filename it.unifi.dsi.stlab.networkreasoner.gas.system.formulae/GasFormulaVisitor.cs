@@ -22,8 +22,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		double visitControVariantLittleKFormula (
 			ControVariantLittleKFormula controVariantLittleKFormula);
 
-		double visitKvalueFormula (
-			KvalueFormula kvalueFormula);
+		double visitKvalueFormula (KvalueFormula KvalueFormula);
 
 		AmatrixQuadruplet visitAmatrixQuadrupletFormulaForSwitchedOnEdges (
 			AmatrixQuadrupletFormulaForSwitchedOnEdges 
@@ -35,8 +34,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			jacobianMatrixQuadrupletFormulaForSwitchedOnEdges
 		);
 
-		double visitQvalueFormula (
-			QvalueFormula qvalueFormula);
+		double visitQvalueFormula (QvalueFormula QvalueFormula);
+
+		double visitFvalueFormula (FvalueFormula FvalueFormula);
+
 
 	}
 }

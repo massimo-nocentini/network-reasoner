@@ -49,6 +49,7 @@
     <Compile Include="variants\interfaces\KvalueAndLittleKHolder.cs" />
     <Compile Include="variants\JacobianMatrixQuadrupletFormulaForSwitchedOnEdges.cs" />
     <Compile Include="variants\QvalueFormula.cs" />
+    <Compile Include="variants\FvalueFormula.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

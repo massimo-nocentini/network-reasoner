@@ -158,6 +158,29 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return QvalueFormula.EdgeKvalue * weightedUnknownsDifference;		
 		}
 
+		public double visitFvalueFormula (FvalueFormula FvalueFormula)
+		{
+			
+
+			var numeratorForRe = 4 * FvalueFormula.EdgeQvalue * 
+				this.AmbientParameters.RefDensity ();
+
+			var denominatorForRe = Math.PI * FvalueFormula.EdgeDiameterInMillimeters * 
+				this.AmbientParameters.ViscosityInPascalTimesSecond;
+
+			var Re = numeratorForRe / denominatorForRe;
+
+			var augend = FvalueFormula.EdgeRoughnessInMicron / 
+				(FvalueFormula.EdgeDiameterInMillimeters * 1000 * 3.71);
+
+			var addend = 2.51 / (Re * Math.Sqrt (FvalueFormula.EdgeFvalue));
+
+			var toInvert = -2 * Math.Log10 (augend + addend);
+
+			var Fvalue = Math.Pow (1 / toInvert, 2);
+
+			return Fvalue;
+		}
 		#endregion
 
 		#region Utility methods, most of them allow behavior factorization.

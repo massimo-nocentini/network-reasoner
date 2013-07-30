@@ -217,23 +217,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> newFvector = 
 				new Vector<EdgeForNetwonRaphsonSystem> ();
 
-			this.Edges.ForEach (anEdge => {
-
-				var numeratorForRe = 4 * Qvector.valueAt (anEdge) * 
-					this.AmbientParameters.RefDensity ();
-				var denominatorForRe = Math.PI * anEdge.DiameterInMillimeters * 
-					AmbientParameters.ViscosityInPascalTimesSecond;
-				var Re = numeratorForRe / denominatorForRe;
-
-				var augend = anEdge.RoughnessInMicron / (anEdge.DiameterInMillimeters * 1000 * 3.71);
-				var addend = 2.51 / (Re * Math.Sqrt (Fvector.valueAt (anEdge)));
-
-				var toInvert = -2 * Math.Log10 (augend + addend);
-
-				var Fvalue = Math.Pow (1 / toInvert, 2);
-
-				newFvector.atPut (anEdge, Fvalue);
-			}
+			this.Edges.ForEach (anEdge => anEdge.putNewFvalueIntoUsing (
+				newFvector, Qvector, Fvector, this.FormulaVisitor)
 			);
 
 			return newFvector;
