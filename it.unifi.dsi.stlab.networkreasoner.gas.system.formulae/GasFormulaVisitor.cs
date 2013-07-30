@@ -25,6 +25,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		double visitKvalueFormula (
 			KvalueFormula kvalueFormula);
 
+		AmatrixQuadruplet visitAmatrixQuadrupletFormulaForSwitchedOnEdges (
+			AmatrixQuadrupletFormulaForSwitchedOnEdges 
+			amatrixQuadrupletFormulaForSwitchedOnEdges
+		);
+
+
 
 
 	}

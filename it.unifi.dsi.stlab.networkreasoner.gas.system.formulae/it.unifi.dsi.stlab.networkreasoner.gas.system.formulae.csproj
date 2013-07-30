@@ -44,12 +44,15 @@
     <Compile Include="variants\AbstractLittleKFormula.cs" />
     <Compile Include="variants\interfaces\NodeHeightHolder.cs" />
     <Compile Include="variants\KvalueFormula.cs" />
+    <Compile Include="variants\AmatrixQuadrupletFormulaForSwitchedOnEdges.cs" />
+    <Compile Include="variants\structs\AmatrixQuadruplet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="variants\" />
     <Folder Include="visitors\" />
     <Folder Include="variants\interfaces\" />
+    <Folder Include="variants\structs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">

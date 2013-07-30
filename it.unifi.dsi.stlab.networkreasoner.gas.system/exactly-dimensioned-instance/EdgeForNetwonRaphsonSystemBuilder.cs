@@ -10,7 +10,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> 
 				customNodesByGeneralNodes{ get; set; }
 
-		public AmbientParameters AmbientParameters{ get; set; }
 
 		public EdgeForNetwonRaphsonSystem CustomEdgeUnderBuilding{ get; set; }
 
@@ -65,10 +64,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this.makeInitialSwitchStateOnEdgeUnderConstruction ();
 
 			anEdge.accept (this);
-
-			// the following line on the ambient parameters will disappear when
-			// we'll introduce the Formulae hierarchy.
-			this.CustomEdgeUnderBuilding.AmbientParameters = AmbientParameters;
 
 			return this.CustomEdgeUnderBuilding;
 		}

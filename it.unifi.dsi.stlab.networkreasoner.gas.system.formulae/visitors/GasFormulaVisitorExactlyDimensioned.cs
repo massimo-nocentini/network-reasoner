@@ -54,14 +54,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			CovariantLittleKFormula covariantLittleKFormula)
 		{
 			return this.AmbientParameters.Rconstant + 
-				weightedHeightsDifferenceFor (covariantLittleKFormula);
+				this.weightedHeightsDifferenceFor (covariantLittleKFormula);
 		}
 
 		public double visitControVariantLittleKFormula (
 			ControVariantLittleKFormula controVariantLittleKFormula)
 		{
 			return this.AmbientParameters.Rconstant - 
-				weightedHeightsDifferenceFor (controVariantLittleKFormula);
+				this.weightedHeightsDifferenceFor (controVariantLittleKFormula);
 		}
 
 		public double visitKvalueFormula (KvalueFormula aKvalueFormula)
@@ -85,6 +85,35 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			return K;
 		}
+
+		public AmatrixQuadruplet visitAmatrixQuadrupletFormulaForSwitchedOnEdges (
+			AmatrixQuadrupletFormulaForSwitchedOnEdges AmatrixQuadrupletFormulaForSwitchedOnEdges)
+		{
+			var coVariant = AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeKvalue * 
+				AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeCovariantLittleK;
+
+			var controVariant = AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeKvalue * 
+				AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeControVariantLittleK;
+
+			double initialValue = 0.0;
+
+			AmatrixQuadruplet result = new AmatrixQuadruplet ();
+
+			result.StartNodeStartNodeUpdater = cumulate => -coVariant + cumulate;
+			result.StartNodeStartNodeInitialValue = initialValue;
+
+			result.StartNodeEndNodeUpdater = cumulate => controVariant + cumulate;
+			result.StartNodeEndNodeInitialValue = initialValue;
+
+			result.EndNodeStartNodeUpdater = cumulate => coVariant + cumulate;
+			result.EndNodeStartNodeInitialValue = initialValue;
+
+			result.EndNodeEndNodeUpdater = cumulate => -controVariant + cumulate;
+			result.EndNodeEndNodeInitialValue = initialValue;
+
+			return result;
+		}
+
 		#endregion
 
 		#region Utility methods, most of them allow behavior factorization.

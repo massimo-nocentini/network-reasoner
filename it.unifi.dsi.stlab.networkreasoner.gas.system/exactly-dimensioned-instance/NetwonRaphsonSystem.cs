@@ -53,7 +53,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				anEdge => {
 
 				var aBuilder = new EdgeForNetwonRaphsonSystemBuilder ();
-				aBuilder.AmbientParameters = network.AmbientParameters;
 				aBuilder.customNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
 
 				var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
@@ -150,13 +149,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			foreach (var anEdge in this.Edges) {
 			
-				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK (this.FormulaVisitor);
-				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK (this.FormulaVisitor);
+				anEdge.fillAmatrixUsing (aMatrix, kvectorAtCurrentStep, this.FormulaVisitor);
 
-				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant + cumulate, 0);
-				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant + cumulate, 0);
-				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, cumulate => coVariant + cumulate, 0);
-				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, cumulate => -controVariant + cumulate, 0);
+
 			}
 
 			return aMatrix;
