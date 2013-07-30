@@ -9,12 +9,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 	{
 		public	interface EdgeState
 		{
-			double coVariantLittleKFor (
-				EdgeForNetwonRaphsonSystem anEdge);
-
-			double controVariantLittleKFor (
-				EdgeForNetwonRaphsonSystem anEdge);
-
 			void putKvalueIntoUsingFor (
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
@@ -22,54 +16,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge);
 		}
 
-		/**
-		 * We introduce this class since it allow to factor the behavior
-		 * for the computation of coVariantLittleKFor and controVariantLittleKFor,
-		 * since this behavior doesn't depend on the edge's switch state.
-		 */
-		public abstract class EdgeStateAbstract : EdgeState
-		{
-			protected virtual double weightedHeightsDifferenceFor (
-				EdgeForNetwonRaphsonSystem anEdge)
-			{
-
-				var difference = anEdge.StartNode.Height - anEdge.EndNode.Height;
-				var rate = anEdge.AmbientParameters.GravitationalAcceleration / 
-					anEdge.AmbientParameters.GasTemperatureInKelvin;
-
-				return rate * difference;
-
-			}
-			#region EdgeState implementation
-			public virtual double coVariantLittleKFor (
-				EdgeForNetwonRaphsonSystem anEdge)
-			{
-				return anEdge.AmbientParameters.Rconstant + 
-					weightedHeightsDifferenceFor (anEdge);
-				
-			}
-
-			public virtual double controVariantLittleKFor (
-				EdgeForNetwonRaphsonSystem anEdge)
-			{
-				return anEdge.AmbientParameters.Rconstant - 
-					weightedHeightsDifferenceFor (anEdge);
-			}
-
-			public abstract void putKvalueIntoUsingFor (
-				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
-				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
-				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
-				EdgeForNetwonRaphsonSystem anEdge);
-
-			#endregion
-
-		}
-
-		public	class EdgeStateOn:EdgeStateAbstract
+		public	class EdgeStateOn:EdgeState
 		{
 			#region EdgeState implementation
-			public override void putKvalueIntoUsingFor (
+			public  void putKvalueIntoUsingFor (
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
@@ -92,10 +42,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#endregion
 		}
 
-		public	class EdgeStateOff:EdgeStateAbstract
+		public	class EdgeStateOff:EdgeState
 		{
 			#region EdgeState implementation
-			public override void putKvalueIntoUsingFor (
+			public  void putKvalueIntoUsingFor (
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 				Vector<NodeForNetwonRaphsonSystem> unknownVector, 
@@ -120,14 +70,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public AmbientParameters AmbientParameters{ get; set; }
 
+		protected virtual double weightedHeightsDifferenceFor (
+				EdgeForNetwonRaphsonSystem anEdge)
+		{
+
+			var difference = anEdge.StartNode.Height - anEdge.EndNode.Height;
+			var rate = anEdge.AmbientParameters.GravitationalAcceleration / 
+				anEdge.AmbientParameters.GasTemperatureInKelvin;
+
+			return rate * difference;
+
+		}
+
 		public double coVariantLittleK ()
 		{
-			return this.SwitchState.coVariantLittleKFor (this);
+			return this.AmbientParameters.Rconstant + 
+				weightedHeightsDifferenceFor (this);
 		}
 
 		public double controVariantLittleK ()
 		{
-			return this.SwitchState.controVariantLittleKFor (this);
+			return this.AmbientParameters.Rconstant - 
+				weightedHeightsDifferenceFor (this);
 		}
 
 		public void putKvalueIntoUsing (
