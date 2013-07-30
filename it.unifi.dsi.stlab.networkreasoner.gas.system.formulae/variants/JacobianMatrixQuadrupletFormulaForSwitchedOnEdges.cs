@@ -2,7 +2,7 @@ using System;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 {
-	public class AmatrixQuadrupletFormulaForSwitchedOnEdges : 
+	public class JacobianMatrixQuadrupletFormulaForSwitchedOnEdges: 
 		GasFormulaAbstract<AmatrixQuadruplet>, KvalueAndLittleKHolder
 	{
 		public double EdgeKvalue {
@@ -23,7 +23,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.GasFormulaAbstract
 		public override AmatrixQuadruplet accept (GasFormulaVisitor aVisitor)
 		{
-			return aVisitor.visitAmatrixQuadrupletFormulaForSwitchedOnEdges (this);
+			return aVisitor.visitJacobianMatrixQuadrupletFormulaForSwitchedOnEdges (this);
 		}
 		#endregion
 	}

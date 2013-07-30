@@ -30,9 +30,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			amatrixQuadrupletFormulaForSwitchedOnEdges
 		);
 
-
-
-
+		AmatrixQuadruplet visitJacobianMatrixQuadrupletFormulaForSwitchedOnEdges (
+			JacobianMatrixQuadrupletFormulaForSwitchedOnEdges
+			jacobianMatrixQuadrupletFormulaForSwitchedOnEdges
+		);
 	}
 }
 

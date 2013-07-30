@@ -23,6 +23,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				GasFormulaVisitor aFormulaVisitor, 
 				EdgeForNetwonRaphsonSystem anEdge);
 
+			void fillJacobianMatrixFor (
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aJacobianMatrix, 
+				Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
+				GasFormulaVisitor aFormulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge);
+
+
 		}
 
 		public	class EdgeStateOn:EdgeState
@@ -90,6 +97,46 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					quadruplet.EndNodeEndNodeUpdater, 
 					quadruplet.EndNodeEndNodeInitialValue);
 			}
+
+			public void fillJacobianMatrixFor (
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aJacobianMatrix, 
+				Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
+				GasFormulaVisitor aFormulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				JacobianMatrixQuadrupletFormulaForSwitchedOnEdges formula =
+					new JacobianMatrixQuadrupletFormulaForSwitchedOnEdges ();
+
+				formula.EdgeKvalue = kvectorAtCurrentStep.valueAt (anEdge);
+				formula.EdgeCovariantLittleK = anEdge.coVariantLittleK (aFormulaVisitor);
+				formula.EdgeControVariantLittleK = anEdge.controVariantLittleK (aFormulaVisitor);
+
+				AmatrixQuadruplet quadruplet = formula.accept (aFormulaVisitor);
+
+				aJacobianMatrix.atRowAtColumnPut (
+					anEdge.StartNode, 
+					anEdge.StartNode, 
+					quadruplet.StartNodeStartNodeUpdater, 
+					quadruplet.StartNodeStartNodeInitialValue);
+
+				aJacobianMatrix.atRowAtColumnPut (
+					anEdge.StartNode, 
+					anEdge.EndNode, 
+					quadruplet.StartNodeEndNodeUpdater, 
+					quadruplet.StartNodeEndNodeInitialValue);
+
+				aJacobianMatrix.atRowAtColumnPut (
+					anEdge.EndNode, 
+					anEdge.StartNode, 
+					quadruplet.EndNodeStartNodeUpdater, 
+					quadruplet.EndNodeStartNodeInitialValue);
+
+				aJacobianMatrix.atRowAtColumnPut (
+					anEdge.EndNode, 
+					anEdge.EndNode, 
+					quadruplet.EndNodeEndNodeUpdater, 
+					quadruplet.EndNodeEndNodeInitialValue);
+			}
 			#endregion
 		}
 
@@ -108,6 +155,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			public void fillAmatrixUsingFor (
 				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix, 
+				Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
+				GasFormulaVisitor aFormulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				// here we don't need to do anything since the edge is switched off.
+			}
+
+			public void fillJacobianMatrixFor (
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aJacobianMatrix, 
 				Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
 				GasFormulaVisitor aFormulaVisitor, 
 				EdgeForNetwonRaphsonSystem anEdge)
@@ -155,6 +211,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			GasFormulaVisitor aFormulaVisitor)
 		{
 			if (this.ControVariantLittleK.HasValue == false) {
+
 				ControVariantLittleKFormula formula = 
 					new ControVariantLittleKFormula ();
 
@@ -187,6 +244,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.SwitchState.fillAmatrixUsingFor (
 				aMatrix, KvectorAtCurrentStep, aFormulaVisitor, this);
 		}
+
+		public void fillJacobianMatrixUsing (
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aJacobianMatrix, 
+			Vector<EdgeForNetwonRaphsonSystem> KvectorAtCurrentStep, 
+			GasFormulaVisitor aFormulaVisitor)
+		{
+			this.SwitchState.fillJacobianMatrixFor (
+				aJacobianMatrix, KvectorAtCurrentStep, aFormulaVisitor, this);
+		}
+
 	}
 }
 

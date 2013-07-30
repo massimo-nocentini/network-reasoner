@@ -89,11 +89,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public AmatrixQuadruplet visitAmatrixQuadrupletFormulaForSwitchedOnEdges (
 			AmatrixQuadrupletFormulaForSwitchedOnEdges AmatrixQuadrupletFormulaForSwitchedOnEdges)
 		{
-			var coVariant = AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeKvalue * 
-				AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeCovariantLittleK;
+			double coVariant;
 
-			var controVariant = AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeKvalue * 
-				AmatrixQuadrupletFormulaForSwitchedOnEdges.EdgeControVariantLittleK;
+			double controVariant;
+
+			computeCovariantAndControVariantFromKvalueHolder (
+				AmatrixQuadrupletFormulaForSwitchedOnEdges,
+				out coVariant, out controVariant);
 
 			double initialValue = 0.0;
 
@@ -114,6 +116,37 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return result;
 		}
 
+		public AmatrixQuadruplet visitJacobianMatrixQuadrupletFormulaForSwitchedOnEdges (
+			JacobianMatrixQuadrupletFormulaForSwitchedOnEdges 
+			jacobianMatrixQuadrupletFormulaForSwitchedOnEdges
+		)
+		{
+			double coVariant;
+
+			double controVariant;
+
+			computeCovariantAndControVariantFromKvalueHolder (
+				jacobianMatrixQuadrupletFormulaForSwitchedOnEdges,
+				out coVariant, out controVariant);
+
+			double initialValue = 0.0;
+
+			AmatrixQuadruplet result = new AmatrixQuadruplet ();
+
+			result.StartNodeStartNodeUpdater = cumulate => -coVariant / 2 + cumulate;
+			result.StartNodeStartNodeInitialValue = initialValue;
+
+			result.StartNodeEndNodeUpdater = cumulate => controVariant / 2 + cumulate;
+			result.StartNodeEndNodeInitialValue = initialValue;
+
+			result.EndNodeStartNodeUpdater = cumulate => coVariant / 2 + cumulate;
+			result.EndNodeStartNodeInitialValue = initialValue;
+
+			result.EndNodeEndNodeUpdater = cumulate => -controVariant / 2 + cumulate;
+			result.EndNodeEndNodeInitialValue = initialValue;
+
+			return result;
+		}
 		#endregion
 
 		#region Utility methods, most of them allow behavior factorization.
@@ -139,6 +172,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			return AirPressureInBar;
 		}
+
+		protected virtual void computeCovariantAndControVariantFromKvalueHolder (
+			KvalueAndLittleKHolder holder, 
+			out double coVariant, 
+			out double controVariant)
+		{
+			coVariant = holder.EdgeKvalue * 
+				holder.EdgeCovariantLittleK;
+
+			controVariant = holder.EdgeKvalue * 
+				holder.EdgeControVariantLittleK;
+		}
+
 		#endregion
 
 	}

@@ -107,7 +107,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			Random random = new Random ();
 			unknownVectorAtCurrentStep.updateEach (
-				(key, currentValue) => 
+				(aNode, currentValue) => 
 				currentValue <= 0 ? random.NextDouble () / 10 : currentValue
 			);
 
@@ -124,7 +124,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			// isn't correct because mix values with different measure unit.
 			unknownVectorAtCurrentStep.updateEach (
 				(aNode, absolutePressure) => 
-				aNode.relativePressureOf (absolutePressure, FormulaVisitor)
+				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
 			);
 
 			this.UnknownVector = unknownVectorAtCurrentStep;
@@ -147,12 +147,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
 				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
-			foreach (var anEdge in this.Edges) {
-			
-				anEdge.fillAmatrixUsing (aMatrix, kvectorAtCurrentStep, this.FormulaVisitor);
-
-
-			}
+			this.Edges.ForEach (anEdge => anEdge.fillAmatrixUsing (
+				aMatrix, kvectorAtCurrentStep, this.FormulaVisitor)
+			);
 
 			return aMatrix;
 		}
@@ -163,16 +160,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
 				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
-			foreach (var anEdge in this.Edges) {
-			
-				var coVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.coVariantLittleK (this.FormulaVisitor);
-				var controVariant = kvectorAtCurrentStep.valueAt (anEdge) * anEdge.controVariantLittleK (this.FormulaVisitor);
-
-				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.StartNode, cumulate => -coVariant / 2 + cumulate, 0);
-				aMatrix.atRowAtColumnPut (anEdge.StartNode, anEdge.EndNode, cumulate => controVariant / 2 + cumulate, 0);
-				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.StartNode, cumulate => coVariant / 2 + cumulate, 0);
-				aMatrix.atRowAtColumnPut (anEdge.EndNode, anEdge.EndNode, cumulate => -controVariant / 2 + cumulate, 0);
-			}
+			this.Edges.ForEach (anEdge => anEdge.fillJacobianMatrixUsing (
+				aMatrix, kvectorAtCurrentStep, this.FormulaVisitor));
 
 			return aMatrix;
 		}
