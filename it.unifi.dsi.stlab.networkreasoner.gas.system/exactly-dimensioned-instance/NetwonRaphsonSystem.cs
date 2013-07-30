@@ -16,8 +16,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
-		AmbientParameters AmbientParameters { get; set; }
-
 		GasFormulaVisitor FormulaVisitor{ get; set; }
 
 		public void useFormulaVisitor (GasFormulaVisitor aFormulaVisitor)
@@ -27,10 +25,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void initializeWith (GasNetwork network)
 		{
-			this.AmbientParameters = network.AmbientParameters;
+
+			this.UnknownVector = new Vector<NodeForNetwonRaphsonSystem> ();
+			this.Fvector = new Vector<EdgeForNetwonRaphsonSystem> ();
 
 			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode =
 				new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
+
+			var initialUnknownGuessVector = network.makeInitialGuessForUnknowns ();
+			var initialFvalueGuessVector = network.makeInitialGuessForFvector ();
 
 			network.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aNode => {
@@ -42,6 +45,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				// quindi i bilanci dei nodi di supply saranno negativi.
 
 				newtonRaphsonNodesByOriginalNode.Add (aNode, newtonRaphsonNode);
+
+				// here we get the initial unknown guess for the current node
+				this.UnknownVector.atPut (newtonRaphsonNode,
+				                         initialUnknownGuessVector [aNode]);
 			}
 			)
 			);
@@ -57,6 +64,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
 				collector.Add (edgeForNetwonRaphsonSystem);
+
+				// here we get the initial F values guess for the current node
+				this.Fvector.atPut (edgeForNetwonRaphsonSystem,
+				                    initialFvalueGuessVector [anEdge]);
 			}
 			)
 			);
