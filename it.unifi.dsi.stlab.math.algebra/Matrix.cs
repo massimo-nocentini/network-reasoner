@@ -4,6 +4,8 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers.StopCriterium;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers.Iterative;
+using System.Linq;
+using it.unifi.dsi.stlab.extensionmethods;
 
 namespace it.unifi.dsi.stlab.math.algebra
 {
@@ -99,29 +101,14 @@ namespace it.unifi.dsi.stlab.math.algebra
 		{
 
 			Dictionary<RowIndexType, int> rowsEnumeration =
-				this.enumerate (this.RowIndices);
+				this.RowIndices.enumerate ();
 
 			Dictionary<ColumnIndexType, int> columnsEnumeration = 
-				this.enumerate (this.ColumnIndices);
+				this.ColumnIndices.enumerate ();
 
 			return this.SolveWithGivenEnumerations (
 				rowsEnumeration, columnsEnumeration, aVector);
 
-		}
-
-		protected virtual Dictionary<T, int> enumerate<T> (
-			HashSet<T> aSet)
-		{
-			Dictionary<T, int> anEnumeration = 
-				new Dictionary<T, int> ();
-
-			int anIndex = 0; 
-			foreach (var anElement in aSet) {
-				anEnumeration.Add (anElement, anIndex);
-				anIndex = anIndex + 1;
-			}
-
-			return anEnumeration;
 		}
 
 		public Vector<RowIndexType> SolveWithGivenEnumerations (
@@ -155,11 +142,15 @@ namespace it.unifi.dsi.stlab.math.algebra
 			var aVectorForSolving = aVector.forComputationAmong (
 				rowsEnumeration, 0);
 
-			var resultX = aMatrixForSolving.LU ().Solve (aVectorForSolving);
+			var solutionVector = aMatrixForSolving.LU ().Solve (aVectorForSolving);
 
 			Vector<RowIndexType> result = new Vector<RowIndexType> ();
-			for (int i = 0; i < resultX.Count; i = i + 1) {
-				result.atPut (coefficientsInverseEnumeration [i], resultX [i]);
+			for (int position = 0; 
+			     position < solutionVector.Count; 
+			     position = position + 1) {
+
+				result.atPut (coefficientsInverseEnumeration [position], 
+				              solutionVector [position]);
 			}
 
 			return result;

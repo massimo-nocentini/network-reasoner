@@ -33,6 +33,7 @@
     <Reference Include="log4net">
       <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -55,6 +56,10 @@
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.csproj">
       <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.extension-methods\it.unifi.dsi.stlab.extension-methods.csproj">
+      <Project>{1A93011C-4839-42D1-B6BB-6A96283291D5}</Project>
+      <Name>it.unifi.dsi.stlab.extension-methods</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

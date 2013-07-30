@@ -6,6 +6,8 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using log4net;
 using log4net.Config;
 using System.IO;
+using System.Linq;
+using it.unifi.dsi.stlab.extensionmethods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -18,6 +20,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			XmlConfigurator.Configure (new FileInfo ("exactly-dimensioned-instance/log4net-filebased-config.xml"));
 		}
 
+		public NetwonRaphsonSystem ()
+		{
+			NodeEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
+				() => this.Nodes.enumerate ());
+		}
+
 		Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
 		Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
@@ -27,6 +35,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
 		GasFormulaVisitor FormulaVisitor{ get; set; }
+
+		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodeEnumeration { get; set; }
 
 		public void useFormulaVisitor (GasFormulaVisitor aFormulaVisitor)
 		{
@@ -67,6 +77,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 			)
 			);
+
+			this.Nodes = newtonRaphsonNodesByOriginalNode.Values.ToList ();
 
 			List<EdgeForNetwonRaphsonSystem> collector = 
 				new List<EdgeForNetwonRaphsonSystem> ();
@@ -214,7 +226,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				matrixArightProductUnknownAtPreviousStep.minus (coefficientsVectorAtCurrentStep);
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
-				jacobianMatrixAtCurrentStep.Solve (coefficientVectorForJacobianSystemFactorization);
+				jacobianMatrixAtCurrentStep.SolveWithGivenEnumerations (
+					this.NodeEnumeration.Value,
+					this.NodeEnumeration.Value,
+					coefficientVectorForJacobianSystemFactorization);
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
