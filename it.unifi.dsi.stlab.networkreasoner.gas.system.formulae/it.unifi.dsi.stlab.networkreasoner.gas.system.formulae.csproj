@@ -43,6 +43,7 @@
     <Compile Include="variants\ControVariantLittleKFormula.cs" />
     <Compile Include="variants\AbstractLittleKFormula.cs" />
     <Compile Include="variants\interfaces\NodeHeightHolder.cs" />
+    <Compile Include="variants\KvalueFormula.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -63,6 +63,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return this.AmbientParameters.Rconstant - 
 				weightedHeightsDifferenceFor (controVariantLittleKFormula);
 		}
+
+		public double visitKvalueFormula (KvalueFormula aKvalueFormula)
+		{		
+
+			var f = aKvalueFormula.EdgeFvalue;
+
+			var A = this.AmbientParameters.Aconstant / 
+				Math.Pow (aKvalueFormula.EdgeDiameterInMillimeters, 5);
+
+			var unknownForStartNode = aKvalueFormula.UnknownForEdgeStartNode;
+			var unknownForEndNode = aKvalueFormula.UnknownForEdgeEndNode;
+				
+			var weightedHeightsDifference = 
+				aKvalueFormula.EdgeCovariantLittleK * unknownForStartNode - 
+				aKvalueFormula.EdgeControVariantLittleK * unknownForEndNode;
+
+			var length = aKvalueFormula.EdgeLength;
+
+			var K = 1 / Math.Sqrt (f * A * length * weightedHeightsDifference);
+
+			return K;
+		}
 		#endregion
 
 		#region Utility methods, most of them allow behavior factorization.
@@ -89,6 +111,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return AirPressureInBar;
 		}
 		#endregion
+
 	}
 }
 

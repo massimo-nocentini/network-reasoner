@@ -22,6 +22,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		double visitControVariantLittleKFormula (
 			ControVariantLittleKFormula controVariantLittleKFormula);
 
+		double visitKvalueFormula (
+			KvalueFormula kvalueFormula);
+
+
 
 	}
 }

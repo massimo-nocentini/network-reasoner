@@ -28,20 +28,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge,
 				GasFormulaVisitor aFormulaVisitor)
 			{
-				var f = Fvector.valueAt (anEdge);
-				var A = anEdge.AmbientParameters.Aconstant / 
-					Math.Pow (anEdge.DiameterInMillimeters, 5);
+				KvalueFormula formula = new KvalueFormula ();
 
-				var unknownForStartNode = unknownVector.valueAt (anEdge.StartNode);
-				var unknownForEndNode = unknownVector.valueAt (anEdge.EndNode);
+				formula.EdgeFvalue = Fvector.valueAt (anEdge);
+				formula.EdgeDiameterInMillimeters = anEdge.DiameterInMillimeters;
+				formula.UnknownForEdgeStartNode = unknownVector.valueAt (anEdge.StartNode);
+				formula.UnknownForEdgeEndNode = unknownVector.valueAt (anEdge.EndNode);
+				formula.EdgeCovariantLittleK = anEdge.coVariantLittleK (aFormulaVisitor);
+				formula.EdgeControVariantLittleK = anEdge.controVariantLittleK (aFormulaVisitor);
+				formula.EdgeLength = anEdge.Length;
 				
-				var weightedHeightsDifference = 
-					anEdge.coVariantLittleK (aFormulaVisitor) * unknownForStartNode - 
-					anEdge.controVariantLittleK (aFormulaVisitor) * unknownForEndNode;
-
-				var K = 1 / Math.Sqrt (f * A * anEdge.Length * weightedHeightsDifference);
-
+				var K = formula.accept(aFormulaVisitor);
 				Kvector.atPut (anEdge, K);
+
+
 			}
 			#endregion
 		}
