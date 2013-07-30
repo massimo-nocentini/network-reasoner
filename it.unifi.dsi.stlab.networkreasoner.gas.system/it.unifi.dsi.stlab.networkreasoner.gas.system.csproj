@@ -30,6 +30,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="log4net">
+      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -53,5 +56,10 @@
       <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exactly-dimensioned-instance\log4net-filebased-config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

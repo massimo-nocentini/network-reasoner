@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using log4net;
+using log4net.Config;
+using System.IO;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
 	public class NetwonRaphsonSystem
 	{
+		private static readonly ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+
+		static NetwonRaphsonSystem ()
+		{
+			XmlConfigurator.Configure (new FileInfo ("exactly-dimensioned-instance/log4net-filebased-config.xml"));
+		}
+
 		Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
 		Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
@@ -21,6 +31,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void useFormulaVisitor (GasFormulaVisitor aFormulaVisitor)
 		{
 			this.FormulaVisitor = aFormulaVisitor;
+		}
+
+		public void writeSomeLog (String infoMessage)
+		{
+			log.Info (infoMessage);
 		}
 
 		public void initializeWith (GasNetwork network)
