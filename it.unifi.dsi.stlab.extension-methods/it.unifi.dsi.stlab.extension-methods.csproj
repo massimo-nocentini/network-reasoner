@@ -42,6 +42,12 @@
     <Reference Include="VDS.Common">
       <HintPath>..\third-party-libraries\dotnetrdf_library_100_stable\Core\net40\VDS.Common.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\third-party-libraries\MathNet.Numerics\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -50,6 +56,8 @@
     <Compile Include="ILiteralNodeExtensionMethods.cs" />
     <Compile Include="IUriNodeExtensionMethods.cs" />
     <Compile Include="ICollectionExtensionMethods.cs" />
+    <Compile Include="VectorExtensionMethods.cs" />
+    <Compile Include="MatrixExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

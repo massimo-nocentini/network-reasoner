@@ -97,6 +97,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public long Height { get; set; }
 
+		public string Identifier {
+			get;
+			set;
+		}
+
 		public NodeRole Role{ get; set; }
 
 		public void initializeWith (GasNodeAbstract aNode)
@@ -115,6 +120,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				throw new HeightPropertyMissingException ();
 			}
 			this.Height = gasNodeTopological.Height.Value;
+			this.Identifier = gasNodeTopological.Identifier;
 		}
 
 		public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)

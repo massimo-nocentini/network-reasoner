@@ -17,6 +17,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		[SetUp()]
 		public void SetupNetwork ()
 		{
+			this.aGasNetwork = new GasNetwork ();
+
 			GasNodeAbstract nodeAwithSupplyGadget = this.makeNodeA ();
 			GasNodeAbstract nodeBwithLoadGadget = this.makeNodeB ();
 			GasNodeAbstract nodeCwithLoadGadger = this.makeNodeC ();
@@ -45,7 +47,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeGadget supplyGadget = new GasNodeGadgetSupply{
 				MaxQ = 198.3,
 				MinQ = 10.4,
-				SetupPressure = 87.3
+				SetupPressure = 500.3
 			};
 
 			return new GasNodeWithGadget{
@@ -63,7 +65,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
-				Load = 37.9
+				Load = 200.0
 			};
 
 			return new GasNodeWithGadget{
@@ -81,7 +83,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
-				Load = 56.9
+				Load = 180.0
 			};
 
 			return new GasNodeWithGadget{
@@ -99,9 +101,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			return new GasEdgePhysical{
 				Described = anEdgeAB,
-				Length = 200000,
-				Roughness = 3982,
-				Diameter = 3872,
+				Length = 5000,
+				Roughness = 982,
+				Diameter = 120,
 				MaxSpeed = 3762
 			};
 		}
@@ -115,9 +117,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			return new GasEdgePhysical{
 				Described = anEdgeCB,
-				Length = 100000,
+				Length = 3000,
 				Roughness = 982,
-				Diameter = 872,
+				Diameter = 200,
 				MaxSpeed = 762
 			};
 		}
@@ -152,6 +154,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				AmbientParameters = valid_initial_ambient_parameters()
 			};
 			system.Log = log;
+
+			system.writeSomeLog("first interesting test");
 
 			system.initializeWith (this.aGasNetwork);
 			var resultsAfterOneMutation = system.mutate ();

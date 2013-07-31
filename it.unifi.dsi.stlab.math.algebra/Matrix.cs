@@ -116,8 +116,9 @@ namespace it.unifi.dsi.stlab.math.algebra
 			Dictionary<ColumnIndexType, int> columnsEnumeration,
 			Vector<RowIndexType> aVector)
 		{
-			List<Tuple<int, int, double>> indices = 
-				new List<Tuple<int, int, double>> ();
+
+			var aMatrixForSolving = this.forComputationAmong (
+				rowsEnumeration, columnsEnumeration);
 
 			Dictionary<int, RowIndexType> coefficientsInverseEnumeration = 
 				new Dictionary<int, RowIndexType> ();
@@ -125,19 +126,6 @@ namespace it.unifi.dsi.stlab.math.algebra
 			foreach (var pair in rowsEnumeration) {
 				coefficientsInverseEnumeration.Add (pair.Value, pair.Key);
 			}
-
-			foreach (var matrixIndex in this.aMatrix.Keys) {
-				indices.Add (new Tuple<int, int, double> (
-						rowsEnumeration [matrixIndex.Key],
-						columnsEnumeration [matrixIndex.Value],
-						this.aMatrix [matrixIndex])
-				);
-			}
-
-			var aMatrixForSolving = DenseMatrix.OfIndexed (
-				rowsEnumeration.Count,
-				columnsEnumeration.Count,
-				indices);
 
 			var aVectorForSolving = aVector.forComputationAmong (
 				rowsEnumeration, 0);
@@ -154,6 +142,29 @@ namespace it.unifi.dsi.stlab.math.algebra
 			}
 
 			return result;
+		}
+
+		public Matrix forComputationAmong (
+			Dictionary<RowIndexType, int> rowsEnumeration,
+			Dictionary<ColumnIndexType, int> columnsEnumeration)
+		{
+			List<Tuple<int, int, double>> indices = 
+				new List<Tuple<int, int, double>> ();
+
+			foreach (var matrixIndex in this.aMatrix.Keys) {
+				indices.Add (new Tuple<int, int, double> (
+						rowsEnumeration [matrixIndex.Key],
+						columnsEnumeration [matrixIndex.Value],
+						this.aMatrix [matrixIndex])
+				);
+			}
+
+			var aMatrixForSolving = DenseMatrix.OfIndexed (
+				rowsEnumeration.Count,
+				columnsEnumeration.Count,
+				indices);
+
+			return aMatrixForSolving;
 		}
 	}
 }

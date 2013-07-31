@@ -8,19 +8,12 @@ using log4net.Config;
 using System.IO;
 using System.Linq;
 using it.unifi.dsi.stlab.extensionmethods;
+using System.Globalization;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
 	public class NetwonRaphsonSystem
 	{
-
-
-		public NetwonRaphsonSystem ()
-		{
-			NodesEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
-				() => this.Nodes.enumerate ());
-		}
-
 		Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
 		Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
@@ -34,6 +27,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public ILog Log{ get; set; }
 		
 		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
+
+		Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
+
+		public NetwonRaphsonSystem ()
+		{
+			NodesEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
+				() => this.Nodes.enumerate ());
+
+			EdgesEnumeration = new Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> (
+				() => this.Edges.enumerate ());
+
+		}
 
 		public void writeSomeLog (String infoMessage)
 		{
@@ -96,9 +101,32 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public OneStepMutationResults mutate ()
 		{
+			this.Log.Info ("================================================================");
+			this.Log.Info ("Start of a new mutation step");
+
+			this.Log.Info ("The following nodes enumeration is used throughout the system computation:");
+			foreach (var pair in this.NodesEnumeration.Value) {
+				this.Log.InfoFormat ("Node: {0} -> Index: {1}", 
+				                     pair.Key.Identifier, pair.Value);
+			}
+
+			this.Log.Info ("The following edges enumeration is used throughout the system computation:");
+			foreach (var pair in this.EdgesEnumeration.Value) {
+				this.Log.InfoFormat ("(StartNode, EndNode): ({0},{1}) -> Index: {2}", 
+				                     pair.Key.StartNode.Identifier, 
+				                     pair.Key.EndNode.Identifier, 
+				                     pair.Value);
+			}
+
 			var unknownVectorAtPreviousStep = UnknownVector;
 
+			unknownVectorAtPreviousStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+				writeIntoLog (this.Log, "Unknowns at previous step: {0}");
+
 			var FvectorAtPreviousStep = Fvector;
+
+			FvectorAtPreviousStep.forComputationAmong (this.EdgesEnumeration.Value, -11010101010).
+				writeIntoLog (this.Log, "F values at previous step: {0}");
 
 			var KvectorAtCurrentStep = computeKvector (
 				unknownVectorAtPreviousStep,
@@ -109,6 +137,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			var AmatrixAtCurrentStep =
 				computeAmatrix (KvectorAtCurrentStep);
+
+			// instead of having a single string for the message, put a lambda expression that gives 
+			// the representation string.
+			AmatrixAtCurrentStep.forComputationAmong (
+				this.NodesEnumeration.Value, 
+				this.NodesEnumeration.Value).writeIntoLog (
+				this.Log, "A matrix at current step: {0}");
 
 			var JacobianMatrixAtCurrentStep =
 				computeJacobianMatrix (KvectorAtCurrentStep);
