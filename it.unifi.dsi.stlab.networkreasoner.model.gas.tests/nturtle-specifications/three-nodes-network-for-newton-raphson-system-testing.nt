@@ -1,0 +1,160 @@
+# @base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+# the following are the namespaces for our contexts
+
+@prefix network: <http://stlab.dsi.unifi.it/networkreasoner/network/> .
+@prefix property: <http://stlab.dsi.unifi.it/networkreasoner/property/> .
+@prefix gadget: <http://stlab.dsi.unifi.it/networkreasoner/gadget/> .
+@prefix type: <http://stlab.dsi.unifi.it/networkreasoner/type/> .
+@prefix csharp: <http://stlab.dsi.unifi.it/networkreasoner/csharp-types/> .
+@prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
+@prefix validator: <http://stlab.dsi.unifi.it/networkreasoner/validator/> .
+@prefix tag: <http://stlab.dsi.unifi.it/networkreasoner/tag/> .
+
+# the node B will be a supplier node.
+network:nodeA-topological
+  a				type:node ;
+  property:Identifier		"node A" ;
+  property:Height		"35"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"The node A is the only supplier." ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+network:nodeA
+  a				type:node-with-gadget ;
+  property:Equipped		network:nodeA-topological  ;
+  property:Gadget		gadget:supply .
+  
+gadget:supply
+  a				type:supplier ;
+  property:SetupPressure	"157.34"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxQ			"785.23"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MinQ			"100.00"^^<http://www.w3.org/2001/XMLSchema#double> .  
+
+gadget:loadB
+  a				type:loader ;
+  property:Load			"27.34"^^<http://www.w3.org/2001/XMLSchema#double> .  
+
+gadget:loadC
+  a				type:loader ;
+  property:Load			"21.34"^^<http://www.w3.org/2001/XMLSchema#double> .
+
+network:nodeC-topological
+  a				type:node ;
+  property:Identifier		"node C" ;
+  property:Height		"5"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"This is a node with a load gadget." ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+network:nodeC
+  a				type:node-with-gadget ;
+  property:Equipped		network:nodeC-topological  ;
+  property:Gadget		gadget:loadC .
+
+network:nodeB-topological
+  a				type:node ;
+  property:Identifier		"node B" ;
+  property:Height		"1500"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Comment		"This is another node with a load gadget" ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+network:nodeB
+  a				type:node-with-gadget ;
+  property:Equipped		network:nodeB-topological  ;
+  property:Gadget		gadget:loadB .  
+
+# we want to represent the following topology:
+# A -> D
+# A -> B
+# B -> C
+# C -> D
+
+network:edgeAD-topological
+  a				type:edge-topological ;
+  property:StartNode		network:nodeA ;
+  property:EndNode		network:nodeD ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+# we do not write the ``tag:DeleteAfterParsing'' predicate since it is the topmost
+# decoration we would like to do on the edge ``edgeAD-topological''.
+network:edgeAD-switched-off
+  a				type:edge-with-gadget ;
+  property:Gadget		gadget:off-switcher ;
+  property:Equipped		network:edgeAD-topological .
+  
+gadget:off-switcher
+  a				type:edge-switch-off .  
+  
+network:edgeAB-topological
+  a				type:edge-topological ;
+  property:StartNode		network:nodeA ;
+  property:EndNode		network:nodeB-supplier ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+network:edgeAB-physical
+  a				type:edge-physical ;
+  property:Length		"150"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"4.7"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"4.8"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"4.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeAB-topological .
+  
+network:edgeBC-topological
+  a				type:edge-topological ;
+  property:StartNode		network:nodeB-supplier ;
+  property:EndNode		network:nodeC ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+network:edgeBC-physical
+  a				type:edge-physical ;
+  property:Length		"3400"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"5.968"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"2.35"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeBC-topological .
+  
+network:edgeDB-topological
+  a				type:edge-topological ;
+  property:StartNode		network:nodeD ;
+  property:EndNode		network:nodeB-supplier ;
+  tag:DeleteAfterParsing	"true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+network:edgeDB-physical
+  a				type:edge-physical ;
+  property:Length		"15000"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  property:Roughness		"17"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Diameter		"459.68"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:MaxSpeed		"123"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:Described		network:edgeDB-topological .
+  
+validator:dot-viewer
+  a					type:dot-viewer-validator ;
+  property:ImageEncoding		"svg" ;
+  property:DotCommand			"dot" ;
+  property:DotRepresentationOutputFile	"simple-output-for-not-connected-network-with-one-switched-off-edge.dot" ;
+  property:GeneratedImageOutputFile	"simple-output-for-not-connected-network-with-one-switched-off-edge.svg" ;
+  property:Enabled			"true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  property:RaiseException		"true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  property:WriteLog			"false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  
+network:main
+  a						type:gas-network ;
+  property:Description				"This network represents a gas network" ;
+  property:DotRepresentationValidator		validator:dot-viewer ;
+  tag:ParserResultReceiverPropertyName		"ParserResultReceiver" ;
+  tag:MainNetwork				"" .
+  
+# the following is the really interesting line to instantiate an object for
+# the subjects above.
+type:node			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge-with-gadget		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeWithGadget, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge-topological		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:dot-viewer-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.DotRepresentationValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-network		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge-switch-off 		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeGadgetSwitchOff, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:edge-physical		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgePhysical, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:node-with-gadget		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeWithGadget, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:supplier			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetSupply, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:loader			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNodeGadgetLoad, it.unifi.dsi.stlab.networkreasoner.model.gas" .

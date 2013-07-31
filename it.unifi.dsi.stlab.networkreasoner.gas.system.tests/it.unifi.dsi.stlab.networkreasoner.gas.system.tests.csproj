@@ -37,6 +37,9 @@
     <Reference Include="MathNet.Numerics">
       <HintPath>..\third-party-libraries\MathNet.Numerics\Net40\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NodeForNetwonRaphsonSystemCreation.cs" />
@@ -44,6 +47,7 @@
     <Compile Include="EdgeForNetwonRaphsonSystemCreation.cs" />
     <Compile Include="EdgeForNetwonRaphsonSystemLittleKs.cs" />
     <Compile Include="NetwonRaphsonSystemLogging.cs" />
+    <Compile Include="NetwonRaphsonSystemThreeNodesNetwork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -63,5 +67,13 @@
       <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="log4net-configurations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="log4net-configurations\log4net-filebased-config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

@@ -62,9 +62,4 @@
       <Name>it.unifi.dsi.stlab.extension-methods</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="exactly-dimensioned-instance\log4net-filebased-config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>

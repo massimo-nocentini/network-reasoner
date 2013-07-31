@@ -13,16 +13,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class NetwonRaphsonSystem
 	{
-		private static readonly ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
 
-		static NetwonRaphsonSystem ()
-		{
-			XmlConfigurator.Configure (new FileInfo ("exactly-dimensioned-instance/log4net-filebased-config.xml"));
-		}
 
 		public NetwonRaphsonSystem ()
 		{
-			NodeEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
+			NodesEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
 				() => this.Nodes.enumerate ());
 		}
 
@@ -34,18 +29,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
-		GasFormulaVisitor FormulaVisitor{ get; set; }
+		public GasFormulaVisitor FormulaVisitor{ get; set; }
 
-		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodeEnumeration { get; set; }
-
-		public void useFormulaVisitor (GasFormulaVisitor aFormulaVisitor)
-		{
-			this.FormulaVisitor = aFormulaVisitor;
-		}
+		public ILog Logger{ get; set; }
+		
+		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
 
 		public void writeSomeLog (String infoMessage)
 		{
-			log.Info (infoMessage);
+			this.Logger.Info (infoMessage);
 		}
 
 		public void initializeWith (GasNetwork network)
@@ -227,8 +219,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
 				jacobianMatrixAtCurrentStep.SolveWithGivenEnumerations (
-					this.NodeEnumeration.Value,
-					this.NodeEnumeration.Value,
+					this.NodesEnumeration.Value,
+					this.NodesEnumeration.Value,
 					coefficientVectorForJacobianSystemFactorization);
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
