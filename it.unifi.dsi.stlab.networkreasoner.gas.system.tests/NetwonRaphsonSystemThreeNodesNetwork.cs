@@ -31,9 +31,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			this.aGasNetwork.Nodes.Add ("nodeB", nodeBwithLoadGadget);
 			this.aGasNetwork.Nodes.Add ("nodeC", nodeCwithLoadGadger);
 			this.aGasNetwork.Edges.Add ("edgeAB", edgeAB);
-			this.aGasNetwork.Edges.Add ("edgeCB", edgeCB);
-			
-			
+			this.aGasNetwork.Edges.Add ("edgeCB", edgeCB);			
 		}
 
 		GasNodeAbstract makeNodeA ()
@@ -146,13 +144,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
 
 			XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/log4net-filebased-config.xml")
+				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
 			system.FormulaVisitor = new GasFormulaVisitorExactlyDimensioned{
 				AmbientParameters = valid_initial_ambient_parameters()
 			};
+			system.Log = log;
 
 			system.initializeWith (this.aGasNetwork);
 			var resultsAfterOneMutation = system.mutate ();

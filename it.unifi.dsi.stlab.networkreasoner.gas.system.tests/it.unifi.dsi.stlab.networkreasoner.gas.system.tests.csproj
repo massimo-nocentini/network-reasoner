@@ -72,7 +72,7 @@
     <Folder Include="log4net-configurations\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="log4net-configurations\log4net-filebased-config.xml">
+    <None Include="log4net-configurations\for-three-nodes-network.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

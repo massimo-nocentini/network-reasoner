@@ -31,13 +31,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public GasFormulaVisitor FormulaVisitor{ get; set; }
 
-		public ILog Logger{ get; set; }
+		public ILog Log{ get; set; }
 		
 		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
 
 		public void writeSomeLog (String infoMessage)
 		{
-			this.Logger.Info (infoMessage);
+			this.Log.Info (infoMessage);
 		}
 
 		public void initializeWith (GasNetwork network)
