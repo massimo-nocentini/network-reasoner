@@ -120,17 +120,32 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			var unknownVectorAtPreviousStep = UnknownVector;
 
-			unknownVectorAtPreviousStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
-				writeIntoLog (this.Log, "Unknowns at previous step: {0}");
+			unknownVectorAtPreviousStep.forComputationAmong (
+				this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Relative Unknowns at previous step: {0}", representation)
+			);
 
 			var FvectorAtPreviousStep = Fvector;
 
-			FvectorAtPreviousStep.forComputationAmong (this.EdgesEnumeration.Value, -11010101010).
-				writeIntoLog (this.Log, "F values at previous step: {0}");
+			this.Edges.ForEach (anEdge => anEdge.stringRepresentationUsing (
+				FvectorAtPreviousStep, (edgeRepresentation, FvalueRepresentation) => 
+				this.Log.InfoFormat ("F value of {0} at previous step: {1}", 
+			                    edgeRepresentation, FvalueRepresentation)
+			)
+			);
 
 			var KvectorAtCurrentStep = computeKvector (
 				unknownVectorAtPreviousStep,
 				FvectorAtPreviousStep);
+
+			this.Edges.ForEach (anEdge => anEdge.stringRepresentationUsing (
+				KvectorAtCurrentStep, (edgeRepresentation, KvalueRepresentation) => 
+				this.Log.InfoFormat ("K value of {0} at current step: {1}", 
+			                    edgeRepresentation, KvalueRepresentation)
+			)
+			);
 
 			var coefficientsVectorAtCurrentStep = 
 				new Vector<NodeForNetwonRaphsonSystem> ();
@@ -138,15 +153,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var AmatrixAtCurrentStep =
 				computeAmatrix (KvectorAtCurrentStep);
 
-			// instead of having a single string for the message, put a lambda expression that gives 
-			// the representation string.
 			AmatrixAtCurrentStep.forComputationAmong (
 				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).writeIntoLog (
-				this.Log, "A matrix at current step: {0}");
+				this.NodesEnumeration.Value).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"A matrix at current step before supply node fix it: {0}", representation)
+			);
 
 			var JacobianMatrixAtCurrentStep =
 				computeJacobianMatrix (KvectorAtCurrentStep);
+
+			JacobianMatrixAtCurrentStep.forComputationAmong (
+				this.NodesEnumeration.Value, 
+				this.NodesEnumeration.Value).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Jacobian matrix at current step before supply node fix it: {0}", representation)
+			);
 
 			foreach (var aNode in Nodes) {
 
@@ -158,6 +182,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				                              this.FormulaVisitor);
 			}
 
+			AmatrixAtCurrentStep.forComputationAmong (
+				this.NodesEnumeration.Value, 
+				this.NodesEnumeration.Value).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"A matrix at current step after supply node fix it: {0}", representation)
+			);
+
+			JacobianMatrixAtCurrentStep.forComputationAmong (
+				this.NodesEnumeration.Value, 
+				this.NodesEnumeration.Value).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Jacobian matrix at current step after supply node fix it: {0}", representation)
+			);
+
+			coefficientsVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Coefficients vector at current step: {0}", representation)
+			);
+
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				this.computeUnknowns (
 					AmatrixAtCurrentStep, 
@@ -165,19 +211,45 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					coefficientsVectorAtCurrentStep, 
 					JacobianMatrixAtCurrentStep);
 
+			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Absolute Unknowns vector at current step before fix negative entries: {0}", representation)
+			);
+
 			Random random = new Random ();
 			unknownVectorAtCurrentStep.updateEach (
 				(aNode, currentValue) => 
 				currentValue <= 0 ? random.NextDouble () / 10 : currentValue
 			);
 
+			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Absolute Unknowns vector at current step after fix negative entries: {0}", representation)
+			);
+
 			var QvectorAtCurrentStep = computeQvector (
 				unknownVectorAtCurrentStep, 
 				KvectorAtCurrentStep);
 
+			this.Edges.ForEach (anEdge => anEdge.stringRepresentationUsing (
+				QvectorAtCurrentStep, (edgeRepresentation, QvalueRepresentation) => 
+				this.Log.InfoFormat ("Q value of {0} at current step: {1}", 
+			                    edgeRepresentation, QvalueRepresentation)
+			)
+			);
+
 			var FvectorAtCurrentStep = computeFvector (
 				FvectorAtPreviousStep, 
 				QvectorAtCurrentStep);
+
+			this.Edges.ForEach (anEdge => anEdge.stringRepresentationUsing (
+				FvectorAtCurrentStep, (edgeRepresentation, FvalueRepresentation) => 
+				this.Log.InfoFormat ("F value of {0} at current step: {1}", 
+			                    edgeRepresentation, FvalueRepresentation)
+			)
+			);
 
 			// here we're assuming that the initial pressure vector for unknowns 
 			// is given in relative way, otherwise the following transformation
@@ -185,6 +257,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			unknownVectorAtCurrentStep.updateEach (
 				(aNode, absolutePressure) => 
 				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
+			);
+
+			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Relative Unknowns vector at current step: {0}", representation)
 			);
 
 			this.UnknownVector = unknownVectorAtCurrentStep;

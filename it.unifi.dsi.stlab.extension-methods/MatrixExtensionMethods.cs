@@ -7,13 +7,15 @@ namespace it.unifi.dsi.stlab.extensionmethods
 {
 	public static class MatrixExtensionMethods
 	{
-		public static void writeIntoLog (this Matrix aMatrix, ILog aLog, String formatMessage)
+		public static void stringRepresentation (
+			this Matrix aMatrix, Action<String> continuation)
 		{
 			var formatProvider = (CultureInfo)CultureInfo.InvariantCulture.Clone ();
 			formatProvider.TextInfo.ListSeparator = " ";
 
-			aLog.DebugFormat (formatMessage, 
-			                  aMatrix.ToString ("#0.00\n", formatProvider));
+			var representation = aMatrix.ToString ("#0.00\n", formatProvider);
+
+			continuation.Invoke (representation);
 		}
 	}
 }

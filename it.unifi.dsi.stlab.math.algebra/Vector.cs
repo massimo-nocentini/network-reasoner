@@ -87,8 +87,11 @@ namespace it.unifi.dsi.stlab.math.algebra
 		public void updateEach (Func<IndexType, Double, Double> updater)
 		{
 			var keys = aVector.Keys;
-			foreach (var key in keys) {
-				aVector [key] = updater.Invoke (key, aVector [key]);
+			try {
+				foreach (var key in keys) {
+					aVector [key] = updater.Invoke (key, aVector [key]);
+				}
+			} catch (Exception e) {
 			}
 		}
 

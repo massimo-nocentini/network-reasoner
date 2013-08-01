@@ -43,6 +43,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				GasFormulaVisitor formulaVisitor, 
 				EdgeForNetwonRaphsonSystem anEdge);
 
+			void stringRepresentationUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> aVector, 
+				Action<string, string> continuation, 
+				EdgeForNetwonRaphsonSystem anEdge);
+
+
 		}
 
 		public	class EdgeStateOn:EdgeState
@@ -68,9 +74,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				var K = formula.accept (aFormulaVisitor);
 				Kvector.atPut (anEdge, K);
 			}
-			#endregion
 
-			#region EdgeState implementation
 			public void fillAmatrixUsingFor (
 				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix, 
 				Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
@@ -190,6 +194,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 
 			}
+
+			public void stringRepresentationUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> aVector, 
+				Action<string, string> continuation, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+
+				var edgeRepresentation = anEdge.topologicalStringRepresentation ();
+
+				// here we assume that the given vector contains an index for the
+				// given edge since this edge is switched on and should 
+				// be involved in the computation
+				continuation.Invoke (edgeRepresentation, aVector.valueAt (anEdge).ToString ());
+			}
+
 			#endregion
 
 
@@ -245,6 +264,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			{
 				// here we don't need to do anything since the edge is switched off.
 			}
+
+			public void stringRepresentationUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> aVector, 
+				Action<string, string> continuation, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+
+				var edgeRepresentation = anEdge.topologicalStringRepresentation ();
+
+				// since this role makes the edge to which he is attached to switched off
+				// we don't care to look for an entry in the given vector.
+				continuation.Invoke (edgeRepresentation, "don't care because switched off");
+			}
+
 			#endregion
 		}
 
@@ -347,6 +380,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			this.SwitchState.putNewFvalueIntoUsingFor (
 				newFvector, Qvector, previousFvector, formulaVisitor, this);
+		}
+
+		public void stringRepresentationUsing (
+			Vector<EdgeForNetwonRaphsonSystem> FvectorAtPreviousStep, 
+			Action<String, String> continuation)
+		{
+			this.SwitchState.stringRepresentationUsingFor (
+				FvectorAtPreviousStep, continuation, this);
+		}
+
+		public String topologicalStringRepresentation ()
+		{
+			return string.Format ("({0} -> {1})", 
+			                      this.StartNode.Identifier, 
+			                      this.EndNode.Identifier);
 		}
 
 

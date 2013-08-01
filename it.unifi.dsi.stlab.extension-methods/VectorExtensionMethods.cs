@@ -7,15 +7,15 @@ namespace it.unifi.dsi.stlab.extensionmethods
 {
 	public static class VectorExtensionMethods
 	{
-		public static void writeIntoLog (this Vector aVector, ILog aLog, string formatMessage)
+		public static void stringRepresentation (
+			this Vector aVector, Action<String> continuation)
 		{
 			var formatProvider = (CultureInfo)CultureInfo.InvariantCulture.Clone ();
 			formatProvider.TextInfo.ListSeparator = " ";
 
-			aLog.DebugFormat (formatMessage, 
-			                  aVector.ToString ("#0.00\n", formatProvider));
+			var representation = aVector.ToString ("#0.00\n", formatProvider);
 
-
+			continuation.Invoke (representation);
 		}
 	}
 }
