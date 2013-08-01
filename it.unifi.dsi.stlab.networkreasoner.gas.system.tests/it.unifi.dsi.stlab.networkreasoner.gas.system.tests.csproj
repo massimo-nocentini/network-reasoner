@@ -48,6 +48,7 @@
     <Compile Include="EdgeForNetwonRaphsonSystemLittleKs.cs" />
     <Compile Include="NetwonRaphsonSystemLogging.cs" />
     <Compile Include="NetwonRaphsonSystemThreeNodesNetwork.cs" />
+    <Compile Include="NetwonRaphsonSystemRingNetwork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,6 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net-configurations\for-three-nodes-network.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net-configurations\for-ring-network.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -158,7 +158,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this.NodesEnumeration.Value).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
-					"A matrix at current step before supply node fix it: {0}", representation)
+					"A matrix at current step before supply node fix it:\n{0}", representation)
 			);
 
 			var JacobianMatrixAtCurrentStep =
@@ -169,7 +169,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this.NodesEnumeration.Value).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
-					"Jacobian matrix at current step before supply node fix it: {0}", representation)
+					"Jacobian matrix at current step before supply node fix it:\n{0}", representation)
 			);
 
 			foreach (var aNode in Nodes) {
@@ -187,7 +187,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this.NodesEnumeration.Value).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
-					"A matrix at current step after supply node fix it: {0}", representation)
+					"A matrix at current step after supply node fix it:\n{0}", representation)
 			);
 
 			JacobianMatrixAtCurrentStep.forComputationAmong (
@@ -195,7 +195,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this.NodesEnumeration.Value).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
-					"Jacobian matrix at current step after supply node fix it: {0}", representation)
+					"Jacobian matrix at current step after supply node fix it:\n{0}", representation)
 			);
 
 			coefficientsVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).

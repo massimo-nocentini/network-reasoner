@@ -13,7 +13,7 @@ namespace it.unifi.dsi.stlab.extensionmethods
 			var formatProvider = (CultureInfo)CultureInfo.InvariantCulture.Clone ();
 			formatProvider.TextInfo.ListSeparator = " ";
 
-			var representation = aMatrix.ToString ("#0.00\n", formatProvider);
+			var representation = aMatrix.ToMatrixString (aMatrix.RowCount, aMatrix.ColumnCount, formatProvider);
 
 			continuation.Invoke (representation);
 		}
