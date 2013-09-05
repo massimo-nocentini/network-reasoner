@@ -251,19 +251,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			)
 			);
 
-			// here we're assuming that the initial pressure vector for unknowns 
-			// is given in relative way, otherwise the following transformation
-			// isn't correct because mix values with different measure unit.
-			unknownVectorAtCurrentStep.updateEach (
-				(aNode, absolutePressure) => 
-				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
-			);
-
-			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
-				stringRepresentation (
-					representation => this.Log.InfoFormat (
-					"Relative Unknowns vector at current step: {0}", representation)
-			);
+//			// here we're assuming that the initial pressure vector for unknowns 
+//			// is given in relative way, otherwise the following transformation
+//			// isn't correct because mix values with different measure unit.
+//			unknownVectorAtCurrentStep.updateEach (
+//				(aNode, absolutePressure) => 
+//				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
+//			);
+//
+//			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+//				stringRepresentation (
+//					representation => this.Log.InfoFormat (
+//					"Relative Unknowns vector at current step: {0}", representation)
+//			);
 
 			this.UnknownVector = unknownVectorAtCurrentStep;
 			this.Fvector = FvectorAtCurrentStep;
@@ -369,6 +369,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			return newFvector;
 		}
+
+		public Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ()
+		{
+			
+			// here we're assuming that the initial pressure vector for unknowns 
+			// is given in relative way, otherwise the following transformation
+			// isn't correct because mix values with different measure unit.
+			this.UnknownVector.updateEach (
+				(aNode, absolutePressure) => 
+				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
+			);
+
+			this.UnknownVector.forComputationAmong (
+				this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Relative Unknowns vector at current step: {0}", representation)
+			);
+
+			return this.UnknownVector;
+		}
+
 	}
 }
 

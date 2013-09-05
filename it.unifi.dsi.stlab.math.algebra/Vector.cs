@@ -86,13 +86,19 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 		public void updateEach (Func<IndexType, Double, Double> updater)
 		{
+			Dictionary<IndexType, Double> updated = 
+				new Dictionary<IndexType, double> ();
+
 			var keys = aVector.Keys;
-			try {
-				foreach (var key in keys) {
-					aVector [key] = updater.Invoke (key, aVector [key]);
-				}
-			} catch (Exception e) {
+			foreach (var key in keys) {
+				var updatedValue = updater.Invoke (key, aVector [key]);
+				updated.Add (key, updatedValue);
 			}
+
+			foreach (var pair in updated) {
+				aVector [pair.Key] = pair.Value;
+			}
+
 		}
 
 		public Vector forComputationAmong (

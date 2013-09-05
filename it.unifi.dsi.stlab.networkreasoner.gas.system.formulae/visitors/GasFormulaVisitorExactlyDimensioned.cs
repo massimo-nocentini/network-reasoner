@@ -70,18 +70,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var f = aKvalueFormula.EdgeFvalue;
 
 			var A = this.AmbientParameters.Aconstant / 
-				Math.Pow (aKvalueFormula.EdgeDiameterInMillimeters, 5);
+				Math.Pow (aKvalueFormula.EdgeDiameterInMillimeters / 1000, 5);
 
 			var unknownForStartNode = aKvalueFormula.UnknownForEdgeStartNode;
 			var unknownForEndNode = aKvalueFormula.UnknownForEdgeEndNode;
 				
-			var weightedHeightsDifference = 
+			var weightedHeightsDifference = Math.Abs (
 				aKvalueFormula.EdgeCovariantLittleK * unknownForStartNode - 
-				aKvalueFormula.EdgeControVariantLittleK * unknownForEndNode;
+				aKvalueFormula.EdgeControVariantLittleK * unknownForEndNode
+			);
 
 			var length = aKvalueFormula.EdgeLength;
 
-			var K = 1 / Math.Sqrt (f * A * length * weightedHeightsDifference);
+			var K = 3600 / Math.Sqrt (f * A * length * weightedHeightsDifference);
 
 			return K;
 		}
@@ -159,13 +160,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		}
 
 		public double visitFvalueFormula (FvalueFormula FvalueFormula)
-		{
-			
+		{			
 
-			var numeratorForRe = 4 * FvalueFormula.EdgeQvalue * 
+			double numeratorForRe = Math.Abs ((FvalueFormula.EdgeQvalue * 4) / 3600) * 
 				this.AmbientParameters.RefDensity ();
 
-			var denominatorForRe = Math.PI * FvalueFormula.EdgeDiameterInMillimeters * 
+			var denominatorForRe = Math.PI * (FvalueFormula.EdgeDiameterInMillimeters / 1000) * 
 				this.AmbientParameters.ViscosityInPascalTimesSecond;
 
 			var Re = numeratorForRe / denominatorForRe;

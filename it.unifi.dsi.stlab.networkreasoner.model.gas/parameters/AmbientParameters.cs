@@ -47,7 +47,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Double RefDensity ()
 		{
-			return Math.Pow (10, 5) * RefPressureInBar * MolWeight / 
+			return Math.Pow (10, 5) * RefPressureInBar / 
 				(Rconstant * RefTemperatureInKelvin);
 		}
 	

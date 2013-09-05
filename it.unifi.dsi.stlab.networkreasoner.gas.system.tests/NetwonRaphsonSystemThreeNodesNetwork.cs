@@ -40,14 +40,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node A with supply gadget",
-				Height = 200,
+				Height = 0,
 				Identifier = "nA"
 			};
 
 			GasNodeGadget supplyGadget = new GasNodeGadgetSupply{
 				MaxQ = 198.3,
 				MinQ = 10.4,
-				SetupPressure = 500.3
+				SetupPressure = 30
 			};
 
 			return new GasNodeWithGadget{
@@ -60,12 +60,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node B with load gadget",
-				Height = 67,
+				Height = 0,
 				Identifier = "nB"
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
-				Load = 200.0
+				Load = 0.0
 			};
 
 			return new GasNodeWithGadget{
@@ -78,12 +78,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node C with supply gadget",
-				Height = 23,
+				Height = 0,
 				Identifier = "nC"
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
-				Load = 180.0
+				Load = 100.0
 			};
 
 			return new GasNodeWithGadget{
@@ -101,10 +101,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			return new GasEdgePhysical{
 				Described = anEdgeAB,
-				Length = 5000,
-				Roughness = 982,
-				Diameter = 120,
-				MaxSpeed = 3762
+				Length = 500,
+				Roughness = 55,
+				Diameter = 100,
+				MaxSpeed = 10
 			};
 		}
 
@@ -117,10 +117,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			return new GasEdgePhysical{
 				Described = anEdgeCB,
-				Length = 3000,
-				Roughness = 982,
-				Diameter = 200,
-				MaxSpeed = 762
+				Length = 500,
+				Roughness = 55,
+				Diameter = 100,
+				MaxSpeed = 10
 			};
 		}
 
@@ -150,15 +150,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			);
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
-			system.FormulaVisitor = new GasFormulaVisitorExactlyDimensioned{
-				AmbientParameters = valid_initial_ambient_parameters()
+			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
+				AmbientParameters = valid_initial_ambient_parameters ()
 			};
+			system.FormulaVisitor = formulaVisitor;
 			system.Log = log;
 
-			system.writeSomeLog("first interesting test");
+			system.writeSomeLog ("first interesting test");
 
 			system.initializeWith (this.aGasNetwork);
 			var resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+			resultsAfterOneMutation = system.mutate ();
+
+			var relativeUnknowns = system.denormalizeUnknowns ();
+
+
 		}
 	}
 }
