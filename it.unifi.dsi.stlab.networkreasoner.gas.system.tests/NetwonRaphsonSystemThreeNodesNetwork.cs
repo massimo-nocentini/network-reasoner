@@ -103,7 +103,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Described = anEdgeAB,
 				Length = 500,
 				Roughness = 55,
-				Diameter = 100,
+				Diameter = 70,
 				MaxSpeed = 10
 			};
 		}
@@ -119,7 +119,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Described = anEdgeCB,
 				Length = 500,
 				Roughness = 55,
-				Diameter = 100,
+				Diameter = 50,
 				MaxSpeed = 10
 			};
 		}
