@@ -37,7 +37,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-
+		public int IterationNumber{
+			get;
+			set;
+		}
 
 
 

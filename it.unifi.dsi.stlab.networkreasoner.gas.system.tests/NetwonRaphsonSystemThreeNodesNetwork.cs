@@ -159,17 +159,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			system.writeSomeLog ("first interesting test");
 
 			system.initializeWith (this.aGasNetwork);
-			var resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
-			resultsAfterOneMutation = system.mutate ();
+			var resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
 
 			var relativeUnknowns = system.denormalizeUnknowns ();
 

@@ -144,6 +144,46 @@ namespace it.unifi.dsi.stlab.math.algebra
 			return DenseVector.OfIndexedEnumerable (
 				orderedEnumerable.Count, orderedEnumerable);
 		}
+
+		public Vector<IndexType> ratio (
+			Vector<IndexType> anotherVector)
+		{
+			// factor out this code --------------------------------
+			foreach (var keyInLeftVector in this.aVector.Keys) {
+				if (anotherVector.aVector.Keys.Contains (keyInLeftVector) == false) {
+					throw new RightVectorHasMissingIndexException{ 
+						MissingIndex = keyInLeftVector};
+				}
+			}
+
+			foreach (var keyInRightVector in anotherVector.aVector.Keys) {
+				if (this.aVector.Keys.Contains (keyInRightVector) == false) {
+					throw new LeftVectorHasMissingIndexException{ 
+						MissingIndex = keyInRightVector};
+				}
+			}
+			// -----------------------------------------------------
+
+			Vector<IndexType> result = 
+				new Vector<IndexType> ();
+
+			foreach (IndexType key in this.aVector.Keys) {
+				var valueForKeyInOtherVector = 
+					anotherVector.valueAt (key);
+
+				result.atPut (key, this.valueAt (key) /
+					valueForKeyInOtherVector
+				);
+			}
+			return result;
+		}
+
+		public bool TrueForAll (Predicate<IndexType> predicate)
+		{
+			return this.aVector.Keys.ToList ().TrueForAll (predicate);
+		}
+
+
 	}
 }
 

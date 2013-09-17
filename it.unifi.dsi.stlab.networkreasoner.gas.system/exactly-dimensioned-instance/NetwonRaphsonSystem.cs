@@ -99,7 +99,45 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Edges = collector;
 		}
 
-		public OneStepMutationResults mutate ()
+		abstract class MutateComputationDriver
+		{
+			public abstract bool canDoOneMoreStep ();
+
+			public abstract void doOneMoreStep (Action step);
+		}
+
+		class MutateComputationDriverDoOneMoreMutation : MutateComputationDriver
+		{
+			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NetwonRaphsonSystem.MutateComputationDriver
+			public override bool canDoOneMoreStep ()
+			{
+				return true;
+			}
+
+			public override void doOneMoreStep (Action step)
+			{
+				step.Invoke ();
+			}
+			#endregion
+		}
+
+		class MutateComputationDriverStopMutate : MutateComputationDriver
+		{
+			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NetwonRaphsonSystem.MutateComputationDriver
+			public override bool canDoOneMoreStep ()
+			{
+				return false;
+			}
+
+			public override void doOneMoreStep (Action step)
+			{
+				// nothing to do with step since we've to interrupt the computation
+			}
+			#endregion
+		}
+
+		public OneStepMutationResults repeatMutateUntil (
+			List<UntilConditionAbstract> untilConditions)
 		{
 			this.Log.Info ("================================================================");
 			this.Log.Info ("Start of a new mutation step");
@@ -116,6 +154,60 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				                     pair.Key.StartNode.Identifier, 
 				                     pair.Key.EndNode.Identifier, 
 				                     pair.Value);
+			}
+
+			OneStepMutationResults previousOneStepMutationResults = null;
+
+			OneStepMutationResults currentOneStepMutationResults = 
+			new OneStepMutationResults{
+				IterationNumber = 0
+			};
+
+			MutateComputationDriver mutateComputationDriver = 
+				new MutateComputationDriverDoOneMoreMutation ();
+
+			while (mutateComputationDriver.canDoOneMoreStep()) {			
+
+				untilConditions.ForEach (condition => {
+
+					if (this.CheckUntilCondition (() => condition.canContinue (
+							previousOneStepMutationResults, currentOneStepMutationResults)
+					)) {
+						mutateComputationDriver = new MutateComputationDriverStopMutate ();
+					}
+				}
+				);
+
+				mutateComputationDriver.doOneMoreStep (
+					step: () => {
+
+					previousOneStepMutationResults = currentOneStepMutationResults;
+
+					currentOneStepMutationResults = this.mutate (
+						previousOneStepMutationResults.IterationNumber + 1);
+				}
+				);
+			}
+
+			return currentOneStepMutationResults;
+		}
+
+		public bool CheckUntilCondition (Func<bool> condition)
+		{
+			return condition.Invoke ();
+		}
+
+		public OneStepMutationResults mutateWithoutIterationNumber ()
+		{
+			return this.mutate (null);
+		}
+
+		public OneStepMutationResults mutate (
+			Nullable<int> iterationNumber)
+		{
+			if (iterationNumber.HasValue) {
+				this.Log.InfoFormat ("--------------------Iteration {0}--------------------", 
+				                     iterationNumber.Value);
 			}
 
 			var unknownVectorAtPreviousStep = UnknownVector;
@@ -275,6 +367,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			result.Qvector = QvectorAtCurrentStep;
 			result.Jacobian = JacobianMatrixAtCurrentStep;
 			result.Fvector = FvectorAtCurrentStep;
+
+			if (iterationNumber.HasValue) {
+				result.IterationNumber = iterationNumber.Value;
+			}
 
 			return result;
 		}

@@ -404,7 +404,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			system.writeSomeLog ("first interesting test");
 
 			system.initializeWith (this.aGasNetwork);
-			var resultsAfterOneMutation = system.mutate ();
+			var resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
 		}
 	}
 }
