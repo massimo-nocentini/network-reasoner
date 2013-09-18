@@ -6,6 +6,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using System.IO;
 using log4net.Config;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -400,10 +401,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			};
 
 			NetwonRaphsonSystemInterface system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor
+				FormulaVisitor = formulaVisitor,
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
+					Log = log
+				}
 			};
-
-			system = new NewtonRaphsonSystemWithLogDecorator (system, log);
 
 			system.initializeWith (this.aGasNetwork);
 			var resultsAfterOneMutation = system.mutateWithoutIterationNumber ();

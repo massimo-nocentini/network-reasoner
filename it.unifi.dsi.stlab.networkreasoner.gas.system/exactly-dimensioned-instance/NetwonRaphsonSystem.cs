@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using it.unifi.dsi.stlab.extensionmethods;
 using System.Globalization;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -24,6 +25,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public GasFormulaVisitor FormulaVisitor{ get; set; }
 
+		public NetwonRaphsonSystemEventsListener EventsListener{ get; set; }
+
 		public override Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
 
 		public  Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
@@ -35,7 +38,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			EdgesEnumeration = new Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> (
 				() => this.Edges.enumerate ());
-
 		}
 
 		public override void initializeWith (GasNetwork network)
@@ -90,6 +92,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			);
 
 			this.Edges = collector;
+
+			this.EventsListener.onInitializationCompleted (
+				this.Nodes, this.Edges, this.NodesEnumeration);
 		}
 
 		abstract class MutateComputationDriver
@@ -132,6 +137,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public override OneStepMutationResults repeatMutateUntil (
 			List<UntilConditionAbstract> untilConditions)
 		{
+			this.EventsListener.onRepeatMutateUntilStarted ();
+
 			OneStepMutationResults previousOneStepMutationResults = null;
 
 			OneStepMutationResults currentOneStepMutationResults = 
@@ -174,11 +181,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			OneStepMutationResults previousOneStepMutationResults, 
 			OneStepMutationResults currentOneStepMutationResults)
 		{
-			bool canContinue = condition.canContinue (
+			bool until = condition.canContinue (
 				previousOneStepMutationResults, 
 				currentOneStepMutationResults);
 
-			return canContinue == false;
+			bool computationShouldBeStopped = until == false;
+
+			if (computationShouldBeStopped) {
+				this.EventsListener.onComputationShouldBeStoppedDueTo (condition);
+			}
+
+			return computationShouldBeStopped;
 		}
 
 		public override OneStepMutationResults mutateWithoutIterationNumber ()
@@ -186,9 +199,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return this.mutate (null);
 		}
 
-		public override Vector<NodeForNetwonRaphsonSystem> computeUnknownVectorAtPreviousStep ()
+		public override Vector<NodeForNetwonRaphsonSystem> 
+			computeUnknownVectorAtPreviousStep ()
 		{
 			var unknownVectorAtPreviousStep = this.UnknownVector;
+
+			this.EventsListener.onUnknownVectorAtPreviousStepComputed (
+				unknownVectorAtPreviousStep);
 
 			return unknownVectorAtPreviousStep;
 		}
@@ -196,6 +213,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public override Vector<EdgeForNetwonRaphsonSystem> computeFvectorAtPreviousStep ()
 		{
 			var FvectorAtPreviousStep = Fvector;
+
+			this.EventsListener.onFvectorAtPreviousStepComputed (
+				FvectorAtPreviousStep);
 
 			return FvectorAtPreviousStep;
 		}
@@ -209,6 +229,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				aNode.fixMatrixIfYouHaveSupplyGadget (JacobianMatrixAtCurrentStep);
 			}
 			);
+
+			this.EventsListener.onMatricesFixedIfSupplyGadgetsPresent (
+				AmatrixAtCurrentStep, 
+				JacobianMatrixAtCurrentStep);
 		}
 
 		public override Vector<NodeForNetwonRaphsonSystem> computeCoefficientsVectorAtCurrentStep ()
@@ -219,6 +243,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Nodes.ForEach (aNode => aNode.putYourCoefficientInto (
 				coefficientsVectorAtCurrentStep, this.FormulaVisitor)
 			);
+
+			this.EventsListener.onCoefficientsVectorAtCurrentStepComputed (
+				coefficientsVectorAtCurrentStep);
 
 			return coefficientsVectorAtCurrentStep;
 		}
@@ -231,6 +258,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				(aNode, currentValue) => currentValue <= 0 ? 
 				random.NextDouble () / 10 : currentValue
 			);
+
+			this.EventsListener.onNegativeUnknownsFixed (unknownVectorAtCurrentStep);
 		}
 
 		public override void updatePreviousVectorsWithCurrentVectors (
@@ -267,6 +296,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public override OneStepMutationResults mutate (
 			Nullable<int> iterationNumber)
 		{
+			this.EventsListener.onMutateStep (iterationNumber);
+
 			var unknownVectorAtPreviousStep = this.computeUnknownVectorAtPreviousStep ();
 
 			var FvectorAtPreviousStep = this.computeFvectorAtPreviousStep ();
@@ -320,27 +351,31 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public override Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
-			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> Amatrix =
 				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => anEdge.fillAmatrixUsing (
-				aMatrix, kvectorAtCurrentStep, this.FormulaVisitor)
+				Amatrix, kvectorAtCurrentStep, this.FormulaVisitor)
 			);
 
-			return aMatrix;
+			this.EventsListener.onAmatrixComputed (Amatrix);
+
+			return Amatrix;
 		}
 
 		public override Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
-			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrix =
 				new Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> ();
 
 			this.Edges.ForEach (anEdge => anEdge.fillJacobianMatrixUsing (
-				aMatrix, kvectorAtCurrentStep, this.FormulaVisitor)
+				JacobianMatrix, kvectorAtCurrentStep, this.FormulaVisitor)
 			);
 
-			return aMatrix;
+			this.EventsListener.onJacobianMatrixComputed (JacobianMatrix);
+
+			return JacobianMatrix;
 		}
 
 		public override Vector<EdgeForNetwonRaphsonSystem> computeKvector (
@@ -352,6 +387,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Edges.ForEach (anEdge => anEdge.putKvalueIntoUsing (
 				Kvector, Fvector, unknownVector, this.FormulaVisitor)
 			);
+
+			this.EventsListener.onKvectorComputed (Kvector);
 
 			return Kvector;
 		}
@@ -377,6 +414,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
 
+			this.EventsListener.onUnknownVectorAtCurrentStepComputed (unknownVectorAtCurrentStep);
+
 			return unknownVectorAtCurrentStep;
 		}
 
@@ -390,6 +429,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Edges.ForEach (anEdge => anEdge.putQvalueIntoUsing (
 				Qvector, Kvector, unknownVector, this.FormulaVisitor)
 			);
+
+			this.EventsListener.onQvectorComputed (Qvector);
 
 			return Qvector;
 		}
@@ -405,12 +446,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				newFvector, Qvector, Fvector, this.FormulaVisitor)
 			);
 
+			this.EventsListener.onFvectorAtCurrentStepComputed (newFvector);
+
 			return newFvector;
 		}
 
 		public override Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ()
 		{
-			
 			// here we're assuming that the initial pressure vector for unknowns 
 			// is given in relative way, otherwise the following transformation
 			// isn't correct because mix values with different measure unit.
@@ -419,7 +461,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
 			);
 
-		
+			this.EventsListener.onUnknownWithDimensionReverted (this.UnknownVector);
+
 			return this.UnknownVector;
 		}
 
