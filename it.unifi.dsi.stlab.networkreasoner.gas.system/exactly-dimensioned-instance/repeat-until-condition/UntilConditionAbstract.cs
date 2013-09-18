@@ -9,6 +9,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			OneStepMutationResults previousOneStepMutationResults,
 			OneStepMutationResults currentOneStepMutationResults);
 
+		public abstract string stoppingCauseDescription ();
+
+
 	}
 }
 

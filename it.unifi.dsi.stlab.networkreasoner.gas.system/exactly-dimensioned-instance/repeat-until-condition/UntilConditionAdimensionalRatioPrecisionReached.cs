@@ -27,7 +27,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				return ratio > (this.Precision + 1) || ratio < (-this.Precision + 1);}
 			);
 		}
+
+		public override string stoppingCauseDescription ()
+		{
+			return string.Format ("the precision {0} against ratios has been reached", this.Precision);
+		}
 		#endregion
+
 
 	}
 }

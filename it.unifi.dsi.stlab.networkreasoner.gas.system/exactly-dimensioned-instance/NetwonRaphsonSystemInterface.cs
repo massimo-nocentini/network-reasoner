@@ -6,45 +6,48 @@ using it.unifi.dsi.stlab.networkreasoner.model.gas;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
-	public interface NetwonRaphsonSystemInterface
+	public abstract class NetwonRaphsonSystemInterface
 	{
-		Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
+		public abstract Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
-		Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
+		public abstract Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
 
-		List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
+		public abstract List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
-		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
+		public abstract List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
-		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
+		public abstract Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
 
-		void initializeWith (GasNetwork network);
+		public abstract void initializeWith (GasNetwork network);
 
-		OneStepMutationResults repeatMutateUntil (
+		public abstract OneStepMutationResults repeatMutateUntil (
 			List<UntilConditionAbstract> untilConditions);
 
-		bool CheckUntilCondition (Func<bool> condition);
+		public abstract bool decideIfComputationShouldBeStopped (
+			UntilConditionAbstract condition, 
+			OneStepMutationResults previousOneStepMutationResults, 
+			OneStepMutationResults currentOneStepMutationResults);
 
-		OneStepMutationResults mutateWithoutIterationNumber ();
+		public abstract OneStepMutationResults mutateWithoutIterationNumber ();
 
-		Vector<NodeForNetwonRaphsonSystem> computeUnknownsAtPreviousStep ();
+		public abstract Vector<NodeForNetwonRaphsonSystem> computeUnknownVectorAtPreviousStep ();
 
-		Vector<EdgeForNetwonRaphsonSystem> computeFvectorAtPreviousStep ();
+		public abstract Vector<EdgeForNetwonRaphsonSystem> computeFvectorAtPreviousStep ();
 
-		void fixMatricesIfSupplyGadgetsPresent (
+		public abstract void fixMatricesIfSupplyGadgetsPresent (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep);
 
-		Vector<NodeForNetwonRaphsonSystem> computeCoefficientsVectorAtCurrentStep ();
+		public abstract Vector<NodeForNetwonRaphsonSystem> computeCoefficientsVectorAtCurrentStep ();
 
-		void fixNegativeUnknowns (
+		public abstract void fixNegativeUnknowns (
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep);
 
-		void updatePreviousVectorsWithCurrentVectors (
+		public abstract void updatePreviousVectorsWithCurrentVectors (
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
 			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep);
 
-		OneStepMutationResults computeOneStepMutationResult (
+		public abstract OneStepMutationResults computeOneStepMutationResult (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
@@ -53,34 +56,34 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep, 
 			int? iterationNumber);
 
-		OneStepMutationResults mutate (
+		public abstract OneStepMutationResults mutate (
 			Nullable<int> iterationNumber);
 
-		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+		public abstract Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep);
 
-		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+		public abstract Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep);
 
-		Vector<EdgeForNetwonRaphsonSystem> computeKvector (
+		public abstract Vector<EdgeForNetwonRaphsonSystem> computeKvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector,
 			Vector<EdgeForNetwonRaphsonSystem> Fvector);
 
-		Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
+		public abstract Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> jacobianMatrixAtCurrentStep);
 
-		Vector<EdgeForNetwonRaphsonSystem> computeQvector (
+		public abstract Vector<EdgeForNetwonRaphsonSystem> computeQvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 			Vector<EdgeForNetwonRaphsonSystem> Kvector);
 
-		Vector<EdgeForNetwonRaphsonSystem> computeFvector (
+		public abstract Vector<EdgeForNetwonRaphsonSystem> computeFvector (
 			Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 			Vector<EdgeForNetwonRaphsonSystem> Qvector);
 
-		Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ();
+		public abstract Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ();
 	}
 }
 

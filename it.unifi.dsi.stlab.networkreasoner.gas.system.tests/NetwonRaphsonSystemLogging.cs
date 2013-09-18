@@ -11,7 +11,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void write_a_simple_message_should_produce_a_file ()
 		{
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem();
-			system.writeSomeLog("Hello, first stupid info log message.");
+			//system.writeSomeLog("Hello, first stupid info log message.");
 		}
 	}
 }

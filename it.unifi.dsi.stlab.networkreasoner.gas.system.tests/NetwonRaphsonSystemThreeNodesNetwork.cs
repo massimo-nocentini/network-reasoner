@@ -150,14 +150,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
+
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
 				AmbientParameters = valid_initial_ambient_parameters ()
 			};
-			system.FormulaVisitor = formulaVisitor;
-			system.Log = log;
 
-			system.writeSomeLog ("first interesting test");
+			NetwonRaphsonSystemInterface system = new NetwonRaphsonSystem {
+				FormulaVisitor = formulaVisitor
+			};
+
+			system = new NewtonRaphsonSystemWithLogDecorator (system, log);
 
 			system.initializeWith (this.aGasNetwork);
 			var resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
@@ -186,14 +188,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
+
+
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
 				AmbientParameters = valid_initial_ambient_parameters ()
 			};
-			system.FormulaVisitor = formulaVisitor;
-			system.Log = log;
 
-			system.writeSomeLog ("first interesting test");
+			NetwonRaphsonSystemInterface system = new NetwonRaphsonSystem {
+				FormulaVisitor = formulaVisitor
+			};
+
+			system = new NewtonRaphsonSystemWithLogDecorator (system, log);
 
 			system.initializeWith (this.aGasNetwork);
 

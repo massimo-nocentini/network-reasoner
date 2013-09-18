@@ -19,7 +19,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			return currentOneStepMutationResults.IterationNumber <
 				this.MaxNumberOfInterations;
 		}
+
+		public override string stoppingCauseDescription ()
+		{
+			return "max number of iterations reached";
+		}
 		#endregion
+
 
 	}
 }

@@ -395,13 +395,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-ring-network.xml")
 			);
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
-			system.FormulaVisitor = new GasFormulaVisitorExactlyDimensioned{
-				AmbientParameters = valid_initial_ambient_parameters()
+			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
+				AmbientParameters = valid_initial_ambient_parameters ()
 			};
-			system.Log = log;
 
-			system.writeSomeLog ("first interesting test");
+			NetwonRaphsonSystemInterface system = new NetwonRaphsonSystem {
+				FormulaVisitor = formulaVisitor
+			};
+
+			system = new NewtonRaphsonSystemWithLogDecorator (system, log);
 
 			system.initializeWith (this.aGasNetwork);
 			var resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
