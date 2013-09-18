@@ -31,6 +31,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public  Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
 
+		Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> originalNodesByComputationNodes =
+				new Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> ();
+
+		Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges =
+				new Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> ();
+
 		public NetwonRaphsonSystem ()
 		{
 			NodesEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
@@ -68,6 +74,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				// here we get the initial unknown guess for the current node
 				this.UnknownVector.atPut (newtonRaphsonNode,
 				                         initialUnknownGuessVector [aNode]);
+
+				this.originalNodesByComputationNodes.Add (
+					newtonRaphsonNode, aNode);
 			}
 			)
 			);
@@ -89,6 +98,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				// here we get the initial F values guess for the current node
 				this.Fvector.atPut (edgeForNetwonRaphsonSystem,
 				                    initialFvalueGuessVector [anEdge]);
+
+				this.originalEdgesByComputationEdges.Add (
+					edgeForNetwonRaphsonSystem, anEdge);
 			}
 			)
 			);
@@ -134,6 +146,32 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				// nothing to do with step since we've to interrupt the computation
 			}
 			#endregion
+		}
+
+		public  OneStepMutationResults repeatMutateUntilRevertingDomainBack (
+			List<UntilConditionAbstract> untilConditions,
+			out Dictionary<GasNodeAbstract, double> unknownsByNodes, 
+			out Dictionary<GasEdgeAbstract, double> QvaluesByEdges)
+		{
+			unknownsByNodes = new Dictionary<GasNodeAbstract, double> ();
+			QvaluesByEdges = new Dictionary<GasEdgeAbstract, double> ();
+
+			var oneStepMutationResults = this.repeatMutateUntil (untilConditions);
+
+			var relativeUnknowns = this.denormalizeUnknowns ();
+
+			foreach (var nodePair in this.originalNodesByComputationNodes) {
+				unknownsByNodes.Add (nodePair.Value, 
+				                    relativeUnknowns.valueAt (nodePair.Key));
+			}
+
+			foreach (var edgePair in this.originalEdgesByComputationEdges) {
+				QvaluesByEdges.Add (edgePair.Value,
+				                   oneStepMutationResults.Qvector.valueAt (edgePair.Key));
+			}
+
+
+			return oneStepMutationResults;
 		}
 
 		public override OneStepMutationResults repeatMutateUntil (
