@@ -12,23 +12,23 @@ using System.Globalization;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
-	public class NetwonRaphsonSystem
+	public class NetwonRaphsonSystem : NetwonRaphsonSystemInterface
 	{
-		Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
+		public Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
-		Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
+		public Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
 
-		List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
+		public List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
-		List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
+		public List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
 		public GasFormulaVisitor FormulaVisitor{ get; set; }
 
 		public ILog Log{ get; set; }
 		
-		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
+		public Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
 
-		Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
+		public Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
 
 		public NetwonRaphsonSystem ()
 		{
@@ -203,23 +203,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return this.mutate (null);
 		}
 
-		public OneStepMutationResults mutate (
-			Nullable<int> iterationNumber)
+		public Vector<NodeForNetwonRaphsonSystem> computeUnknownsAtPreviousStep ()
 		{
-			if (iterationNumber.HasValue) {
-				this.Log.InfoFormat ("--------------------Iteration {0}--------------------", 
-				                     iterationNumber.Value);
-			}
-
-			var unknownVectorAtPreviousStep = UnknownVector;
+			var unknownVectorAtPreviousStep = this.UnknownVector;
 
 			unknownVectorAtPreviousStep.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).
-				stringRepresentation (
-					representation => this.Log.InfoFormat (
-					"Relative Unknowns at previous step: {0}", representation)
+				this.NodesEnumeration.Value, -11010101010).stringRepresentation (
+				representation => this.Log.InfoFormat (
+				"Relative Unknowns at previous step: {0}", representation)
 			);
 
+			return unknownVectorAtPreviousStep;
+		}
+
+		public Vector<EdgeForNetwonRaphsonSystem> computeFvectorAtPreviousStep ()
+		{
 			var FvectorAtPreviousStep = Fvector;
 
 			this.Edges.ForEach (anEdge => anEdge.stringRepresentationUsing (
@@ -228,6 +226,100 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			                    edgeRepresentation, FvalueRepresentation)
 			)
 			);
+
+			return FvectorAtPreviousStep;
+		}
+
+		public void fixMatricesIfSupplyGadgetsPresent (
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep)
+		{
+			this.Nodes.ForEach (aNode => {
+				aNode.fixMatrixIfYouHaveSupplyGadget (AmatrixAtCurrentStep);
+				aNode.fixMatrixIfYouHaveSupplyGadget (JacobianMatrixAtCurrentStep);
+			}
+			);
+
+			AmatrixAtCurrentStep.forComputationAmong (
+				this.NodesEnumeration.Value, 
+				this.NodesEnumeration.Value).stringRepresentation (
+				representation => this.Log.InfoFormat ("A matrix at current step after supply node fix it:\n{0}", representation));
+
+			JacobianMatrixAtCurrentStep.forComputationAmong (
+				this.NodesEnumeration.Value, 
+				this.NodesEnumeration.Value).stringRepresentation (
+				representation => this.Log.InfoFormat ("Jacobian matrix at current step after supply node fix it:\n{0}", representation));
+		}
+
+		public Vector<NodeForNetwonRaphsonSystem> computeCoefficientsVectorAtCurrentStep ()
+		{
+			var coefficientsVectorAtCurrentStep = 
+				new Vector<NodeForNetwonRaphsonSystem> ();
+
+			this.Nodes.ForEach (aNode => aNode.putYourCoefficientInto (
+				coefficientsVectorAtCurrentStep, this.FormulaVisitor)
+			);
+			
+
+			coefficientsVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+				stringRepresentation (
+					representation => this.Log.InfoFormat (
+					"Coefficients vector at current step: {0}", representation)
+			);
+
+			return coefficientsVectorAtCurrentStep;
+		}
+
+		public void fixNegativeUnknowns (
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
+		{
+			Random random = new Random ();
+			unknownVectorAtCurrentStep.updateEach ((aNode, currentValue) => currentValue <= 0 ? random.NextDouble () / 10 : currentValue);
+			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).stringRepresentation (representation => this.Log.InfoFormat ("Absolute Unknowns vector at current step after fix negative entries: {0}", representation));
+		}
+
+		public void updatePreviousVectorsWithCurrentVectors (
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
+			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep)
+		{
+			this.UnknownVector = unknownVectorAtCurrentStep;
+			this.Fvector = FvectorAtCurrentStep;
+		}
+
+		public OneStepMutationResults computeOneStepMutationResult (
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
+			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
+			Vector<EdgeForNetwonRaphsonSystem> QvectorAtCurrentStep, 
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep, 
+			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep, 
+			int? iterationNumber)
+		{
+			var result = new OneStepMutationResults ();
+			result.Amatrix = AmatrixAtCurrentStep;
+			result.Unknowns = unknownVectorAtCurrentStep;
+			result.Coefficients = coefficientsVectorAtCurrentStep;
+			result.Qvector = QvectorAtCurrentStep;
+			result.Jacobian = JacobianMatrixAtCurrentStep;
+			result.Fvector = FvectorAtCurrentStep;
+			if (iterationNumber.HasValue) {
+				result.IterationNumber = iterationNumber.Value;
+			}
+
+			return result;
+		}
+
+		public OneStepMutationResults mutate (
+			Nullable<int> iterationNumber)
+		{
+			if (iterationNumber.HasValue) {
+				this.Log.InfoFormat ("--------------------Iteration {0}--------------------", 
+				                     iterationNumber.Value);
+			}
+
+			var unknownVectorAtPreviousStep = this.computeUnknownsAtPreviousStep ();
+
+			var FvectorAtPreviousStep = this.computeFvectorAtPreviousStep ();
 
 			var KvectorAtCurrentStep = computeKvector (
 				unknownVectorAtPreviousStep,
@@ -239,9 +331,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			                    edgeRepresentation, KvalueRepresentation)
 			)
 			);
-
-			var coefficientsVectorAtCurrentStep = 
-				new Vector<NodeForNetwonRaphsonSystem> ();
 
 			var AmatrixAtCurrentStep =
 				computeAmatrix (KvectorAtCurrentStep);
@@ -265,37 +354,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					"Jacobian matrix at current step before supply node fix it:\n{0}", representation)
 			);
 
-			foreach (var aNode in Nodes) {
+			this.fixMatricesIfSupplyGadgetsPresent (AmatrixAtCurrentStep, JacobianMatrixAtCurrentStep);
 
-				aNode.fixMatrixIfYouHaveSupplyGadget (AmatrixAtCurrentStep);
-
-				aNode.fixMatrixIfYouHaveSupplyGadget (JacobianMatrixAtCurrentStep);
-
-				aNode.putYourCoefficientInto (coefficientsVectorAtCurrentStep,
-				                              this.FormulaVisitor);
-			}
-
-			AmatrixAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).
-				stringRepresentation (
-					representation => this.Log.InfoFormat (
-					"A matrix at current step after supply node fix it:\n{0}", representation)
-			);
-
-			JacobianMatrixAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).
-				stringRepresentation (
-					representation => this.Log.InfoFormat (
-					"Jacobian matrix at current step after supply node fix it:\n{0}", representation)
-			);
-
-			coefficientsVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
-				stringRepresentation (
-					representation => this.Log.InfoFormat (
-					"Coefficients vector at current step: {0}", representation)
-			);
+			var coefficientsVectorAtCurrentStep = this.computeCoefficientsVectorAtCurrentStep ();
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				this.computeUnknowns (
@@ -310,17 +371,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					"Absolute Unknowns vector at current step before fix negative entries: {0}", representation)
 			);
 
-			Random random = new Random ();
-			unknownVectorAtCurrentStep.updateEach (
-				(aNode, currentValue) => 
-				currentValue <= 0 ? random.NextDouble () / 10 : currentValue
-			);
-
-			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
-				stringRepresentation (
-					representation => this.Log.InfoFormat (
-					"Absolute Unknowns vector at current step after fix negative entries: {0}", representation)
-			);
+			this.fixNegativeUnknowns (unknownVectorAtCurrentStep);
 
 			var QvectorAtCurrentStep = computeQvector (
 				unknownVectorAtCurrentStep, 
@@ -344,39 +395,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			)
 			);
 
-//			// here we're assuming that the initial pressure vector for unknowns 
-//			// is given in relative way, otherwise the following transformation
-//			// isn't correct because mix values with different measure unit.
-//			unknownVectorAtCurrentStep.updateEach (
-//				(aNode, absolutePressure) => 
-//				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
-//			);
-//
-//			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
-//				stringRepresentation (
-//					representation => this.Log.InfoFormat (
-//					"Relative Unknowns vector at current step: {0}", representation)
-//			);
+			updatePreviousVectorsWithCurrentVectors (
+				unknownVectorAtCurrentStep, FvectorAtCurrentStep);
 
-			this.UnknownVector = unknownVectorAtCurrentStep;
-			this.Fvector = FvectorAtCurrentStep;
+			var result = computeOneStepMutationResult (AmatrixAtCurrentStep, 
+			                                           unknownVectorAtCurrentStep, 
+			                                           coefficientsVectorAtCurrentStep, 
+			                                           QvectorAtCurrentStep, 
+			                                           JacobianMatrixAtCurrentStep, 
+			                                           FvectorAtCurrentStep, 
+			                                           iterationNumber);
 
-			var result = new OneStepMutationResults ();
-			result.Amatrix = AmatrixAtCurrentStep;
-			result.Unknowns = unknownVectorAtCurrentStep;
-			result.Coefficients = coefficientsVectorAtCurrentStep;
-			result.Qvector = QvectorAtCurrentStep;
-			result.Jacobian = JacobianMatrixAtCurrentStep;
-			result.Fvector = FvectorAtCurrentStep;
-
-			if (iterationNumber.HasValue) {
-				result.IterationNumber = iterationNumber.Value;
-			}
 
 			return result;
 		}
 
-		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+		public Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
@@ -389,7 +423,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return aMatrix;
 		}
 
-		Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+		public Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix =
@@ -402,7 +436,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return aMatrix;
 		}
 
-		Vector<EdgeForNetwonRaphsonSystem> computeKvector (
+		public Vector<EdgeForNetwonRaphsonSystem> computeKvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector,
 			Vector<EdgeForNetwonRaphsonSystem> Fvector)
 		{
@@ -415,7 +449,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Kvector;
 		}
 
-		Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
+		public Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
@@ -439,7 +473,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return unknownVectorAtCurrentStep;
 		}
 
-		Vector<EdgeForNetwonRaphsonSystem> computeQvector (
+		public Vector<EdgeForNetwonRaphsonSystem> computeQvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 			Vector<EdgeForNetwonRaphsonSystem> Kvector)
 		{
@@ -453,7 +487,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Qvector;
 		}
 
-		Vector<EdgeForNetwonRaphsonSystem> computeFvector (
+		public Vector<EdgeForNetwonRaphsonSystem> computeFvector (
 			Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 			Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{

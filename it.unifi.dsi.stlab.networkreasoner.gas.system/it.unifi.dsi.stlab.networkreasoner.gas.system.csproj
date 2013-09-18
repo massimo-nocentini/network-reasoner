@@ -50,6 +50,7 @@
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionAbstract.cs" />
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionMaxIterationReached.cs" />
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionAdimensionalRatioPrecisionReached.cs" />
+    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemInterface.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
