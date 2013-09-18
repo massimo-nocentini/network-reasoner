@@ -13,10 +13,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			OneStepMutationResults previousOneStepMutationResults, 
 			OneStepMutationResults currentOneStepMutationResults)
 		{
+			if (previousOneStepMutationResults == null) {
+				return true;
+			}
+
 			var ratioVector = currentOneStepMutationResults.Unknowns.ratio (
 				previousOneStepMutationResults.Unknowns);
 
-			return ratioVector.TrueForAll (element => {
+			return ratioVector.atLeastOneTrue (element => {
 
 				var ratio = ratioVector.valueAt (element);
 

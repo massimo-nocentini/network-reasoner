@@ -175,12 +175,14 @@ namespace it.unifi.dsi.stlab.math.algebra
 					valueForKeyInOtherVector
 				);
 			}
+
 			return result;
 		}
 
-		public bool TrueForAll (Predicate<IndexType> predicate)
+		public bool atLeastOneTrue (Predicate<IndexType> predicate)
 		{
-			return this.aVector.Keys.ToList ().TrueForAll (predicate);
+			return this.aVector.Keys.ToList ().Any (
+				key => predicate.Invoke (key));
 		}
 
 

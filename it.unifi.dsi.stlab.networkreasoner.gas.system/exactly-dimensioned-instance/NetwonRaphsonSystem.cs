@@ -160,7 +160,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			OneStepMutationResults currentOneStepMutationResults = 
 			new OneStepMutationResults{
-				IterationNumber = 0
+				IterationNumber = 0,
+				Unknowns = this.UnknownVector
 			};
 
 			MutateComputationDriver mutateComputationDriver = 
@@ -194,7 +195,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public bool CheckUntilCondition (Func<bool> condition)
 		{
-			return condition.Invoke ();
+			return condition.Invoke () == false;
 		}
 
 		public OneStepMutationResults mutateWithoutIterationNumber ()

@@ -6,6 +6,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using log4net;
 using log4net.Config;
 using System.IO;
+using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -141,7 +142,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		}
 
 		[Test()]
-		public void do_one_mutation_step ()
+		public void do_some_mutation_steps ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
 
@@ -174,6 +175,37 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var relativeUnknowns = system.denormalizeUnknowns ();
 
 
+		}
+
+		[Test()]
+		public void do_mutation_via_repetition ()
+		{
+			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+
+			XmlConfigurator.Configure (new FileInfo (
+				"log4net-configurations/for-three-nodes-network.xml")
+			);
+
+			NetwonRaphsonSystem system = new NetwonRaphsonSystem ();
+			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
+				AmbientParameters = valid_initial_ambient_parameters ()
+			};
+			system.FormulaVisitor = formulaVisitor;
+			system.Log = log;
+
+			system.writeSomeLog ("first interesting test");
+
+			system.initializeWith (this.aGasNetwork);
+
+			var resultsAfterOneMutation = system.repeatMutateUntil (
+				new List<UntilConditionAbstract>{
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = 1e-10
+				}
+			}
+			);
+
+			var relativeUnknowns = system.denormalizeUnknowns ();
 		}
 	}
 }

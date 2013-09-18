@@ -51,6 +51,8 @@
     <Compile Include="NetwonRaphsonSystemLogging.cs" />
     <Compile Include="NetwonRaphsonSystemThreeNodesNetwork.cs" />
     <Compile Include="NetwonRaphsonSystemRingNetwork.cs" />
+    <Compile Include="repeat-until-conditions\RepeatUntilConditionMaxIterationsReachedTest.cs" />
+    <Compile Include="repeat-until-conditions\RepeatUntilConditionRatioPrecisionReached.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="log4net-configurations\" />
+    <Folder Include="repeat-until-conditions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net-configurations\for-three-nodes-network.xml">
