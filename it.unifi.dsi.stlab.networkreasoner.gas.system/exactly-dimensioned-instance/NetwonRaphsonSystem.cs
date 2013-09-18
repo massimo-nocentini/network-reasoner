@@ -38,6 +38,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			EdgesEnumeration = new Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> (
 				() => this.Edges.enumerate ());
+
+			this.EventsListener = new NetwonRaphsonSystemEventsListenerNullObject ();
 		}
 
 		public override void initializeWith (GasNetwork network)
