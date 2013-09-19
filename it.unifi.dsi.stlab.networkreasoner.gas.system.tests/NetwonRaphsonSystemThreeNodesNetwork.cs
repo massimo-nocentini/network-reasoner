@@ -105,7 +105,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Described = anEdgeAB,
 				Length = 500,
 				Roughness = 55,
-				Diameter = 70,
+				Diameter = 100,
 				MaxSpeed = 10
 			};
 		}
@@ -121,7 +121,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Described = anEdgeCB,
 				Length = 500,
 				Roughness = 55,
-				Diameter = 50,
+				Diameter = 100,
 				MaxSpeed = 10
 			};
 		}
@@ -193,25 +193,25 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-
-
+			var ambientParameters = valid_initial_ambient_parameters ();
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = valid_initial_ambient_parameters ()
+				AmbientParameters = ambientParameters
 			};
 
 			NetwonRaphsonSystemInterface system = new NetwonRaphsonSystem {
 				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
 					Log = log
 				}
 			};
 
+			this.aGasNetwork.AmbientParameters = ambientParameters;
 			system.initializeWith (this.aGasNetwork);
 
 			var resultsAfterOneMutation = system.repeatMutateUntil (
 				new List<UntilConditionAbstract>{
 				new UntilConditionAdimensionalRatioPrecisionReached{
-					Precision = 1e-10
+					Precision = 1e-4
 				}
 			}
 			);

@@ -213,6 +213,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				);
 			}
 
+			this.EventsListener.onRepeatMutateUntilEnded();
+
 			return currentOneStepMutationResults;
 		}
 
@@ -336,7 +338,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public override OneStepMutationResults mutate (
 			Nullable<int> iterationNumber)
 		{
-			this.EventsListener.onMutateStep (iterationNumber);
+			this.EventsListener.onMutateStepStarted (iterationNumber);
 
 			var unknownVectorAtPreviousStep = this.computeUnknownVectorAtPreviousStep ();
 
@@ -384,6 +386,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			                                           FvectorAtCurrentStep, 
 			                                           iterationNumber);
 
+			this.EventsListener.onMutateStepCompleted(result);
 
 			return result;
 		}

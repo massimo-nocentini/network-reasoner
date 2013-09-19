@@ -26,6 +26,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		#region NetwonRaphsonSystemEventsListener implementation
 
+		public void onMutateStepCompleted (OneStepMutationResults result)
+		{
+		
+		}
 
 		public void onInitializationCompleted (
 			System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, 
@@ -124,13 +128,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			);
 		}
 
-		public void onMutateStep (int? iterationNumber)
+		public void onMutateStepStarted (int? iterationNumber)
 		{
 			if (iterationNumber.HasValue) {
 				this.Log.InfoFormat ("-------------------- Iteration {0} ---------------------", 
 				                    iterationNumber.Value);
 			}
-		}
+		}	
 
 		public void onAmatrixComputed (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> Amatrix)
@@ -211,7 +215,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					"Relative Unknowns vector at current step: {0}", representation)
 			);
 		}
-	#endregion
+
+		public void onRepeatMutateUntilEnded ()
+		{
+
+		}
+		#endregion
+
+
 
 			
 

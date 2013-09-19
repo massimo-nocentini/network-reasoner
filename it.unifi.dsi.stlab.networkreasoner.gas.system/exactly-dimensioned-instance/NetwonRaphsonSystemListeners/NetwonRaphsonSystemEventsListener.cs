@@ -30,7 +30,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		void onNegativeUnknownsFixed (
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep);
 
-		void onMutateStep (int? iterationNumber);
+		void onMutateStepStarted (int? iterationNumber);
 
 		void onAmatrixComputed (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> Amatrix);
@@ -49,6 +49,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		void onUnknownWithDimensionReverted (Vector<NodeForNetwonRaphsonSystem> unknownVector);
 
+		void onRepeatMutateUntilEnded ();		
+
+		void onMutateStepCompleted (OneStepMutationResults result);
 	}
 }
 

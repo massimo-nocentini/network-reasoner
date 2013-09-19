@@ -1,27 +1,67 @@
 using System;
+using log4net;
+using it.unifi.dsi.stlab.extensionmethods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners
 {
-	public class NetwonRaphsonSystemEventsListenerNullObject : 
+	public class NetwonRaphsonSystemEventsListenerForLoggingSummary :
 		NetwonRaphsonSystemEventsListener
 	{
-		public NetwonRaphsonSystemEventsListenerNullObject ()
-		{
+		Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration {
+			get;
+			set;
 		}
-		#region NetwonRaphsonSystemEventsListener implementation
-		public void onInitializationCompleted (System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
+
+		DateTime StartTime{ get; set; }
+
+		DateTime EndTime{ get; set; }
+
+		public ILog Log{ get; set; }
+
+		public void onMutateStepStarted (int? iterationNumber)
 		{
-		
+//			if (iterationNumber.HasValue) {
+//				this.Log.InfoFormat ("-------------------- Iteration {0} ---------------------", 
+//				                    iterationNumber.Value);
+//			}
 		}
 
 		public void onRepeatMutateUntilStarted ()
 		{
-		
+			this.StartTime = DateTime.Now;
+		}
+
+		public void onMutateStepCompleted (OneStepMutationResults result)
+		{
+			result.Unknowns.forComputationAmong (
+				this.NodesEnumeration.Value, -11010101010).stringRepresentation (
+				representation => this.Log.InfoFormat (
+				"{0}", representation.Substring(representation.IndexOf('\n') + 1)
+			));
+		}
+
+		public void onRepeatMutateUntilEnded ()
+		{
+			this.EndTime = DateTime.Now;
+			this.Log.InfoFormat ("Elapsed time of system solution is {0} seconds", 
+			                    (this.EndTime.Ticks - this.StartTime.Ticks)/1e+7);
+		}
+
+		public void onInitializationCompleted (System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
+		{
+			this.NodesEnumeration = nodesEnumeration;
+		}
+
+		#region NetwonRaphsonSystemEventsListener implementation
+
+		public void onUnknownWithDimensionReverted (it.unifi.dsi.stlab.math.algebra.Vector<NodeForNetwonRaphsonSystem> unknownVector)
+		{
+			
 		}
 
 		public void onComputationShouldBeStoppedDueTo (UntilConditionAbstract condition)
 		{
-		
+			
 		}
 
 		public void onUnknownVectorAtPreviousStepComputed (it.unifi.dsi.stlab.math.algebra.Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep)
@@ -45,11 +85,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public void onNegativeUnknownsFixed (it.unifi.dsi.stlab.math.algebra.Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
-		{
-			
-		}
-
-		public void onMutateStepStarted (int? iterationNumber)
 		{
 			
 		}
@@ -84,20 +119,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			
 		}
 
-		public void onUnknownWithDimensionReverted (it.unifi.dsi.stlab.math.algebra.Vector<NodeForNetwonRaphsonSystem> unknownVector)
-		{
-			
-		}
-
-		public void onRepeatMutateUntilEnded ()
-		{
-		
-		}
-
-		public void onMutateStepCompleted (OneStepMutationResults result)
-		{
-		
-		}
 		#endregion
 
 

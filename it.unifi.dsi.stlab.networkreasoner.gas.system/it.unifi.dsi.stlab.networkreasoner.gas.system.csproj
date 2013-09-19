@@ -54,6 +54,7 @@
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListener.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLogging.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerNullObject.cs" />
+    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLoggingSummary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
