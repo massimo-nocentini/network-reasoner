@@ -49,7 +49,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		void onUnknownWithDimensionReverted (Vector<NodeForNetwonRaphsonSystem> unknownVector);
 
-		void onRepeatMutateUntilEnded ();		
+		void onRepeatMutateUntilEnded (OneStepMutationResults result);		
 
 		void onMutateStepCompleted (OneStepMutationResults result);
 	}

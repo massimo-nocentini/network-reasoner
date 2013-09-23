@@ -54,6 +54,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public Dictionary<GasEdgeAbstract, double> makeInitialGuessForFvector ()
 		{
 			var initialFvector = new Dictionary<GasEdgeAbstract, double> ();
+
 			doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
 				anEdge => initialFvector.Add (anEdge, .015))
 			);
@@ -189,8 +190,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public class NodeHandlerWithDelegateOnRawNode<T> : NodeHandlerAbstract<T>
 		{
-
-
 			Action<T> aBlock { get; set; }
 
 			public NodeHandlerWithDelegateOnRawNode (Action<T> aBlock)

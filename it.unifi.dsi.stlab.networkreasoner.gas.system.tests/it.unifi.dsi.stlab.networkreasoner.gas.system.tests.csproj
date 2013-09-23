@@ -53,6 +53,7 @@
     <Compile Include="NetwonRaphsonSystemRingNetwork.cs" />
     <Compile Include="repeat-until-conditions\RepeatUntilConditionMaxIterationsReachedTest.cs" />
     <Compile Include="repeat-until-conditions\RepeatUntilConditionRatioPrecisionReached.cs" />
+    <Compile Include="NetwonRaphsonSystemComplexNetwork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -82,6 +83,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="log4net-configurations\for-ring-network.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net-configurations\for-complex-network.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

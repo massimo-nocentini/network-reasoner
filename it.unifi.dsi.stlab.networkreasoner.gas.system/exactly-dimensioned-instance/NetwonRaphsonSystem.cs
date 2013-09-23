@@ -33,7 +33,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> originalNodesByComputationNodes =
 				new Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> ();
-
 		Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges =
 				new Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> ();
 
@@ -213,7 +212,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				);
 			}
 
-			this.EventsListener.onRepeatMutateUntilEnded();
+			this.EventsListener.onRepeatMutateUntilEnded (
+				currentOneStepMutationResults);
 
 			return currentOneStepMutationResults;
 		}
@@ -386,7 +386,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			                                           FvectorAtCurrentStep, 
 			                                           iterationNumber);
 
-			this.EventsListener.onMutateStepCompleted(result);
+			this.EventsListener.onMutateStepCompleted (result);
 
 			return result;
 		}
@@ -453,6 +453,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					this.NodesEnumeration.Value,
 					this.NodesEnumeration.Value,
 					coefficientVectorForJacobianSystemFactorization);
+
+			unknownVectorFromJacobianSystemAtCurrentStep.updateEach (
+				(node, currentValue) => currentValue * .75);
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);

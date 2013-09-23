@@ -89,7 +89,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			
 		}
 
-		public void onRepeatMutateUntilEnded ()
+		public void onRepeatMutateUntilEnded (OneStepMutationResults result)
 		{
 		
 		}
