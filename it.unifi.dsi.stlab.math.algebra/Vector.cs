@@ -74,11 +74,9 @@ namespace it.unifi.dsi.stlab.math.algebra
 				new Vector<IndexType> ();
 
 			foreach (IndexType key in this.aVector.Keys) {
-				var valueForKeyInOtherVector = 
-					anotherVector.valueAt (key);
 
 				result.atPut (key, this.valueAt (key) - 
-					valueForKeyInOtherVector
+					anotherVector.valueAt (key)
 				);
 			}
 			return result;

@@ -141,7 +141,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			};
 
 			GasNodeGadget supplyGadget = new GasNodeGadgetSupply{
-				SetupPressure = 200
+				SetupPressure = 5000
 			};
 
 			return new GasNodeWithGadget{
@@ -249,7 +249,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetSupply{
-			 	SetupPressure = 180
+			 	SetupPressure = 5000
 			};
 
 			return new GasNodeWithGadget{

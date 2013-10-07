@@ -111,6 +111,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			public void adimensionalizedMinMax (Action<double, double> continuation)
 			{
+				// per l'acqua si deve correggere come fatto nelle formule.
+
 				double min = (this.MinSeenSetupPressure.Value / 1000.0 + 
 					this.AmbientParameters.AirPressureInBar) /
 					this.AmbientParameters.RefPressureInBar;
@@ -123,38 +125,45 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		public Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns ()
+		void smartUnknownsInitialization (
+			Random rand, 
+			Dictionary<GasNodeAbstract, double> initialUnknowns)
 		{
-			var initialUnknowns = new  Dictionary<GasNodeAbstract, double> ();
-			var rand = new Random (DateTime.Now.Millisecond);
-
-			MaxMinSetupPressureIntervalFinder minMaxIntervalFinder = 
-			new MaxMinSetupPressureIntervalFinder {
+			MaxMinSetupPressureIntervalFinder minMaxIntervalFinder = new MaxMinSetupPressureIntervalFinder {
 				AmbientParameters = this.AmbientParameters
 			};
-
-			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
-				aVertex => aVertex.accept (minMaxIntervalFinder))
-			);
-
-			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
-				aVertex => {
-
+			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (aVertex => aVertex.accept (minMaxIntervalFinder)));
+			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (aVertex => {
 				double fixingTerm = .97;
-
-				minMaxIntervalFinder.adimensionalizedMinMax (
-					(min, max) => {
-
+				minMaxIntervalFinder.adimensionalizedMinMax ((min, max) => {
 					var maxMinusMin = max - (min * fixingTerm);
-
 					var value = (min * fixingTerm) + (maxMinusMin * rand.NextDouble ());
-
 					initialUnknowns.Add (aVertex, value);
 				}
 				);
 			}
 			)
-			);			
+			);
+		}
+
+		public Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns ()
+		{
+			var initialUnknowns = new  Dictionary<GasNodeAbstract, double> ();
+			var rand = new Random (DateTime.Now.Millisecond);
+
+			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+				aVertex => {
+
+				double value = 
+					(rand.NextDouble()*.1) + 1;
+
+				initialUnknowns.Add (aVertex, value);
+			}
+			));
+
+//			smartUnknownsInitialization (rand, initialUnknowns);
+
+
 
 			return initialUnknowns;
 		}

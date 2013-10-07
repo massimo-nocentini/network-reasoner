@@ -39,6 +39,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
+
+		// per i k -piccoli tutti uguali a 1 per ogni nodo
+		public Double AconstantH20 {
+			get {
+				var numerator = 8.0;
+				var denominator = this.GravitationalAcceleration *
+					Math.Pow (Math.PI, 2);
+
+				return numerator / denominator;
+			}
+		}
+
 		public Double Rconstant {
 			get {
 				return 8314.0 / MolWeight;
