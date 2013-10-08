@@ -57,6 +57,8 @@
     <Compile Include="edge-hierarchy\GasEdgeWithGadget.cs" />
     <Compile Include="edge-hierarchy\GasEdgeVisitor.cs" />
     <Compile Include="gadgets\for-edges\GasEdgeGadgetVisitor.cs" />
+    <Compile Include="parameters\AmbientParametersGas.cs" />
+    <Compile Include="parameters\AmbientParametersWater.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

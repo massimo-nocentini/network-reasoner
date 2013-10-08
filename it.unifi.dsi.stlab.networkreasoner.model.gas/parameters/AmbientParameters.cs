@@ -2,14 +2,14 @@ using System;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
-	public class AmbientParameters
+	public abstract class AmbientParameters
 	{
 		// for gas
-		public String GasName { get; set; }
+		public String ElementName { get; set; }
 
 		public Double MolWeight { get; set; }
 
-		public Double GasTemperatureInKelvin { get; set; }
+		public Double ElementTemperatureInKelvin { get; set; }
 
 		public Double ViscosityInPascalTimesSecond { get; set; }
 
@@ -29,39 +29,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		public Double Aconstant {
-			get {
-				var numerator = 16 * GasTemperatureInKelvin;
-				var denominator = Math.Pow (Math.PI, 2) * 
-					Math.Pow (this.RefTemperatureInKelvin, 2);
+		public abstract Double Aconstant ();
 
-				return numerator / denominator;
-			}
-		}
+		public abstract Double RefDensity ();
 
-
-		// per i k -piccoli tutti uguali a 1 per ogni nodo
-		public Double AconstantH20 {
-			get {
-				var numerator = 8.0;
-				var denominator = this.GravitationalAcceleration *
-					Math.Pow (Math.PI, 2);
-
-				return numerator / denominator;
-			}
-		}
-
-		public Double Rconstant {
-			get {
-				return 8314.0 / MolWeight;
-			}
-		}
-
-		public Double RefDensity ()
+		public virtual Double Rconstant ()
 		{
-			return Math.Pow (10, 5) * RefPressureInBar / 
-				(Rconstant * RefTemperatureInKelvin);
+			return 8314.0 / MolWeight;
+			
 		}
+
+
+
 	
 	}
 }

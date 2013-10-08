@@ -128,10 +128,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		public AmbientParameters valid_initial_ambient_parameters ()
 		{
-			AmbientParameters parameters = new AmbientParameters ();
-			parameters.GasName = "methane";
+			AmbientParameters parameters = new AmbientParametersGas ();
+			parameters.ElementName = "methane";
 			parameters.MolWeight = 16.0;
-			parameters.GasTemperatureInKelvin = 288.15;
+			parameters.ElementTemperatureInKelvin = 288.15;
 			parameters.RefPressureInBar = 1.01325;
 			parameters.RefTemperatureInKelvin = 288.15;
 			parameters.AirPressureInBar = 1.01325;

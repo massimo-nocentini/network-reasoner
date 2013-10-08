@@ -58,10 +58,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 			var network = loader.Load<GasNetwork> (filenameToParse);
 
 			Assert.IsNotNull (network.AmbientParameters);
-			Assert.AreEqual ("Methane", network.AmbientParameters.GasName);
+			Assert.AreEqual ("Methane", network.AmbientParameters.ElementName);
 			Assert.AreEqual (1013.25, network.AmbientParameters.RefPressureInBar);
 			Assert.AreEqual (1013.25, network.AmbientParameters.AirPressureInBar);
-			Assert.AreEqual (15.0, network.AmbientParameters.GasTemperatureInKelvin);
+			Assert.AreEqual (15.0, network.AmbientParameters.ElementTemperatureInKelvin);
 			Assert.AreEqual (15.0, network.AmbientParameters.AirTemperatureInKelvin);
 			Assert.AreEqual (16.0, network.AmbientParameters.MolWeight);
 			Assert.AreEqual (0.0108, network.AmbientParameters.ViscosityInPascalTimesSecond);
