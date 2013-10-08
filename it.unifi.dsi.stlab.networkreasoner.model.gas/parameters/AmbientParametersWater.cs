@@ -4,8 +4,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class AmbientParametersWater : AmbientParameters
 	{
-		// per i k -piccoli tutti uguali a 1 per ogni nodo
-
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.AmbientParameters
 		public override double Aconstant ()
 		{

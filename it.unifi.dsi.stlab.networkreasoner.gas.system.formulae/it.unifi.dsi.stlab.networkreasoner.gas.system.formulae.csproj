@@ -52,6 +52,7 @@
     <Compile Include="variants\JacobianMatrixQuadrupletFormulaForSwitchedOnEdges.cs" />
     <Compile Include="variants\QvalueFormula.cs" />
     <Compile Include="variants\FvalueFormula.cs" />
+    <Compile Include="visitors\GasFormulaVisitorExactlyDimensionedForWater.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

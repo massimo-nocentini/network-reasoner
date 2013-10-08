@@ -11,7 +11,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public AmbientParameters AmbientParameters{ get; set; }
 
 		#region GasFormulaVisitor implementation
-		public Double visitCoefficientFormulaForNodeWithSupplyGadget (
+		public virtual Double visitCoefficientFormulaForNodeWithSupplyGadget (
 			CoefficientFormulaForNodeWithSupplyGadget aSupplyNodeFormula)
 		{
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
@@ -27,27 +27,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return Hsetup;
 		}
 
-		// for water
-		public Double visitCoefficientFormulaForNodeWithSupplyGadgetH2O (
-			CoefficientFormulaForNodeWithSupplyGadget aSupplyNodeFormula)
-		{
-			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
-				aSupplyNodeFormula);
-
-//			var specWeight = AmbientParameters.WaterRefDensity * AmbientParameters.GravitationalAcceleration;
-
-			var specWeight = 1.0; // dummy value just to make it compile.
-
-			// per l'acqua sara' in bar aSupplyNodeFormula.GadgetSetupPressureInMillibar
-			var numerator = (AirPressureInBar + 
-				aSupplyNodeFormula.GadgetSetupPressureInMillibar) * 1e5 // per andare in pascal
-				/ specWeight;
-
-			var result = numerator + aSupplyNodeFormula.NodeHeight;
-		
-			return result;
-		}
-
 		public double visitAirPressureFormulaForNodes (
 			AirPressureFormulaForNodes anAirPressureFormula)
 		{
@@ -59,29 +38,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return airPressureInBar;
 		}
 
-		// denormalizzazione acqua 
-		public double visitRelativePressureFromAbsolutePressureFormulaForNodesH2O (
-			RelativePressureFromAbsolutePressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
-		{
-			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
-				aRelativePressureFromAbsolutePressureFormula);
-
-			var z = aRelativePressureFromAbsolutePressureFormula.AbsolutePressure;
-			var h = aRelativePressureFromAbsolutePressureFormula.NodeHeight;
-
-			// Default AmbientParameters.WaterRefDensity := 1000 kg/m^3
-//			var specWeight = AmbientParameters.WaterRefDensity * 
-//				AmbientParameters.GravitationalAcceleration;
-
-			var specWeight = 1.0; // dummy value just to make it compile.
-
-			var result = (z - h) * specWeight * 1e-5;
-
-			return (result - AirPressureInBar);
-		}
-
-		// denormalizzazione gas 
-		public double visitRelativePressureFromAbsolutePressureFormulaForNodes (
+		public virtual double visitRelativePressureFromAbsolutePressureFormulaForNodes (
 			RelativePressureFromAbsolutePressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
 		{
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
@@ -93,14 +50,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return (result - AirPressureInBar) * 1000;
 		}
 
-		public double visitCovariantLittleKFormula (
+		public virtual double visitCovariantLittleKFormula (
 			CovariantLittleKFormula covariantLittleKFormula)
 		{
 			return this.AmbientParameters.Rconstant() + 
 				this.weightedHeightsDifferenceFor (covariantLittleKFormula);
 		}
 
-		public double visitControVariantLittleKFormula (
+		public virtual double visitControVariantLittleKFormula (
 			ControVariantLittleKFormula controVariantLittleKFormula)
 		{
 			return this.AmbientParameters.Rconstant() - 
