@@ -34,8 +34,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
 				aSupplyNodeFormula);
 
-			var specWeight = AmbientParameters.WaterRefDensity * AmbientParameters.GravitationalAcceleration;
+//			var specWeight = AmbientParameters.WaterRefDensity * AmbientParameters.GravitationalAcceleration;
 
+			var specWeight = 1.0; // dummy value just to make it compile.
 
 			// per l'acqua sara' in bar aSupplyNodeFormula.GadgetSetupPressureInMillibar
 			var numerator = (AirPressureInBar + 
@@ -69,8 +70,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var h = aRelativePressureFromAbsolutePressureFormula.NodeHeight;
 
 			// Default AmbientParameters.WaterRefDensity := 1000 kg/m^3
-			var specWeight = AmbientParameters.WaterRefDensity * 
-				AmbientParameters.GravitationalAcceleration;
+//			var specWeight = AmbientParameters.WaterRefDensity * 
+//				AmbientParameters.GravitationalAcceleration;
+
+			var specWeight = 1.0; // dummy value just to make it compile.
 
 			var result = (z - h) * specWeight * 1e-5;
 
