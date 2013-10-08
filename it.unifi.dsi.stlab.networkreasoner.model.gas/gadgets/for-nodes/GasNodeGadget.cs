@@ -1,5 +1,4 @@
 using System;
-using it.unifi.dsi.stlab.networkreasoner.systemsolver;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {

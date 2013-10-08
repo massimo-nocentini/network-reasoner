@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using it.unifi.dsi.stlab.networkreasoner.model.rdfinterface;
-using it.unifi.dsi.stlab.networkreasoner.systemsolver;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas.tests
 {

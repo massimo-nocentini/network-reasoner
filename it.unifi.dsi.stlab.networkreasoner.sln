@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.gas.tests", "it.unifi.dsi.stlab.networkreasoner.model.gas.tests\it.unifi.dsi.stlab.networkreasoner.model.gas.tests.csproj", "{8D391B05-4734-45F4-80B9-20CC61AC32BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.systemsolver", "it.unifi.dsi.stlab.networkreasoner.systemsolver\it.unifi.dsi.stlab.networkreasoner.systemsolver.csproj", "{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.extension-methods", "it.unifi.dsi.stlab.extension-methods\it.unifi.dsi.stlab.extension-methods.csproj", "{1A93011C-4839-42D1-B6BB-6A96283291D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.exceptions", "it.unifi.dsi.stlab.exceptions\it.unifi.dsi.stlab.exceptions.csproj", "{14D86C4D-1649-4987-A74F-3044C20AD2E5}"
@@ -37,10 +35,6 @@ Global
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{035646F1-2131-4366-A526-A2E2F3A00A3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{14D86C4D-1649-4987-A74F-3044C20AD2E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{14D86C4D-1649-4987-A74F-3044C20AD2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14D86C4D-1649-4987-A74F-3044C20AD2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU

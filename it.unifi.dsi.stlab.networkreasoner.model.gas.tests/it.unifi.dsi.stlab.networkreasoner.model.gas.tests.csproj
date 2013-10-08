@@ -53,10 +53,6 @@
       <Project>{035646F1-2131-4366-A526-A2E2F3A00A3D}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.systemsolver\it.unifi.dsi.stlab.networkreasoner.systemsolver.csproj">
-      <Project>{0B0817A9-1777-4BF2-BDF5-C58D2EBA02FE}</Project>
-      <Name>it.unifi.dsi.stlab.networkreasoner.systemsolver</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
