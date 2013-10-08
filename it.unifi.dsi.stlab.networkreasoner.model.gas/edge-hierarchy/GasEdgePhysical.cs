@@ -6,7 +6,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 	{
 		public GasEdgeAbstract Described{ get; set; }
 
-		public long Length{ get; set; }
+		public double Length{ get; set; }
 
 		public double Roughness{ get; set; }
 

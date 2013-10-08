@@ -34,7 +34,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			set;
 		}
 
-		public long EdgeLength {
+		public double EdgeLength {
 			get;
 			set;
 		}

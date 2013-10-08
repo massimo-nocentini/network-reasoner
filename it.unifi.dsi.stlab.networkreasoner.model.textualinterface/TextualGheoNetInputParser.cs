@@ -67,7 +67,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				new Dictionary<string, GasEdgeAbstract> ();
 
 
-			var edgesSpecificationLines = SpecificationLines.Value.FindAll (line => line.StartsWith ("N"));
+			var edgesSpecificationLines = SpecificationLines.Value.FindAll (line => line.StartsWith ("R"));
 
 			edgesSpecificationLines.ForEach (edgeSpecification => {
 
@@ -83,7 +83,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				anEdge = new GasEdgePhysical{
 					Described = anEdge,
 					Diameter = Double.Parse(splittedSpecification[3]),
-					Length = Int64.Parse(splittedSpecification[4]),
+					Length = Double.Parse(splittedSpecification[4]),
 					Roughness = Double.Parse(splittedSpecification[5])
 				};
 
@@ -96,7 +96,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		public AmbientParameters parseAmbientParameters ()
 		{
-			throw new NotImplementedException ();
+			AmbientParameters result = new AmbientParametersGas ();
+
+			string ambientParametersLine = this.SpecificationLines.Value [1];
+			string[] splittedSpecification = ambientParametersLine.Split (' ');
+
+			// parametriCalcoloGas.pressioneAtmosferica
+			result.AirPressureInBar = Double.Parse (splittedSpecification [2]) / 1000; 
+
+			// parametriCalcoloGas.temperaturaAria
+			result.AirTemperatureInKelvin = Double.Parse (splittedSpecification [5]) + 273.15;
+			result.ElementName = "methane";
+
+			// parametriCalcoloGas.temperaturaGas
+			result.ElementTemperatureInKelvin = Double.Parse (splittedSpecification [4]) + 273.15;
+
+			// parametriCalcoloGas.pesoMolecolareGas
+			result.MolWeight = Double.Parse (splittedSpecification [6]);
+			result.RefPressureInBar = 1.01325;
+			result.RefTemperatureInKelvin = 288.15; // da interfacciare
+
+			// parametriCalcoloGas.viscositaGas
+			result.ViscosityInPascalTimesSecond = Double.Parse (splittedSpecification [9]) * 1e-3;
+
+			return result;
 		}
 
 
