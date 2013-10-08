@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.gas.system.formulae", "it.unifi.dsi.stlab.networkreasoner.gas.system.formulae\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.csproj", "{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.textualinterface", "it.unifi.dsi.stlab.networkreasoner.model.textualinterface\it.unifi.dsi.stlab.networkreasoner.model.textualinterface.csproj", "{B8312B0F-17B4-4685-B994-77495716FDCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests", "it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests\it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests.csproj", "{57DB338D-CFC9-4C1C-881E-D87061221E9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{49173546-6C23-4C9E-AD7B-396164558F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49173546-6C23-4C9E-AD7B-396164558F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49173546-6C23-4C9E-AD7B-396164558F02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57DB338D-CFC9-4C1C-881E-D87061221E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57DB338D-CFC9-4C1C-881E-D87061221E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57DB338D-CFC9-4C1C-881E-D87061221E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57DB338D-CFC9-4C1C-881E-D87061221E9D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,6 +79,10 @@ Global
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8312B0F-17B4-4685-B994-77495716FDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8312B0F-17B4-4685-B994-77495716FDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8312B0F-17B4-4685-B994-77495716FDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8312B0F-17B4-4685-B994-77495716FDCE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1A4EB8E-5C25-4F91-8615-6C0875F26B26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1A4EB8E-5C25-4F91-8615-6C0875F26B26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1A4EB8E-5C25-4F91-8615-6C0875F26B26}.Release|Any CPU.ActiveCfg = Release|Any CPU
