@@ -183,6 +183,19 @@ namespace it.unifi.dsi.stlab.math.algebra
 				key => predicate.Invoke (key));
 		}
 
+		public IndexType findKeyWithMinValue ()
+		{
+			var min = Double.MaxValue;
+			IndexType minKey = default(IndexType);
+			
+			foreach (IndexType key in this.aVector.Keys) {
+				if (this.valueAt (key) < min) {
+					minKey = key;
+				}
+			}
+
+			return minKey;
+		}
 
 	}
 }

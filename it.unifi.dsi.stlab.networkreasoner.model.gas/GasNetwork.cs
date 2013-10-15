@@ -247,6 +247,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				nodeHandler.onRawNode (anEdge.Value);
 			}
 		}
+
+		public static GasNetwork makeFromRemapping (
+			Dictionary<GasNodeAbstract, GasNodeAbstract> 
+			fixedNodesWithLoadGadgetByOriginalNodes, 
+			List<GasEdgeAbstract> values)
+		{
+			throw new NotImplementedException ();
+		}
+
 	}
 }
 

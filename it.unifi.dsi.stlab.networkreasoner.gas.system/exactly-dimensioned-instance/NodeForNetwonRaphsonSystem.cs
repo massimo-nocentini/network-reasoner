@@ -2,6 +2,8 @@ using System;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -21,6 +23,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				NodeForNetwonRaphsonSystem aNode, 
 				Vector<NodeForNetwonRaphsonSystem> aVector,
 				GasFormulaVisitor aFormulaVisitor);
+
+			GasNodeAbstract substituteNodeBecauseNegativePressureFoundFor (
+				NodeForNetwonRaphsonSystem aNode,
+				double pressure, 
+				GasNodeAbstract correspondingOriginalNode);
+
 		}
 
 		public class NodeRoleSupplier:NodeRole
@@ -50,15 +58,58 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				                   		aRowNode.Equals (aColumnNode) ? 1 : 0
 				);
 			}
-				#endregion
+
+			public GasNodeAbstract substituteNodeBecauseNegativePressureFoundFor (
+				NodeForNetwonRaphsonSystem aNode, 
+				double pressure, 
+				GasNodeAbstract correspondingOriginalNode)
+			{
+				//eventualmente considerare di segnalare un 'errore di control flow'
+				return correspondingOriginalNode;
+			}
+			#endregion
+
 
 		}
 
 		public class NodeRoleLoader:NodeRole
 		{
+			public class NewNodeMaker : GasNodeVisitor
+			{
+				GasNodeGadgetSupply ReplacementSupplyGadget {
+					get;
+					set;
+				}
+
+				public GasNodeWithGadget GasNodeWithGadget {
+					get;
+					set;
+				}
+
+				public NewNodeMaker (GasNodeGadgetSupply gasNodeGadgetSupply)
+				{
+					this.ReplacementSupplyGadget = gasNodeGadgetSupply;
+				}
+
+				#region GasNodeVisitor implementation
+				public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
+				{
+				}
+
+				public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+				{
+					this.GasNodeWithGadget = new GasNodeWithGadget{
+						Equipped = gasNodeWithGadget.Equipped,
+						Gadget = this.ReplacementSupplyGadget
+					};
+				}
+				#endregion
+
+			}
+
 			public double Load { get; set; }
 
-				#region NodeRole implementation
+			#region NodeRole implementation
 			public virtual void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
 				Vector<NodeForNetwonRaphsonSystem> aVector,
@@ -76,7 +127,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				// its row is already computed and doesn't need
 				// to be fixed in this case.
 			}
-				#endregion
+
+			public GasNodeAbstract substituteNodeBecauseNegativePressureFoundFor (
+				NodeForNetwonRaphsonSystem aNode, 
+				double pressure, 
+				GasNodeAbstract correspondingOriginalNode)
+			{
+				var nodeMaker = new NewNodeMaker (
+					new GasNodeGadgetSupply{
+						SetupPressure = 0
+				}
+				);
+
+				correspondingOriginalNode.accept (nodeMaker);
+
+				return nodeMaker.GasNodeWithGadget;
+			}
+			#endregion
+
 		}
 
 		public class NodeRolePassive:NodeRoleLoader
@@ -167,6 +235,81 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			formula.AbsolutePressure = absolutePressure;
 
 			return formula.accept (aFormulaVisitor);
+		}
+
+		public NodeSostitutionAbstract substituteNodeIfHasNegativePressure (
+			double pressure, GasNodeAbstract correspondingOriginalNode)
+		{
+			NodeSostitutionAbstract nodeSostitutionHappens = new NodeSostitutionHappens {
+					Substitution = () => this.Role.substituteNodeBecauseNegativePressureFoundFor (
+					this, pressure, correspondingOriginalNode)
+				};
+
+			NodeSostitutionAbstract nodeSostitutionDoesntHappen = new NodeSostitutionDoesntHappen {
+				Substitution = () => correspondingOriginalNode
+			};
+
+			return pressure < 0 ? nodeSostitutionHappens : nodeSostitutionDoesntHappen;
+		}
+
+		public abstract class NodeSostitutionAbstract
+		{
+			public Func<GasNodeAbstract> Substitution {
+				get;
+				set;
+			}
+		
+			public abstract OneStepMutationResults doSubstitution (
+				GasNodeAbstract originalNode, 
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
+				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
+				List<UntilConditionAbstract> untilConditions);
+
+		}
+
+		public class NodeSostitutionHappens : NodeSostitutionAbstract
+		{
+			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
+			public override OneStepMutationResults doSubstitution (
+				GasNodeAbstract originalNode, 
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
+				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
+				List<UntilConditionAbstract> untilConditions)
+			{
+				var newNode = this.Substitution.Invoke ();
+
+				// we keep note that a new node has been created
+				fixedNodesWithLoadGadgetByOriginalNodes.Add (
+						originalNode, newNode);
+
+				GasNetwork networkWithFixedNodesWithLoadGadget = 
+						GasNetwork.makeFromRemapping (
+							fixedNodesWithLoadGadgetByOriginalNodes,
+							originalEdgesByComputationEdges.Values.ToList ());
+
+				// start here a new iteration of the method
+				var innerSystem = new NetwonRaphsonSystem ();
+				// call the initialization giving the current configurations
+
+				var innerResults = innerSystem.repeatMutateUntil (untilConditions);
+
+				return innerResults;
+			}
+			#endregion
+		}
+
+		public class NodeSostitutionDoesntHappen : NodeSostitutionAbstract
+		{
+			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
+			public override OneStepMutationResults doSubstitution (
+				GasNodeAbstract originalNode, 
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
+				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
+				List<UntilConditionAbstract> untilConditions)
+			{
+				throw new System.NotImplementedException ();
+			}
+			#endregion
 		}
 	}
 }

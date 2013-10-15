@@ -84,6 +84,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> Qvector);
 
 		public abstract Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ();
+
+
 	}
 }
 

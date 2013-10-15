@@ -218,6 +218,50 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var relativeUnknowns = system.denormalizeUnknowns ();
 		}
+
+		[Test()]
+		public void do_mutation_via_repetition_checking_pressure_correctness_after_main_computation ()
+		{
+			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+
+			XmlConfigurator.Configure (new FileInfo (
+				"log4net-configurations/for-three-nodes-network.xml")
+			);
+
+			var ambientParameters = valid_initial_ambient_parameters ();
+			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
+				AmbientParameters = ambientParameters
+			};
+
+			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
+				FormulaVisitor = formulaVisitor,
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
+					Log = log
+				}
+			};
+
+			this.aGasNetwork.AmbientParameters = ambientParameters;
+			system.initializeWith (this.aGasNetwork);
+
+			var untilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached {
+					Precision = 1e-4
+				}
+			};
+
+			var mainComputationResults = system.repeatMutateUntil (untilConditions);
+
+
+
+			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
+				system.fixNodeWithLoadGadgetNegativePressure(
+					mainComputationResults, untilConditions);
+
+
+
+
+
+		}
 	}
 }
 

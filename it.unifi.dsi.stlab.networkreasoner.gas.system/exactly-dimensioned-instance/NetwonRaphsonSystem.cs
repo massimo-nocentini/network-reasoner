@@ -158,17 +158,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var oneStepMutationResults = this.repeatMutateUntil (untilConditions);
 
 			var relativeUnknowns = this.denormalizeUnknowns ();
-
+			
 			foreach (var nodePair in this.originalNodesByComputationNodes) {
 				unknownsByNodes.Add (nodePair.Value, 
-				                    relativeUnknowns.valueAt (nodePair.Key));
+				                     relativeUnknowns.valueAt (nodePair.Key));
 			}
 
 			foreach (var edgePair in this.originalEdgesByComputationEdges) {
 				QvaluesByEdges.Add (edgePair.Value,
-				                   oneStepMutationResults.Qvector.valueAt (edgePair.Key));
-			}
-
+				                    oneStepMutationResults.Qvector.valueAt (edgePair.Key));
+			}			
 
 			return oneStepMutationResults;
 		}
@@ -510,6 +509,37 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.EventsListener.onUnknownWithDimensionReverted (this.UnknownVector);
 
 			return this.UnknownVector;
+		}
+
+		public OneStepMutationResults fixNodeWithLoadGadgetNegativePressure (
+			OneStepMutationResults mainComputationResults, 
+			List<UntilConditionAbstract> untilConditions)
+		{
+			var relativeUnknowns = this.denormalizeUnknowns ();
+
+			var fixedNodesWithLoadGadgetByOriginalNodes = 
+				new Dictionary<GasNodeAbstract, GasNodeAbstract> ();
+
+			var nodeWithMinValue = relativeUnknowns.findKeyWithMinValue ();
+
+			// here we don't know if the pressure is negative or not.
+			var originalNode = originalNodesByComputationNodes [nodeWithMinValue];
+
+			NodeForNetwonRaphsonSystem.NodeSostitutionAbstract substitutionDriver = 
+					nodeWithMinValue.substituteNodeIfHasNegativePressure (
+						relativeUnknowns.valueAt (nodeWithMinValue),
+						originalNode);
+
+			OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget =
+				substitutionDriver.doSubstitution (
+					originalNode,
+					fixedNodesWithLoadGadgetByOriginalNodes,
+					this.originalEdgesByComputationEdges,
+					untilConditions);
+
+
+			return resultAfterFixingOneNodeWithLoadGadget;
+
 		}
 
 	}
