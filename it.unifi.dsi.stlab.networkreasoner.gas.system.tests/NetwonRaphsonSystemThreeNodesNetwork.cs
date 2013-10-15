@@ -251,11 +251,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var mainComputationResults = system.repeatMutateUntil (untilConditions);
 
-
+			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes = 
+				new Dictionary<GasNodeAbstract, GasNodeAbstract>();
 
 			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
-				system.fixNodeWithLoadGadgetNegativePressure(
-					mainComputationResults, untilConditions);
+				system.fixNodesWithLoadGadgetNegativePressure(
+					mainComputationResults, 
+					untilConditions,
+					fixedNodesWithLoadGadgetByOriginalNodes);
 
 
 

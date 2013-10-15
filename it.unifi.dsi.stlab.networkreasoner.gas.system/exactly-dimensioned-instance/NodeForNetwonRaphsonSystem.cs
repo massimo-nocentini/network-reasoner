@@ -237,22 +237,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return formula.accept (aFormulaVisitor);
 		}
 
-		public NodeSostitutionAbstract substituteNodeIfHasNegativePressure (
+		public NodeSubstitutionAbstract substituteNodeIfHasNegativePressure (
 			double pressure, GasNodeAbstract correspondingOriginalNode)
 		{
-			NodeSostitutionAbstract nodeSostitutionHappens = new NodeSostitutionHappens {
+			NodeSubstitutionAbstract nodeSostitutionHappens = 
+			new NodeSubstitutionHappens {
 					Substitution = () => this.Role.substituteNodeBecauseNegativePressureFoundFor (
 					this, pressure, correspondingOriginalNode)
 				};
 
-			NodeSostitutionAbstract nodeSostitutionDoesntHappen = new NodeSostitutionDoesntHappen {
+			NodeSubstitutionAbstract nodeSostitutionDoesntHappen = 
+			new NodeSubstitutionDoesntHappen {
 				Substitution = () => correspondingOriginalNode
 			};
 
 			return pressure < 0 ? nodeSostitutionHappens : nodeSostitutionDoesntHappen;
 		}
 
-		public abstract class NodeSostitutionAbstract
+		public abstract class NodeSubstitutionAbstract
 		{
 			public Func<GasNodeAbstract> Substitution {
 				get;
@@ -260,17 +262,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 		
 			public abstract OneStepMutationResults doSubstitution (
+				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
 				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
 				List<UntilConditionAbstract> untilConditions);
 
+			public abstract OneStepMutationResults continueComputationFor (
+				NetwonRaphsonSystem netwonRaphsonSystem, 
+				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
+				List<UntilConditionAbstract> untilConditions, 
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes);
+
+
 		}
 
-		public class NodeSostitutionHappens : NodeSostitutionAbstract
+		public class NodeSubstitutionHappens : NodeSubstitutionAbstract
 		{
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
 			public override OneStepMutationResults doSubstitution (
+				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
 				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
@@ -295,19 +306,44 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 				return innerResults;
 			}
+
+			public override OneStepMutationResults continueComputationFor (
+				NetwonRaphsonSystem netwonRaphsonSystem, 
+				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
+				List<UntilConditionAbstract> untilConditions, 
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
+			{
+				return netwonRaphsonSystem.fixNodesWithLoadGadgetNegativePressure (
+					resultAfterFixingOneNodeWithLoadGadget, 
+					untilConditions,
+					fixedNodesWithLoadGadgetByOriginalNodes);
+			}
 			#endregion
 		}
 
-		public class NodeSostitutionDoesntHappen : NodeSostitutionAbstract
+		public class NodeSubstitutionDoesntHappen : NodeSubstitutionAbstract
 		{
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
 			public override OneStepMutationResults doSubstitution (
+				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
 				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
 				List<UntilConditionAbstract> untilConditions)
 			{
-				throw new System.NotImplementedException ();
+				// simply return the previous mutation results since no substitution have to be done here
+				return previousMutationResults;
+			}
+
+			public override OneStepMutationResults continueComputationFor (
+				NetwonRaphsonSystem netwonRaphsonSystem, 
+				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
+				List<UntilConditionAbstract> untilConditions, 
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
+			{
+				// since no substitution have to be done, we do not have to continue to fix
+				// any other node since all of them have valid pressures at this time.
+				return resultAfterFixingOneNodeWithLoadGadget;
 			}
 			#endregion
 		}

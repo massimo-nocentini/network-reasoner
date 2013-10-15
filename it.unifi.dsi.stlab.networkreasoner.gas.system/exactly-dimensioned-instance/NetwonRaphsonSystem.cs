@@ -511,34 +511,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return this.UnknownVector;
 		}
 
-		public OneStepMutationResults fixNodeWithLoadGadgetNegativePressure (
-			OneStepMutationResults mainComputationResults, 
-			List<UntilConditionAbstract> untilConditions)
+		public OneStepMutationResults fixNodesWithLoadGadgetNegativePressure (
+			OneStepMutationResults previousMutationResults, 
+			List<UntilConditionAbstract> untilConditions,
+			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
 		{
 			var relativeUnknowns = this.denormalizeUnknowns ();
-
-			var fixedNodesWithLoadGadgetByOriginalNodes = 
-				new Dictionary<GasNodeAbstract, GasNodeAbstract> ();
 
 			var nodeWithMinValue = relativeUnknowns.findKeyWithMinValue ();
 
 			// here we don't know if the pressure is negative or not.
 			var originalNode = originalNodesByComputationNodes [nodeWithMinValue];
 
-			NodeForNetwonRaphsonSystem.NodeSostitutionAbstract substitutionDriver = 
+			NodeForNetwonRaphsonSystem.NodeSubstitutionAbstract substitutionDriver = 
 					nodeWithMinValue.substituteNodeIfHasNegativePressure (
 						relativeUnknowns.valueAt (nodeWithMinValue),
 						originalNode);
 
 			OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget =
 				substitutionDriver.doSubstitution (
+					previousMutationResults,
 					originalNode,
 					fixedNodesWithLoadGadgetByOriginalNodes,
 					this.originalEdgesByComputationEdges,
 					untilConditions);
 
-
-			return resultAfterFixingOneNodeWithLoadGadget;
+			return substitutionDriver.continueComputationFor(
+				this, 
+				resultAfterFixingOneNodeWithLoadGadget, 
+				untilConditions, 
+				fixedNodesWithLoadGadgetByOriginalNodes);
 
 		}
 
