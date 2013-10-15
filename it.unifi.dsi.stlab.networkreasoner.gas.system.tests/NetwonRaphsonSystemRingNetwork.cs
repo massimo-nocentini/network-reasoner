@@ -400,7 +400,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				AmbientParameters = valid_initial_ambient_parameters ()
 			};
 
-			NetwonRaphsonSystemInterface system = new NetwonRaphsonSystem {
+			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
 				FormulaVisitor = formulaVisitor,
 				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
 					Log = log

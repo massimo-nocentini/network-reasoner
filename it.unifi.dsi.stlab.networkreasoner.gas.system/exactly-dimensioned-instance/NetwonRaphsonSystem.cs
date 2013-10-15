@@ -13,21 +13,21 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
-	public class NetwonRaphsonSystem : NetwonRaphsonSystemInterface
+	public class NetwonRaphsonSystem
 	{
-		public override Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
+		public  Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
-		public override Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
+		public  Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
 
-		public override List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
+		public  List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
-		public override List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
+		public  List<EdgeForNetwonRaphsonSystem> Edges{ get; set; }
 
 		public GasFormulaVisitor FormulaVisitor{ get; set; }
 
 		public NetwonRaphsonSystemEventsListener EventsListener{ get; set; }
 
-		public override Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
+		public  Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
 
 		public  Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
 
@@ -47,7 +47,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.EventsListener = new NetwonRaphsonSystemEventsListenerNullObject ();
 		}
 
-		public override void initializeWith (GasNetwork network)
+		public void initializeWith (GasNetwork network)
 		{
 
 			this.UnknownVector = new Vector<NodeForNetwonRaphsonSystem> ();
@@ -172,7 +172,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return oneStepMutationResults;
 		}
 
-		public override OneStepMutationResults repeatMutateUntil (
+		public OneStepMutationResults repeatMutateUntil (
 			List<UntilConditionAbstract> untilConditions)
 		{
 			this.EventsListener.onRepeatMutateUntilStarted ();
@@ -217,7 +217,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return currentOneStepMutationResults;
 		}
 
-		public override bool decideIfComputationShouldBeStopped (
+		public bool decideIfComputationShouldBeStopped (
 			UntilConditionAbstract condition, 
 			OneStepMutationResults previousOneStepMutationResults, 
 			OneStepMutationResults currentOneStepMutationResults)
@@ -235,12 +235,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return computationShouldBeStopped;
 		}
 
-		public override OneStepMutationResults mutateWithoutIterationNumber ()
+		public OneStepMutationResults mutateWithoutIterationNumber ()
 		{
 			return this.mutate (null);
 		}
 
-		public override Vector<NodeForNetwonRaphsonSystem> 
+		public Vector<NodeForNetwonRaphsonSystem> 
 			computeUnknownVectorAtPreviousStep ()
 		{
 			var unknownVectorAtPreviousStep = this.UnknownVector;
@@ -251,7 +251,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return unknownVectorAtPreviousStep;
 		}
 
-		public override Vector<EdgeForNetwonRaphsonSystem> computeFvectorAtPreviousStep ()
+		public Vector<EdgeForNetwonRaphsonSystem> computeFvectorAtPreviousStep ()
 		{
 			var FvectorAtPreviousStep = Fvector;
 
@@ -261,7 +261,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return FvectorAtPreviousStep;
 		}
 
-		public override void fixMatricesIfSupplyGadgetsPresent (
+		public void fixMatricesIfSupplyGadgetsPresent (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep)
 		{
@@ -276,7 +276,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				JacobianMatrixAtCurrentStep);
 		}
 
-		public override Vector<NodeForNetwonRaphsonSystem> computeCoefficientsVectorAtCurrentStep ()
+		public Vector<NodeForNetwonRaphsonSystem> computeCoefficientsVectorAtCurrentStep ()
 		{
 			var coefficientsVectorAtCurrentStep = 
 				new Vector<NodeForNetwonRaphsonSystem> ();
@@ -291,7 +291,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return coefficientsVectorAtCurrentStep;
 		}
 
-		public override void fixNegativeUnknowns (
+		public void fixNegativeUnknowns (
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
 		{
 			Random random = new Random ();
@@ -303,7 +303,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.EventsListener.onNegativeUnknownsFixed (unknownVectorAtCurrentStep);
 		}
 
-		public override void updatePreviousVectorsWithCurrentVectors (
+		public void updatePreviousVectorsWithCurrentVectors (
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
 			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep)
 		{
@@ -311,7 +311,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Fvector = FvectorAtCurrentStep;
 		}
 
-		public override OneStepMutationResults computeOneStepMutationResult (
+		public OneStepMutationResults computeOneStepMutationResult (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
@@ -334,7 +334,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return result;
 		}
 
-		public override OneStepMutationResults mutate (
+		public OneStepMutationResults mutate (
 			Nullable<int> iterationNumber)
 		{
 			this.EventsListener.onMutateStepStarted (iterationNumber);
@@ -390,7 +390,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return result;
 		}
 
-		public override Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+		public  Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> Amatrix =
@@ -405,7 +405,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Amatrix;
 		}
 
-		public override Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
+		public Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep)
 		{
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrix =
@@ -420,7 +420,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return JacobianMatrix;
 		}
 
-		public override Vector<EdgeForNetwonRaphsonSystem> computeKvector (
+		public Vector<EdgeForNetwonRaphsonSystem> computeKvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector,
 			Vector<EdgeForNetwonRaphsonSystem> Fvector)
 		{
@@ -435,7 +435,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Kvector;
 		}
 
-		public override Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
+		public Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
@@ -464,7 +464,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return unknownVectorAtCurrentStep;
 		}
 
-		public override Vector<EdgeForNetwonRaphsonSystem> computeQvector (
+		public Vector<EdgeForNetwonRaphsonSystem> computeQvector (
 			Vector<NodeForNetwonRaphsonSystem> unknownVector, 
 			Vector<EdgeForNetwonRaphsonSystem> Kvector)
 		{
@@ -480,7 +480,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Qvector;
 		}
 
-		public override Vector<EdgeForNetwonRaphsonSystem> computeFvector (
+		public Vector<EdgeForNetwonRaphsonSystem> computeFvector (
 			Vector<EdgeForNetwonRaphsonSystem> Fvector, 
 			Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{
@@ -496,7 +496,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return newFvector;
 		}
 
-		public override Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ()
+		public Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ()
 		{
 			// here we're assuming that the initial pressure vector for unknowns 
 			// is given in relative way, otherwise the following transformation
