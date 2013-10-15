@@ -157,7 +157,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			var oneStepMutationResults = this.repeatMutateUntil (untilConditions);
 
-			var relativeUnknowns = this.denormalizeUnknowns ();
+			var relativeUnknowns = this.makeUnknownsDimensional (oneStepMutationResults.Unknowns);
 			
 			foreach (var nodePair in this.originalNodesByComputationNodes) {
 				unknownsByNodes.Add (nodePair.Value, 
@@ -496,17 +496,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return newFvector;
 		}
 
-		public Vector<NodeForNetwonRaphsonSystem> denormalizeUnknowns ()
+		public Vector<NodeForNetwonRaphsonSystem> makeUnknownsDimensional (
+			Vector<NodeForNetwonRaphsonSystem> adimensionalUnknowns)
 		{
-			// here we're assuming that the initial pressure vector for unknowns 
-			// is given in relative way, otherwise the following transformation
-			// isn't correct because mix values with different measure unit.
-			this.UnknownVector.updateEach (
-				(aNode, absolutePressure) => 
-				aNode.relativePressureOf (absolutePressure, this.FormulaVisitor)
-			);
+			Vector<NodeForNetwonRaphsonSystem> dimensionalUnknowns = 
+				new Vector<NodeForNetwonRaphsonSystem>();
 
-			this.EventsListener.onUnknownWithDimensionReverted (this.UnknownVector);
+			this.Nodes.ForEach(aNode => {
+
+				double adimensionalPressure = adimensionalUnknowns.valueAt(aNode);
+
+				double dimensionalPressure = aNode.dimensionalPressureOf (
+					adimensionalPressure, this.FormulaVisitor);
+
+				dimensionalUnknowns.atPut(aNode, dimensionalPressure);
+
+			});
+
+			this.EventsListener.onUnknownWithDimensionReverted (dimensionalUnknowns);
 
 			return this.UnknownVector;
 		}
@@ -516,7 +523,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			List<UntilConditionAbstract> untilConditions,
 			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
 		{
-			var relativeUnknowns = this.denormalizeUnknowns ();
+			var relativeUnknowns = this.makeUnknownsDimensional (previousMutationResults.Unknowns);
 
 			var nodeWithMinValue = relativeUnknowns.findKeyWithMinValue ();
 

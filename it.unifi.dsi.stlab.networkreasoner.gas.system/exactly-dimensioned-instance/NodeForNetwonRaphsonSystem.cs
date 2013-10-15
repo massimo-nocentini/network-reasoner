@@ -226,7 +226,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Role.fixMatrixIfYouHaveSupplyGadgetFor (this, aMatrix);
 		}
 
-		public double relativePressureOf (
+		public double dimensionalPressureOf (
 			double absolutePressure,
 			GasFormulaVisitor aFormulaVisitor)
 		{

@@ -363,7 +363,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			);
 
-			var relativeUnknowns = system.denormalizeUnknowns ();
+			var relativeUnknowns = system.makeUnknownsDimensional (
+				resultsAfterOneMutation.Unknowns);
 		}
 	}
 }

@@ -179,7 +179,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
 			resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
 
-			var relativeUnknowns = system.denormalizeUnknowns ();
+			var relativeUnknowns = system.makeUnknownsDimensional (
+				resultsAfterOneMutation.Unknowns);
 
 
 		}
@@ -216,7 +217,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			);
 
-			var relativeUnknowns = system.denormalizeUnknowns ();
+			var relativeUnknowns = system.makeUnknownsDimensional (
+				resultsAfterOneMutation.Unknowns);
 		}
 
 		[Test()]
