@@ -54,6 +54,7 @@
     <Compile Include="repeat-until-conditions\RepeatUntilConditionMaxIterationsReachedTest.cs" />
     <Compile Include="repeat-until-conditions\RepeatUntilConditionRatioPrecisionReached.cs" />
     <Compile Include="NetwonRaphsonSystemComplexNetwork.cs" />
+    <Compile Include="NetwonRaphsonSystemFiveNodesWithNegativePressures.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,10 +74,15 @@
       <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.textualinterface\it.unifi.dsi.stlab.networkreasoner.model.textualinterface.csproj">
+      <Project>{B8312B0F-17B4-4685-B994-77495716FDCE}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.textualinterface</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="log4net-configurations\" />
     <Folder Include="repeat-until-conditions\" />
+    <Folder Include="gheonet-textual-networks\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net-configurations\for-three-nodes-network.xml">
@@ -86,6 +92,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="log4net-configurations\for-complex-network.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="gheonet-textual-networks\five-nodes-network.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net-configurations\for-five-nodes-network-with-negative-pressures.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

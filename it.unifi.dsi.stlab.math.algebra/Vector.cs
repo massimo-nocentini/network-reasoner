@@ -191,6 +191,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 			foreach (IndexType key in this.aVector.Keys) {
 				if (this.valueAt (key) < min) {
 					minKey = key;
+					min = this.valueAt (key);
 				}
 			}
 

@@ -62,6 +62,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 			Assert.IsTrue(1.08e-5 + 1e-10 > parameters.ViscosityInPascalTimesSecond);			
 			
 		}
+
+
 	}
 }
 

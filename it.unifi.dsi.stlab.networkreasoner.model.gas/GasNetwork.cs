@@ -41,9 +41,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public AmbientParameters AmbientParameters{ get; set; }
 
-		public Dictionary<String, GasNodeAbstract> Nodes { get; private set; }
+		public Dictionary<String, GasNodeAbstract> Nodes { get; set; }
 
-		public Dictionary<String, GasEdgeAbstract> Edges { get; private set; }
+		public Dictionary<String, GasEdgeAbstract> Edges { get; set; }
 
 		public ParserResultReceiver ParserResultReceiver { get; set; }
 
