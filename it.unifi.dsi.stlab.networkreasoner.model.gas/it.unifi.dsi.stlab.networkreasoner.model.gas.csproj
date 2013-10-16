@@ -62,7 +62,7 @@
     <Compile Include="unknowns-initializations\UnknownInitialization.cs" />
     <Compile Include="unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />
     <Compile Include="unknowns-initializations\UnknownInitializationMinMaxSetupPressure.cs" />
-    <Compile Include="handlers-for-network-iteration\NodeHandler.cs" />
+    <Compile Include="handlers-for-network-iteration\NetworkIteratorHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

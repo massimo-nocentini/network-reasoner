@@ -87,7 +87,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			this.DotRepresentationValidator.validate (this);
 		}
 
-		public void doOnNodes (NodeHandler<GasNodeAbstract> nodeHandler)
+		public void doOnNodes (NetworkIteratorHandler<GasNodeAbstract> nodeHandler)
 		{
 			foreach (var aNode in this.Nodes) {
 				nodeHandler.onNodeWithKey (aNode.Key, aNode.Value);
@@ -95,7 +95,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		public void doOnEdges (NodeHandler<GasEdgeAbstract> nodeHandler)
+		public void doOnEdges (NetworkIteratorHandler<GasEdgeAbstract> nodeHandler)
 		{
 			foreach (var anEdge in this.Edges) {
 				nodeHandler.onNodeWithKey (anEdge.Key, anEdge.Value);
