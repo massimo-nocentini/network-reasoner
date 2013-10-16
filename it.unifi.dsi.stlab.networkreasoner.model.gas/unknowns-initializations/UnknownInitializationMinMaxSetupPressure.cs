@@ -13,6 +13,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			Double? MinSeenSetupPressure{ get; set; }
 
+			Lazy<Double> AdimensionalMin{ get; set; }
+
+			Lazy<Double> AdimensionalMax{ get; set; }
+
 			#region GasNodeVisitor implementation
 			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 			{
@@ -52,9 +56,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 			#endregion
 
-			public double adimensionalizedMinMax (Func<double, double, double> continuation)
+			public double adimensionalizedMinMax (
+				Func<double, double, double> continuation)
 			{
-				// per l'acqua si deve correggere come fatto nelle formule.
+				return continuation.Invoke (
+					AdimensionalMin.Value, 
+					AdimensionalMax.Value);
+			}
+
+			public void stopRecording ()
+			{
+				// TODO: per l'acqua si deve correggere come fatto nelle formule.
 
 				double min = (this.MinSeenSetupPressure.Value / 1000.0 + 
 					this.AmbientParameters.AirPressureInBar) /
@@ -64,8 +76,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					this.AmbientParameters.AirPressureInBar) /
 					this.AmbientParameters.RefPressureInBar;
 
-				return continuation.Invoke (Math.Pow (min, 2), Math.Pow (max, 2));
+				this.AdimensionalMin = new Lazy<double> (
+					() => Math.Pow (min, 2));
+
+				this.AdimensionalMax = new Lazy<double> (
+					() => Math.Pow (max, 2));
 			}
+
 		}
 
 		Double FixingTerm{ get; set; }
@@ -85,6 +102,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				aVertex => aVertex.accept (minMaxIntervalFinder))
 			);
 
+			minMaxIntervalFinder.stopRecording ();
+
 			return new UnknownInitializationMinMaxSetupPressure{
 				FixingTerm = .97,
 				MinMaxIntervalFinder = minMaxIntervalFinder
@@ -94,7 +113,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.UnknownInitialization
 		public override double initialValueFor (GasNodeAbstract aVertex, Random rand)
 		{
-			return this.MinMaxIntervalFinder.adimensionalizedMinMax (
+			return MinMaxIntervalFinder.adimensionalizedMinMax (
 				(min, max) => {
 				var maxMinusMin = max - (min * this.FixingTerm);
 				var value = (min * this.FixingTerm) + (maxMinusMin * rand.NextDouble ());
