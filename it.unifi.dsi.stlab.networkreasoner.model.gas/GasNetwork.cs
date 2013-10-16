@@ -71,7 +71,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aVertex => {
 
-				double value = unknownInitialization.initialValueFor(aVertex, rand);
+				double value = unknownInitialization.initialValueFor (aVertex, rand);
 
 				initialUnknowns.Add (aVertex, value);
 			}
@@ -103,14 +103,142 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		public static GasNetwork makeFromRemapping (
-			Dictionary<GasNodeAbstract, GasNodeAbstract> 
-			fixedNodesWithLoadGadgetByOriginalNodes, 
-			List<GasEdgeAbstract> values)
+		public GasNetwork makeFromRemapping (
+			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
 		{
-			throw new NotImplementedException ();
+			GasNetwork newNetwork = new GasNetwork ();
+
+			this.doOnNodes (new NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
+				(aNodeKey, aNode) => {
+
+				// here isn't necessary to visit the structure of the node since 
+				// all the properties are mantained by the node to be substituted,
+				// the only thing that change is the gadget.
+				var nodeForNewNetwork = fixedNodesWithLoadGadgetByOriginalNodes.ContainsKey (aNode) ?
+					fixedNodesWithLoadGadgetByOriginalNodes [aNode] : aNode;
+
+				newNetwork.Nodes.Add (aNodeKey, nodeForNewNetwork);
+			}
+			)
+			);
+
+
+			this.doOnEdges (new NodeHandlerWithDelegateOnKeyedNode<GasEdgeAbstract> (
+				(anEdgeKey, anEdge) => {
+
+				// creating a new visitor is necessary since every instance of the visitor
+				// keep state information about one edge, different at each iteration 
+				// of this block.
+				SubstituteNodeInsideEdge substituteNodeInsideEdge = 
+				new SubstituteNodeInsideEdge{
+					NewByOldNodesMapping = fixedNodesWithLoadGadgetByOriginalNodes
+				};
+
+				anEdge.accept (substituteNodeInsideEdge);
+
+				var edgeForNewNetwork = substituteNodeInsideEdge.buildEdge ();
+
+				newNetwork.Edges.Add (anEdgeKey, edgeForNewNetwork);
+			}
+			)
+			);
+
+			return newNetwork;
 		}
 
+		class SubstituteNodeInsideEdge : GasEdgeVisitor
+		{
+			public Dictionary<GasNodeAbstract, GasNodeAbstract> NewByOldNodesMapping;
+
+			#region properties
+			GasEdgeGadget Gadget {
+				get;
+				set;
+			}
+
+			double Diameter {
+				get;
+				set;
+			}
+
+			double Length {
+				get;
+				set;
+			}
+
+			double MaxSpeed {
+				get;
+				set;
+			}
+
+			double Roughness {
+				get;
+				set;
+			}
+
+			GasNodeAbstract StartNode{ get; set; }
+
+			GasNodeAbstract EndNode{ get; set; }
+
+			#endregion
+
+			#region GasEdgeVisitor implementation
+			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
+			{
+				this.Diameter = gasEdgePhysical.Diameter;
+				this.Length = gasEdgePhysical.Length;
+				this.MaxSpeed = gasEdgePhysical.MaxSpeed;
+				this.Roughness = gasEdgePhysical.Roughness;
+
+				gasEdgePhysical.Described.accept (this);
+			}
+
+			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
+			{
+				this.StartNode = applySubstitutionOn (gasEdgeTopological.StartNode);
+
+				this.EndNode = applySubstitutionOn (gasEdgeTopological.EndNode);
+			}
+
+			GasNodeAbstract applySubstitutionOn (GasNodeAbstract aNode)
+			{
+				return NewByOldNodesMapping.ContainsKey (aNode) ?
+					NewByOldNodesMapping [aNode] : aNode;
+			}
+
+			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
+			{
+				this.Gadget = gasEdgeWithGadget.Gadget;
+				gasEdgeWithGadget.Equipped.accept (this);
+			}
+			#endregion
+
+			public GasEdgeAbstract buildEdge ()
+			{
+				GasEdgeTopological gasEdgeTopological = 
+				new GasEdgeTopological{
+					StartNode = this.StartNode,
+					EndNode = this.EndNode
+				};
+
+				GasEdgePhysical gasEdgePhysical = 
+				new GasEdgePhysical{
+					Described = gasEdgeTopological,
+					Diameter = this.Diameter,
+					Length = this.Length,
+					MaxSpeed = this.MaxSpeed,
+					Roughness = this.Roughness
+				};
+
+				GasEdgeWithGadget gasEdgeWithGadget = 
+				new GasEdgeWithGadget{
+					Equipped = gasEdgePhysical,
+					Gadget = this.Gadget
+				};
+
+				return gasEdgeWithGadget;
+			}
+		}
 	}
 }
 

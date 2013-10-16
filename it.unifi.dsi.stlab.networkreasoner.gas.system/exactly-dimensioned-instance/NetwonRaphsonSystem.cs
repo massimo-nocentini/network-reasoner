@@ -15,6 +15,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class NetwonRaphsonSystem
 	{
+		GasNetwork OriginalNetwork { get; set; }
+
 		public  Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
 		public  Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
@@ -108,6 +110,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			initializeNodes (newtonRaphsonNodesByOriginalNode, network);
 
 			initializeEdges (newtonRaphsonNodesByOriginalNode, network);
+
+			this.OriginalNetwork = network;
 
 			this.EventsListener.onInitializationCompleted (
 				this.Nodes, this.Edges, this.NodesEnumeration);
@@ -550,7 +554,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					previousMutationResults,
 					originalNode,
 					fixedNodesWithLoadGadgetByOriginalNodes,
-					this.OriginalEdgesByComputationEdges,
+					this.OriginalNetwork,
 					untilConditions);
 
 			return substitutionDriver.continueComputationFor (

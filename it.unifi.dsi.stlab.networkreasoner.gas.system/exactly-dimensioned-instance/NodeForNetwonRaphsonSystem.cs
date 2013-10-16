@@ -265,7 +265,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
-				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
+				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions);
 
 			public abstract OneStepMutationResults continueComputationFor (
@@ -284,7 +284,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
-				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
+				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions)
 			{
 				var newNode = this.Substitution.Invoke ();
@@ -294,9 +294,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 						originalNode, newNode);
 
 				GasNetwork networkWithFixedNodesWithLoadGadget = 
-						GasNetwork.makeFromRemapping (
-							fixedNodesWithLoadGadgetByOriginalNodes,
-							originalEdgesByComputationEdges.Values.ToList ());
+						aGasNetwork.makeFromRemapping (
+							fixedNodesWithLoadGadgetByOriginalNodes);
 
 				// start here a new iteration of the method
 				var innerSystem = new NetwonRaphsonSystem ();
@@ -328,7 +327,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
-				Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> originalEdgesByComputationEdges, 
+				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions)
 			{
 				// simply return the previous mutation results since no substitution have to be done here
