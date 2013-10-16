@@ -238,12 +238,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public NodeSubstitutionAbstract substituteNodeIfHasNegativePressure (
-			double pressure, GasNodeAbstract correspondingOriginalNode)
+			double pressure, 
+			GasNodeAbstract correspondingOriginalNode,
+			NetwonRaphsonSystem system)
 		{
 			NodeSubstitutionAbstract nodeSostitutionHappens = 
 			new NodeSubstitutionHappens {
 					Substitution = () => this.Role.substituteNodeBecauseNegativePressureFoundFor (
-					this, pressure, correspondingOriginalNode)
+					this, pressure, correspondingOriginalNode),
+					ParentSystem = system
 				};
 
 			NodeSubstitutionAbstract nodeSostitutionDoesntHappen = 
@@ -269,7 +272,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				List<UntilConditionAbstract> untilConditions);
 
 			public abstract OneStepMutationResults continueComputationFor (
-				NetwonRaphsonSystem netwonRaphsonSystem, 
 				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
 				List<UntilConditionAbstract> untilConditions, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes);
@@ -279,6 +281,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public class NodeSubstitutionHappens : NodeSubstitutionAbstract
 		{
+			public NetwonRaphsonSystem ParentSystem { get; set; }
+			
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
 			public override OneStepMutationResults doSubstitution (
 				OneStepMutationResults previousMutationResults,
@@ -298,8 +302,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 							fixedNodesWithLoadGadgetByOriginalNodes);
 
 				// start here a new iteration of the method
-				var innerSystem = new NetwonRaphsonSystem ();
-				// call the initialization giving the current configurations
+				var innerSystem = new NetwonRaphsonSystem {
+					FormulaVisitor = ParentSystem.FormulaVisitor,
+					EventsListener = ParentSystem.EventsListener
+				};
+
+				innerSystem.initializeWith (networkWithFixedNodesWithLoadGadget);
 
 				var innerResults = innerSystem.repeatMutateUntil (untilConditions);
 
@@ -307,12 +315,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 
 			public override OneStepMutationResults continueComputationFor (
-				NetwonRaphsonSystem netwonRaphsonSystem, 
 				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
 				List<UntilConditionAbstract> untilConditions, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
 			{
-				return netwonRaphsonSystem.fixNodesWithLoadGadgetNegativePressure (
+				var systemToBeUsed = resultAfterFixingOneNodeWithLoadGadget.ComputedBy;
+
+				return systemToBeUsed.fixNodesWithLoadGadgetNegativePressure (
 					resultAfterFixingOneNodeWithLoadGadget, 
 					untilConditions,
 					fixedNodesWithLoadGadgetByOriginalNodes);
@@ -335,7 +344,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 
 			public override OneStepMutationResults continueComputationFor (
-				NetwonRaphsonSystem netwonRaphsonSystem, 
 				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
 				List<UntilConditionAbstract> untilConditions, 
 				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)

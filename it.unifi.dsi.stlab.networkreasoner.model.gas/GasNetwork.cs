@@ -106,7 +106,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public GasNetwork makeFromRemapping (
 			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
 		{
-			GasNetwork newNetwork = new GasNetwork ();
+			GasNetwork newNetwork = new GasNetwork {
+				AmbientParameters = this.AmbientParameters
+			};
 
 			this.doOnNodes (new NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 				(aNodeKey, aNode) => {
@@ -215,28 +217,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			public GasEdgeAbstract buildEdge ()
 			{
-				GasEdgeTopological gasEdgeTopological = 
-				new GasEdgeTopological{
+				GasEdgeAbstract newEdge = new GasEdgeTopological{
 					StartNode = this.StartNode,
 					EndNode = this.EndNode
 				};
 
-				GasEdgePhysical gasEdgePhysical = 
-				new GasEdgePhysical{
-					Described = gasEdgeTopological,
+				newEdge = new GasEdgePhysical{
+					Described = newEdge,
 					Diameter = this.Diameter,
 					Length = this.Length,
 					MaxSpeed = this.MaxSpeed,
 					Roughness = this.Roughness
 				};
 
-				GasEdgeWithGadget gasEdgeWithGadget = 
-				new GasEdgeWithGadget{
-					Equipped = gasEdgePhysical,
-					Gadget = this.Gadget
-				};
+				if (this.Gadget != null) {
+					newEdge = new GasEdgeWithGadget{
+						Equipped = newEdge,
+						Gadget = this.Gadget
+					};
+				}
 
-				return gasEdgeWithGadget;
+				return newEdge;
 			}
 		}
 	}

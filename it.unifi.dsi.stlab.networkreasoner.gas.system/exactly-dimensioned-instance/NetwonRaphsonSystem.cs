@@ -397,6 +397,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			if (iterationNumber.HasValue) {
 				result.IterationNumber = iterationNumber.Value;
 			}
+			result.ComputedBy = this;
 
 			return result;
 		}
@@ -529,7 +530,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			this.EventsListener.onUnknownWithDimensionReverted (dimensionalUnknowns);
 
-			return this.UnknownVector;
+			return dimensionalUnknowns;
 		}
 
 		public OneStepMutationResults fixNodesWithLoadGadgetNegativePressure (
@@ -547,7 +548,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			NodeForNetwonRaphsonSystem.NodeSubstitutionAbstract substitutionDriver = 
 					nodeWithMinValue.substituteNodeIfHasNegativePressure (
 						relativeUnknowns.valueAt (nodeWithMinValue),
-						originalNode);
+						originalNode,
+						this);
 
 			OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget =
 				substitutionDriver.doSubstitution (
@@ -558,7 +560,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					untilConditions);
 
 			return substitutionDriver.continueComputationFor (
-				this, 
 				resultAfterFixingOneNodeWithLoadGadget, 
 				untilConditions, 
 				fixedNodesWithLoadGadgetByOriginalNodes);

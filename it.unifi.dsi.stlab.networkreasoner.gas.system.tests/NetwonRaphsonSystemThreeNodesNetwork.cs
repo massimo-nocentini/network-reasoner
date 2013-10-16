@@ -85,7 +85,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
-				Load = 100.0
+				Load = 180.0
 			};
 
 			return new GasNodeWithGadget{
@@ -254,20 +254,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var mainComputationResults = system.repeatMutateUntil (untilConditions);
 
 			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes = 
-				new Dictionary<GasNodeAbstract, GasNodeAbstract>();
+				new Dictionary<GasNodeAbstract, GasNodeAbstract> ();
 
 			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
-				system.fixNodesWithLoadGadgetNegativePressure(
+				system.fixNodesWithLoadGadgetNegativePressure (
 					mainComputationResults, 
 					untilConditions,
 					fixedNodesWithLoadGadgetByOriginalNodes);
 
-			var dimensionalUnknowns = system.makeUnknownsDimensional(
-				resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
-
-
-
-
+			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
+				makeUnknownsDimensional (
+					resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
 
 		}
 	}
