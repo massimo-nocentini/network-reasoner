@@ -95,11 +95,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			}
 		}
 
-		public void doOnEdges (NetworkIteratorHandler<GasEdgeAbstract> nodeHandler)
+		public void doOnEdges (NetworkIteratorHandler<GasEdgeAbstract> edgeHandler)
 		{
 			foreach (var anEdge in this.Edges) {
-				nodeHandler.onNodeWithKey (anEdge.Key, anEdge.Value);
-				nodeHandler.onRawNode (anEdge.Value);
+				edgeHandler.onNodeWithKey (anEdge.Key, anEdge.Value);
+				edgeHandler.onRawNode (anEdge.Value);
 			}
 		}
 

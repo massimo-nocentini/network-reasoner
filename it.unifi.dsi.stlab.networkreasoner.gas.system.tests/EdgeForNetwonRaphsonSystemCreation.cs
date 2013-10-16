@@ -50,7 +50,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Described = aTopologicalEdge};
 
 			var aBuilder = new EdgeForNetwonRaphsonSystemBuilder ();
-			aBuilder.customNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
+			aBuilder.CustomNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
 
 			var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
 
@@ -100,7 +100,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Gadget = new GasEdgeGadgetSwitchOff()};
 
 			var aBuilder = new EdgeForNetwonRaphsonSystemBuilder ();
-			aBuilder.customNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
+			aBuilder.CustomNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode;
 
 			var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (switchedOffEdge);
 
