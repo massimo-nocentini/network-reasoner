@@ -219,7 +219,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			var newNodesByKey = new Dictionary<GasNodeAbstract, NodeForReachabilityValidator> ();
 
-			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
+			gasNetwork.doOnNodes (new NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 			(aKey, aNode) => {
 
 				var newNode = new NodeForReachabilityValidator {
@@ -237,7 +237,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			EdgeForReachabilityValidator edgeVisitor = 
 				new EdgeForReachabilityValidator (newNodesByKey);
 
-			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+			gasNetwork.doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
 				anEdge => anEdge.accept (edgeVisitor))
 			);
 

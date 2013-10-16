@@ -56,10 +56,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode =
 				new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
 
-			var initialUnknownGuessVector = network.makeInitialGuessForUnknowns ();
+			var initialUnknownGuessVector = network.makeInitialGuessForUnknowns (
+				new UnknownInitializationSimplyRandomized());
 			var initialFvalueGuessVector = network.makeInitialGuessForFvector ();
 
-			network.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+			network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aNode => {
 
 				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
@@ -85,7 +86,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			List<EdgeForNetwonRaphsonSystem> collector = 
 				new List<EdgeForNetwonRaphsonSystem> ();
 
-			network.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+			network.doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
 				anEdge => {
 
 				var aBuilder = new EdgeForNetwonRaphsonSystemBuilder ();

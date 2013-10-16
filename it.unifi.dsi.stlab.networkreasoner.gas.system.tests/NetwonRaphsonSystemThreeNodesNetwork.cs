@@ -262,6 +262,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					untilConditions,
 					fixedNodesWithLoadGadgetByOriginalNodes);
 
+			var dimensionalUnknowns = system.makeUnknownsDimensional(
+				resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
+
 
 
 

@@ -213,7 +213,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		{
 			var resultEdges = new List<EdgeForDotRepresentationValidator> ();
 
-			gasNetwork.doOnEdges (new GasNetwork.NodeHandlerWithDelegateOnKeyedNode<
+			gasNetwork.doOnEdges (new NodeHandlerWithDelegateOnKeyedNode<
 			                      GasEdgeAbstract> (
 				(key, anEdge) => {
 
@@ -228,7 +228,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			);
 
 			var resultVertices = new List<NodeForDotRepresentationValidator> ();
-			gasNetwork.doOnNodes (new GasNetwork.NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+			gasNetwork.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aVertex => {
 
 				var newVertex = new NodeForDotRepresentationValidator ();
