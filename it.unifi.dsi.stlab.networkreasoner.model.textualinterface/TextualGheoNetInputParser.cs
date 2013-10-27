@@ -15,52 +15,86 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				() => new List<String> (File.ReadLines (filename)));
 		}
 
-		public Dictionary<string, GasNodeAbstract> parseNodes ()
+		public SystemRunnerFromTextualGheoNetInput parse (
+			SpecificationAssembler aSpecAssembler)
 		{
-			Dictionary<string, GasNodeAbstract> parsedNodes = 
-				new Dictionary<string, GasNodeAbstract> ();
+			List<String> nodesSpecificationLines;
 
-			var nodesSpecificationLines = SpecificationLines.Value.FindAll (line => line.StartsWith ("N"));
+			Dictionary<String, Func<Double, GasNodeAbstract>> delayedNodesConstruction = 
+				this.parseNodeDelayedConstruction (
+					out nodesSpecificationLines);
+
+			SystemRunnerFromTextualGheoNetInput systemRunner = 
+				aSpecAssembler.assemble (
+					delayedNodesConstruction, 
+					nodesSpecificationLines,
+					this
+			);
+
+			return systemRunner;
+		}
+
+		protected virtual Dictionary<String, Func<Double, GasNodeAbstract>> parseNodeDelayedConstruction (
+				out List<String> nodesSpecificationLines)
+		{
+			Dictionary<String, Func<Double, GasNodeAbstract>> delayConstructedNodes = 
+				new Dictionary<string, Func<double, GasNodeAbstract>> ();
+
+			nodesSpecificationLines = SpecificationLines.Value.FindAll (
+				line => line.StartsWith ("N"));
+
 			nodesSpecificationLines.ForEach (nodeSpecification => {
 
 				var splittedSpecification = nodeSpecification.Split (' ');
 
 				var nodeIdentifier = splittedSpecification [0];
 
-				GasNodeAbstract aNode = new GasNodeTopological{
-					Identifier = nodeIdentifier,
-					Height = Int64.Parse(splittedSpecification[4])
-				};
+				Func<Double, GasNodeAbstract> delayedConstruction = 
+					aDouble => {
 
-				if (splittedSpecification [1].Equals ("1")) {
-					aNode = new GasNodeWithGadget{
+					GasNodeAbstract aNode = new GasNodeTopological{
+						Identifier = nodeIdentifier,
+						Height = Int64.Parse(splittedSpecification[4])
+					};
+
+					if (splittedSpecification [1].Equals ("1")) {
+						aNode = new GasNodeWithGadget{
 						Equipped = aNode,
 						Gadget = new GasNodeGadgetSupply{
-							SetupPressure = Double.Parse(splittedSpecification[3])
+							SetupPressure = aDouble
 						}
 					};
-				} else if (splittedSpecification [1].Equals ("0")) {
-					aNode = new GasNodeWithGadget{
-						Equipped = aNode,
-						Gadget = new GasNodeGadgetLoad{
-							Load = Double.Parse(splittedSpecification[2])
-						}
-					};
-				} else {
-					throw new ArgumentException (string.Format (
-						"The specification for node {0} is not correct: impossible " +
-						"to parse neither supply nor load value.", nodeIdentifier)
-					);
-				}
+					} else if (splittedSpecification [1].Equals ("0")) {
 
-				parsedNodes.Add (nodeIdentifier, aNode);
+						// if we set a passive node we forget what the caller of this lambda
+						// gives as aDouble because a passive node is characterized by having
+						// a zero load.
+						var loadGadget = Double.Parse (splittedSpecification [2]) == 0.0 ?
+							new GasNodeGadgetLoad{ Load = 0 } : 
+							new GasNodeGadgetLoad{ Load = aDouble };
+
+						aNode = new GasNodeWithGadget{
+						Equipped = aNode,
+						Gadget = loadGadget
+					};
+					} else {
+						throw new ArgumentException (string.Format (
+						"The specification for node {0} is not correct: impossible " +
+							"to parse neither supply nor load value.", nodeIdentifier)
+						);
+					}
+
+					return aNode;
+				};
+
+				delayConstructedNodes.Add (nodeIdentifier, delayedConstruction);
 			}
 			);
 
-			return parsedNodes;
+			return delayConstructedNodes;
 		}
 
-		public Dictionary<string, GasEdgeAbstract> parseEdgesRelating (
+		internal virtual Dictionary<string, GasEdgeAbstract> parseEdgesRelating (
 			Dictionary<string, GasNodeAbstract> nodes)
 		{
 			Dictionary<string, GasEdgeAbstract> parsedEdges = 
@@ -94,7 +128,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return parsedEdges;
 		}
 
-		public AmbientParameters parseAmbientParameters ()
+		internal virtual AmbientParameters parseAmbientParameters ()
 		{
 			AmbientParameters result = new AmbientParametersGas ();
 

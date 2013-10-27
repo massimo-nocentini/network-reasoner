@@ -15,64 +15,73 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 	[TestFixture()]
 	public class NetwonRaphsonSystemFiveNodesWithNegativePressures
 	{
+		class FiveNodesNetworkRunnableSystem : RunnableSystem
+		{
+			#region RunnableSystem implementation
+			public void compute (
+				Dictionary<string, GasNodeAbstract> nodes, 
+				Dictionary<string, GasEdgeAbstract> edges, 
+				AmbientParameters ambientParameters)
+			{
+				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+
+				XmlConfigurator.Configure (
+					new FileInfo ("log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"));
+
+				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
+					AmbientParameters = ambientParameters
+				};
+
+				NetwonRaphsonSystem system = new NetwonRaphsonSystem {
+				FormulaVisitor = formulaVisitor,
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
+						Log = log
+					}
+				};
+
+				var aGasNetwork = new GasNetwork{
+					Nodes = nodes,
+					Edges = edges,				
+					AmbientParameters = ambientParameters
+				};
+
+				system.initializeWith (aGasNetwork);
+
+				var untilConditions = new List<UntilConditionAbstract> {
+					new UntilConditionAdimensionalRatioPrecisionReached {
+						Precision = 1e-8
+					}
+				};
+
+				var mainComputationResults = system.repeatMutateUntil (untilConditions);
+
+				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes = 
+				new Dictionary<GasNodeAbstract, GasNodeAbstract> ();
+
+				OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
+				system.fixNodesWithLoadGadgetNegativePressure (
+					mainComputationResults, 
+					untilConditions,
+					fixedNodesWithLoadGadgetByOriginalNodes);
+
+				var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
+					makeUnknownsDimensional (resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
+
+			}
+			#endregion
+		}
+
+
 		[Test()]
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
 				"gheonet-textual-networks/five-nodes-network.dat");
 
-			Dictionary<String, GasNodeAbstract> nodes = parser.parseNodes ();
+			SystemRunnerFromTextualGheoNetInput systemRunner = 
+				parser.parse (new SpecificationAssemblerAllInOneFile ());
 
-			Dictionary<String, GasEdgeAbstract> edges = parser.parseEdgesRelating (nodes);
-
-			AmbientParameters parameters = parser.parseAmbientParameters ();
-
-			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
-
-			XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml")
-			);
-
-			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = parameters
-			};
-
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-					Log = log
-				}
-			};
-
-			var aGasNetwork = new GasNetwork{
-				Nodes = nodes,
-				Edges = edges,
-				AmbientParameters = parameters
-			};
-
-			system.initializeWith (aGasNetwork);
-
-			var untilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached {
-					Precision = 1e-8
-				}
-			};
-
-			var mainComputationResults = system.repeatMutateUntil (untilConditions);
-
-			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes = 
-				new Dictionary<GasNodeAbstract, GasNodeAbstract> ();
-
-			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
-				system.fixNodesWithLoadGadgetNegativePressure (
-					mainComputationResults, 
-					untilConditions,
-					fixedNodesWithLoadGadgetByOriginalNodes);
-
-			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
-				makeUnknownsDimensional (
-					resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
-
+			systemRunner.run (new FiveNodesNetworkRunnableSystem ());
 		}
 	}
 }

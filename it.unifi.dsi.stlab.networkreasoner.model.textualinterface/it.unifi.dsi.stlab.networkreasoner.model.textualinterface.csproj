@@ -34,6 +34,11 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="TextualGheoNetInputParser.cs" />
+    <Compile Include="SpecificationAssembler.cs" />
+    <Compile Include="SpecificationAssemblerAllInOneFile.cs" />
+    <Compile Include="SystemRunnerFromTextualGheoNetInput.cs" />
+    <Compile Include="SystemRunnerFromTextualGheoNetInputSingleSystem.cs" />
+    <Compile Include="RunnableSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
