@@ -15,10 +15,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 	[TestFixture()]
 	public class NetwonRaphsonSystemFiveNodesWithNegativePressures
 	{
-		class FiveNodesNetworkRunnableSystem : RunnableSystem
+		class FiveNodesNetworkRunnableSystem : RunnableSystemAbstractComputationalResultHandlerShortTableSummary
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public override void compute (
 				String systemName,
 				Dictionary<string, GasNodeAbstract> nodes, 
 				Dictionary<string, GasEdgeAbstract> edges, 
@@ -68,6 +68,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
 					makeUnknownsDimensional (resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
 
+				this.onComputationFinished (systemName, resultsAfterFixingNodeWithLoadGadgetPressure);
+
 			}
 			#endregion
 		}
@@ -83,6 +85,23 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				parser.parse (new SpecificationAssemblerAllInOneFile ());
 
 			systemRunner.run (new FiveNodesNetworkRunnableSystem ());
+		}
+
+		[Test()]
+		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets_with_splitted_specification ()
+		{
+			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
+				"gheonet-textual-networks/five-nodes-network.dat");
+
+			SystemRunnerFromTextualGheoNetInput systemRunner = 
+				parser.parse (new SpecificationAssemblerSplitted ("gheonet-textual-networks/five-nodes-network-extension.dat"));
+
+			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem ();
+			systemRunner.run (fiveNodesNetworkRunnableSystem);
+
+			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output.dat", 
+			                  fiveNodesNetworkRunnableSystem.buildTableSummary ());
+			
 		}
 	}
 }

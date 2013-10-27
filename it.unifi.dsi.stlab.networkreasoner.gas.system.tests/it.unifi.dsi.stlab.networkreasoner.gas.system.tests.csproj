@@ -100,5 +100,8 @@
     <None Include="log4net-configurations\for-five-nodes-network-with-negative-pressures.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="gheonet-textual-networks\five-nodes-network-extension.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
