@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SimpleGheoNetInputParsing.cs" />
+    <Compile Include="SplittedGheoNetInputParsing.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -44,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="examples\first-simple-specification.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\nodes-loads-pressures-for-splitted-specification.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

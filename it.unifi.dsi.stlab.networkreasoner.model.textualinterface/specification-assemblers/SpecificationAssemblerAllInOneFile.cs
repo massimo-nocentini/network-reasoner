@@ -6,14 +6,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
 	public class SpecificationAssemblerAllInOneFile : SpecificationAssembler
 	{
-		public SpecificationAssemblerAllInOneFile ()
-		{
-		}
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SpecificationAssembler
 		public override SystemRunnerFromTextualGheoNetInput assemble (
 			Dictionary<string, Func<double, GasNodeAbstract>> delayedNodesConstruction, 
-			List<string> nodesSpecificationLines,
+			List<NodeSpecificationLine> nodesSpecificationLines,
 			TextualGheoNetInputParser parentParser)
 		{			
 			Dictionary<string, GasNodeAbstract> nodesDictionary = 
@@ -21,17 +18,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			nodesSpecificationLines.ForEach (nodeSpecification => {
 
-				var splittedSpecification = nodeSpecification.Split (' ');
+				var ctorFunction = delayedNodesConstruction [nodeSpecification.Identifier];
 
-				var nodeIdentifier = splittedSpecification [0];
+				var value = nodeSpecification.Type == NodeType.WithSupplyGadget ?
+					Double.Parse (nodeSpecification.SplittedSpecification [3]) :
+						Double.Parse (nodeSpecification.SplittedSpecification [2]);
 
-				var ctorFunction = delayedNodesConstruction [nodeIdentifier];
-
-				var value = splittedSpecification [1].Equals ("1") ?
-					Double.Parse (splittedSpecification [3]) :
-						Double.Parse (splittedSpecification [2]);
-
-				nodesDictionary.Add (nodeIdentifier, ctorFunction.Invoke (value));
+				nodesDictionary.Add (nodeSpecification.Identifier, ctorFunction.Invoke (value));
 			}
 			);
 

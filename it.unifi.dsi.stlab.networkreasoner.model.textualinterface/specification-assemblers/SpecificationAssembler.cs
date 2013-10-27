@@ -9,7 +9,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	{
 		public abstract SystemRunnerFromTextualGheoNetInput assemble (
 			Dictionary<string, Func<double, GasNodeAbstract>> delayedNodesConstruction, 
-			List<string> nodesSpecificationLines,
+			List<NodeSpecificationLine> nodesSpecificationLines,
 			TextualGheoNetInputParser parentParser);
 	}
 

@@ -18,7 +18,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		public SystemRunnerFromTextualGheoNetInput parse (
 			SpecificationAssembler aSpecAssembler)
 		{
-			List<String> nodesSpecificationLines;
+			List<NodeSpecificationLine> nodesSpecificationLines;
 
 			Dictionary<String, Func<Double, GasNodeAbstract>> delayedNodesConstruction = 
 				this.parseNodeDelayedConstruction (
@@ -35,36 +35,48 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		}
 
 		protected virtual Dictionary<String, Func<Double, GasNodeAbstract>> parseNodeDelayedConstruction (
-				out List<String> nodesSpecificationLines)
+				out List<NodeSpecificationLine> nodesSpecificationLinesOut)
 		{
 			Dictionary<String, Func<Double, GasNodeAbstract>> delayConstructedNodes = 
 				new Dictionary<string, Func<double, GasNodeAbstract>> ();
 
-			nodesSpecificationLines = SpecificationLines.Value.FindAll (
+			var nodesSpecificationLines = new List<NodeSpecificationLine> ();
+
+			var rawNodesSpecificationLines = SpecificationLines.Value.FindAll (
 				line => line.StartsWith ("N"));
 
-			nodesSpecificationLines.ForEach (nodeSpecification => {
+			rawNodesSpecificationLines.ForEach (nodeSpecification => {
 
 				var splittedSpecification = nodeSpecification.Split (' ');
 
-				var nodeIdentifier = splittedSpecification [0];
+				NodeSpecificationLine semanticLine = new NodeSpecificationLine ();
+
+				semanticLine.Identifier = splittedSpecification [0];
+				semanticLine.Height = Int64.Parse (splittedSpecification [4]);
+				semanticLine.SplittedSpecification = splittedSpecification;
 
 				Func<Double, GasNodeAbstract> delayedConstruction = 
 					aDouble => {
 
 					GasNodeAbstract aNode = new GasNodeTopological{
-						Identifier = nodeIdentifier,
-						Height = Int64.Parse(splittedSpecification[4])
+						Identifier = semanticLine.Identifier,
+						Height = semanticLine.Height
 					};
 
-					if (splittedSpecification [1].Equals ("1")) {
+					var nodeTypeAsString = splittedSpecification [1];
+
+					if (nodeTypeAsString.Equals ("1")) {
+
 						aNode = new GasNodeWithGadget{
-						Equipped = aNode,
-						Gadget = new GasNodeGadgetSupply{
-							SetupPressure = aDouble
-						}
-					};
-					} else if (splittedSpecification [1].Equals ("0")) {
+							Equipped = aNode,
+							Gadget = new GasNodeGadgetSupply{
+								SetupPressure = aDouble
+							}
+						};
+
+						semanticLine.Type = NodeType.WithSupplyGadget;
+
+					} else if (nodeTypeAsString.Equals ("0")) {
 
 						// if we set a passive node we forget what the caller of this lambda
 						// gives as aDouble because a passive node is characterized by having
@@ -74,22 +86,29 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 							new GasNodeGadgetLoad{ Load = aDouble };
 
 						aNode = new GasNodeWithGadget{
-						Equipped = aNode,
-						Gadget = loadGadget
-					};
+							Equipped = aNode,
+							Gadget = loadGadget
+						};
+
+						semanticLine.Type = NodeType.WithLoadGadget;
+
 					} else {
 						throw new ArgumentException (string.Format (
 						"The specification for node {0} is not correct: impossible " +
-							"to parse neither supply nor load value.", nodeIdentifier)
+							"to parse neither supply nor load value.", semanticLine.Identifier)
 						);
 					}
 
 					return aNode;
 				};
 
-				delayConstructedNodes.Add (nodeIdentifier, delayedConstruction);
+				nodesSpecificationLines.Add (semanticLine);
+
+				delayConstructedNodes.Add (semanticLine.Identifier, delayedConstruction);
 			}
 			);
+
+			nodesSpecificationLinesOut = nodesSpecificationLines;
 
 			return delayConstructedNodes;
 		}

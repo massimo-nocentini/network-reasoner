@@ -39,12 +39,20 @@
     <Compile Include="system-runners\RunnableSystem.cs" />
     <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInput.cs" />
     <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInputSingleSystem.cs" />
+    <Compile Include="specification-assemblers\SpecificationAssemblerSplitted.cs" />
+    <Compile Include="NodeSpecificationLine.cs" />
+    <Compile Include="NodeType.cs" />
+    <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInputMultipleSystems.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
       <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.extension-methods\it.unifi.dsi.stlab.extension-methods.csproj">
+      <Project>{1A93011C-4839-42D1-B6BB-6A96283291D5}</Project>
+      <Name>it.unifi.dsi.stlab.extension-methods</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
