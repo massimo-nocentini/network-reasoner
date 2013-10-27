@@ -36,15 +36,15 @@
     <Compile Include="TextualGheoNetInputParser.cs" />
     <Compile Include="specification-assemblers\SpecificationAssembler.cs" />
     <Compile Include="specification-assemblers\SpecificationAssemblerAllInOneFile.cs" />
-    <Compile Include="system-runners\RunnableSystem.cs" />
     <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInput.cs" />
     <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInputSingleSystem.cs" />
     <Compile Include="specification-assemblers\SpecificationAssemblerSplitted.cs" />
     <Compile Include="NodeSpecificationLine.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInputMultipleSystems.cs" />
-    <Compile Include="system-runners\RunnableSystemAbstractComputationalResultHandler.cs" />
-    <Compile Include="system-runners\RunnableSystemAbstractComputationalResultHandlerShortTableSummary.cs" />
+    <Compile Include="runnable-systems\RunnableSystem.cs" />
+    <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandler.cs" />
+    <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandlerShortTableSummary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,5 +68,6 @@
   <ItemGroup>
     <Folder Include="specification-assemblers\" />
     <Folder Include="system-runners\" />
+    <Folder Include="runnable-systems\" />
   </ItemGroup>
 </Project>
