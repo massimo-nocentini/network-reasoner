@@ -13,6 +13,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		{
 			#region RunnableSystem implementation
 			public void compute (
+				String systemName,
 				Dictionary<string, GasNodeAbstract> nodes, 
 				Dictionary<string, GasEdgeAbstract> edges, 
 				AmbientParameters ambientParameters)

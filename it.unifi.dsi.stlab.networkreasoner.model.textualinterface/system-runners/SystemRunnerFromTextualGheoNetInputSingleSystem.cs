@@ -7,6 +7,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	class SystemRunnerFromTextualGheoNetInputSingleSystem :
 		SystemRunnerFromTextualGheoNetInput
 	{
+		public String SystemName{ get; set; }
+
 		public Dictionary<string, GasNodeAbstract> Nodes{ get; set; }
 
 		public Dictionary<string, GasEdgeAbstract> Edges{ get; set; }
@@ -16,7 +18,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SystemRunnerFromTextualGheoNetInput
 		public override void run (RunnableSystem runnableSystem)
 		{
-			runnableSystem.compute (Nodes, Edges, AmbientParameters);
+			runnableSystem.compute (SystemName, Nodes, Edges, AmbientParameters);
 		}
 		#endregion
 

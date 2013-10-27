@@ -31,7 +31,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			var columns = this.SplitLineOnTabs (headerLine);
 
-			var nodeColumnIndexexByNodeIdentifier = columns.enumerate ();
+			var columnEnumeration = columns.enumerate ();
 
 			// we start from 1 in order to ignore the header line
 			for (int i = 1; i < nodesLines.Count; i = i + 1) {
@@ -45,11 +45,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 					GasNodeAbstract aNode = null;
 
-					if (nodeColumnIndexexByNodeIdentifier.ContainsKey (aNodeLine.Identifier)) {
-						var nodeIndex = nodeColumnIndexexByNodeIdentifier [aNodeLine.Identifier];
+					if (columnEnumeration.ContainsKey (aNodeLine.Identifier)) {
+
+						var nodeIndex = columnEnumeration [aNodeLine.Identifier];
+
 						var value = Double.Parse (splittedLine [nodeIndex]);
 
 						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (value);
+
 					} else {
 						// here we give NaN in order to ease debugging because if the
 						// headers do not contain a node present in the given delay construction dictionary
@@ -67,7 +70,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				var ambientParameters = parentParser.parseAmbientParameters ();
 
 				var systemName = splittedLine [0];
+
 				multipleSystems.Add (systemName, new SystemRunnerFromTextualGheoNetInputSingleSystem{
+					SystemName = systemName,
 					AmbientParameters = ambientParameters,
 					Edges = edges,
 					Nodes = nodes
