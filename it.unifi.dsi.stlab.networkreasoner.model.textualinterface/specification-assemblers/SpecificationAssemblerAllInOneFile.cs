@@ -33,6 +33,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			var ambientParameters = parentParser.parseAmbientParameters ();
 
 			return new SystemRunnerFromTextualGheoNetInputSingleSystem{
+				SystemName = "single-system",
 				Nodes = nodesDictionary,
 				Edges = edgesDictionary,
 				AmbientParameters = ambientParameters

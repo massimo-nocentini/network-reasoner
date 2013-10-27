@@ -24,7 +24,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			var nodesLines = new List<String> (File.ReadLines (NodesDefinisionsFilename));
 
-			Dictionary<String, SystemRunnerFromTextualGheoNetInput> multipleSystems = 
+			Dictionary<String, SystemRunnerFromTextualGheoNetInput> systems = 
 				new Dictionary<string, SystemRunnerFromTextualGheoNetInput> ();
 
 			var headerLine = nodesLines [0];
@@ -71,7 +71,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var systemName = splittedLine [0];
 
-				multipleSystems.Add (systemName, new SystemRunnerFromTextualGheoNetInputSingleSystem{
+				systems.Add (systemName, new SystemRunnerFromTextualGheoNetInputSingleSystem{
 					SystemName = systemName,
 					AmbientParameters = ambientParameters,
 					Edges = edges,
@@ -82,7 +82,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			}
 
 			var multipleSystemsRunner = new SystemRunnerFromTextualGheoNetInputMultipleSystems ();
-			multipleSystemsRunner.Systems = multipleSystems;
+			multipleSystemsRunner.Systems = systems;
 
 			return multipleSystemsRunner;
 

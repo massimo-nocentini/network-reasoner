@@ -54,6 +54,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				semanticLine.Identifier = splittedSpecification [0];
 				semanticLine.Height = Int64.Parse (splittedSpecification [4]);
 				semanticLine.SplittedSpecification = splittedSpecification;
+				semanticLine.Type = splittedSpecification [1].Equals ("1") ? 
+					NodeType.WithSupplyGadget : NodeType.WithLoadGadget;
 
 				Func<Double, GasNodeAbstract> delayedConstruction = 
 					aDouble => {
@@ -63,9 +65,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 						Height = semanticLine.Height
 					};
 
-					var nodeTypeAsString = splittedSpecification [1];
-
-					if (nodeTypeAsString.Equals ("1")) {
+					if (semanticLine.Type == NodeType.WithSupplyGadget) {
 
 						aNode = new GasNodeWithGadget{
 							Equipped = aNode,
@@ -73,10 +73,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 								SetupPressure = aDouble
 							}
 						};
-
-						semanticLine.Type = NodeType.WithSupplyGadget;
-
-					} else if (nodeTypeAsString.Equals ("0")) {
+					} else if (semanticLine.Type == NodeType.WithLoadGadget) {
 
 						// if we set a passive node we forget what the caller of this lambda
 						// gives as aDouble because a passive node is characterized by having
@@ -89,8 +86,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 							Equipped = aNode,
 							Gadget = loadGadget
 						};
-
-						semanticLine.Type = NodeType.WithLoadGadget;
 
 					} else {
 						throw new ArgumentException (string.Format (
