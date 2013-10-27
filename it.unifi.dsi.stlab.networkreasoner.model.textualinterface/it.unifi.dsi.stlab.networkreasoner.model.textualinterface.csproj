@@ -34,11 +34,11 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="TextualGheoNetInputParser.cs" />
-    <Compile Include="SpecificationAssembler.cs" />
-    <Compile Include="SpecificationAssemblerAllInOneFile.cs" />
-    <Compile Include="SystemRunnerFromTextualGheoNetInput.cs" />
-    <Compile Include="SystemRunnerFromTextualGheoNetInputSingleSystem.cs" />
-    <Compile Include="RunnableSystem.cs" />
+    <Compile Include="specification-assemblers\SpecificationAssembler.cs" />
+    <Compile Include="specification-assemblers\SpecificationAssemblerAllInOneFile.cs" />
+    <Compile Include="system-runners\RunnableSystem.cs" />
+    <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInput.cs" />
+    <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInputSingleSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -46,5 +46,9 @@
       <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="specification-assemblers\" />
+    <Folder Include="system-runners\" />
   </ItemGroup>
 </Project>
