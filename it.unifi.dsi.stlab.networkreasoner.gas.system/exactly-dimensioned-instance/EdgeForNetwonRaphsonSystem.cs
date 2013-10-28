@@ -6,7 +6,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
-	public class EdgeForNetwonRaphsonSystem
+	public class EdgeForNetwonRaphsonSystem : AbstractItemForNetwonRaphsonSystem
 	{
 		public	interface EdgeState
 		{

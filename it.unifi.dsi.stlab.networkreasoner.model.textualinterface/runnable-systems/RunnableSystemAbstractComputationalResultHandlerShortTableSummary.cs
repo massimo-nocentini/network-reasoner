@@ -56,7 +56,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		abstract class TimeOfComputationHandling
 		{
 			public abstract void buildColumns (
-				Dictionary<String, int> nodeColumnIndexesByNodeIdentifiers, 
+				Dictionary<AbstractItemForNetwonRaphsonSystem, int> nodeColumnIndexesByNodeIdentifiers, 
 				List<NodeForNetwonRaphsonSystem> nodesEnumerationUsedBySystemSolution,
 				List<EdgeForNetwonRaphsonSystem> edgesEnumerationUsedBySystemSolution);
 
@@ -67,7 +67,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.TimeOfComputationHandling
 			public override void buildColumns (
-				Dictionary<String, int> summaryLineItems, 
+				Dictionary<AbstractItemForNetwonRaphsonSystem, int> summaryLineItems, 
 				List<NodeForNetwonRaphsonSystem> nodesEnumerationUsedBySystemSolution,
 				List<EdgeForNetwonRaphsonSystem> edgesEnumerationUsedBySystemSolution)
 			{
@@ -76,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				nodesEnumerationUsedBySystemSolution.ForEach (aNode => {
 
-					summaryLineItems.Add (aNode.Identifier, columnPosition);
+					summaryLineItems.Add (aNode, columnPosition);
 
 					columnPosition = columnPosition + 1;
 				}
@@ -84,7 +84,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				edgesEnumerationUsedBySystemSolution.ForEach (anEdge => {
 
-					summaryLineItems.Add (anEdge.identifier (), columnPosition);
+					summaryLineItems.Add (anEdge, columnPosition);
 
 					columnPosition = columnPosition + 1;
 				}
@@ -102,7 +102,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.TimeOfComputationHandling
 			public override void buildColumns (
-				Dictionary<String, int> nodeColumnIndexesByNodeIdentifiers, 
+				Dictionary<AbstractItemForNetwonRaphsonSystem, int> nodeColumnIndexesByNodeIdentifiers, 
 				List<NodeForNetwonRaphsonSystem> nodesEnumerationUsedBySystemSolution,
 				List<EdgeForNetwonRaphsonSystem> edgesEnumerationUsedBySystemSolution)
 			{
@@ -121,13 +121,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		TimeOfComputationHandling ComputationHandlingTime{ get; set; }
 
-		Dictionary<String, int> NodesOrEdgesColumnIndexesByNodeOrEdgeObject { get; set; }
+		Dictionary<AbstractItemForNetwonRaphsonSystem, int> NodesOrEdgesColumnIndexesByNodeOrEdgeObject { get; set; }
 
 		public RunnableSystemAbstractComputationalResultHandlerShortTableSummary ()
 		{
 			SummaryTableItems = new Dictionary<string, List<SummaryTableItem>> ();
 			ComputationHandlingTime = new TimeOfComputationHandlingFirstOne ();
-			NodesOrEdgesColumnIndexesByNodeOrEdgeObject = new Dictionary<String, int> ();
+			NodesOrEdgesColumnIndexesByNodeOrEdgeObject = 
+				new Dictionary<AbstractItemForNetwonRaphsonSystem, int> ();
 		}
 
 		protected override void onComputationFinished (
@@ -160,7 +161,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				EdgeForSummaryTable summaryEdge = new EdgeForSummaryTable{
 					Identifier = anEdge.identifier(),
 					Qvalue = Qvalue,
-					ColumnPosition = NodesOrEdgesColumnIndexesByNodeOrEdgeObject[anEdge.identifier()]
+					ColumnPosition = NodesOrEdgesColumnIndexesByNodeOrEdgeObject[anEdge]
 				};
 				summaryTableItemsForCurrentSystem.Add (summaryEdge);
 
@@ -172,7 +173,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			foreach (var pair in sumOfQsByNodes) {
 
 				NodeForSummaryTable summaryNode = new NodeForSummaryTable{
-					ColumnPosition = this.NodesOrEdgesColumnIndexesByNodeOrEdgeObject[pair.Key.Identifier],
+					ColumnPosition = this.NodesOrEdgesColumnIndexesByNodeOrEdgeObject[pair.Key],
 					Identifier = pair.Key.Identifier,
 					QvalueSum = pair.Value,
 					DimensionalPressure = dimensionalUnknowns.valueAt(pair.Key)

@@ -7,7 +7,8 @@ using System.Linq;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
-	public class NodeForNetwonRaphsonSystem : GasNodeVisitor, GasNodeGadgetVisitor
+	public class NodeForNetwonRaphsonSystem :
+		AbstractItemForNetwonRaphsonSystem, GasNodeVisitor, GasNodeGadgetVisitor
 	{
 		public class HeightPropertyMissingException : Exception
 		{
