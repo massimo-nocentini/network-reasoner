@@ -19,7 +19,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			protected virtual String formatDouble (Double value)
 			{
-				return value.ToString ("E3");
+				return value.ToString ("0.000");
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			List<NodeSpecificationLine> nodesSpecificationLines;
 
-			Dictionary<String, Func<Double, GasNodeAbstract>> delayedNodesConstruction = 
+			Dictionary<String, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction = 
 				this.parseNodeDelayedConstruction (
 					out nodesSpecificationLines);
 
@@ -34,11 +34,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return systemRunner;
 		}
 
-		protected virtual Dictionary<String, Func<Double, GasNodeAbstract>> parseNodeDelayedConstruction (
+		protected virtual Dictionary<String, Func<LoadPressureValueHolder, GasNodeAbstract>> parseNodeDelayedConstruction (
 				out List<NodeSpecificationLine> nodesSpecificationLinesOut)
 		{
-			Dictionary<String, Func<Double, GasNodeAbstract>> delayConstructedNodes = 
-				new Dictionary<string, Func<double, GasNodeAbstract>> ();
+			Dictionary<String, Func<LoadPressureValueHolder, GasNodeAbstract>> delayConstructedNodes = 
+				new Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> ();
 
 			var nodesSpecificationLines = new List<NodeSpecificationLine> ();
 
@@ -57,8 +57,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				semanticLine.Type = splittedSpecification [1].Equals ("1") ? 
 					NodeType.WithSupplyGadget : NodeType.WithLoadGadget;
 
-				Func<Double, GasNodeAbstract> delayedConstruction = 
-					aDouble => {
+				Func<LoadPressureValueHolder, GasNodeAbstract> delayedConstruction = 
+					aValueHolder => {
 
 					GasNodeAbstract aNode = new GasNodeTopological{
 						Identifier = semanticLine.Identifier,
@@ -70,7 +70,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 						aNode = new GasNodeWithGadget{
 							Equipped = aNode,
 							Gadget = new GasNodeGadgetSupply{
-								SetupPressure = aDouble
+								SetupPressure = aValueHolder.getValue()
 							}
 						};
 					} else if (semanticLine.Type == NodeType.WithLoadGadget) {
@@ -80,7 +80,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 						// a zero load.
 						var loadGadget = Double.Parse (splittedSpecification [2]) == 0.0 ?
 							new GasNodeGadgetLoad{ Load = 0 } : 
-							new GasNodeGadgetLoad{ Load = aDouble };
+							new GasNodeGadgetLoad{ Load = aValueHolder.getValue() };
 
 						aNode = new GasNodeWithGadget{
 							Equipped = aNode,

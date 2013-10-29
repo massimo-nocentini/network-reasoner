@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.IO;
 using it.unifi.dsi.stlab.extensionmethods;
+using System.Globalization;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
@@ -18,7 +19,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SpecificationAssembler
 		public override SystemRunnerFromTextualGheoNetInput assemble (
-			Dictionary<string, Func<double, GasNodeAbstract>> delayedNodesConstruction, 
+			Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction, 
 			List<NodeSpecificationLine> nodesSpecificationLines, 
 			TextualGheoNetInputParser parentParser)
 		{
@@ -49,16 +50,23 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 						var nodeIndex = columnEnumeration [aNodeLine.Identifier];
 
-						var value = Double.Parse (splittedLine [nodeIndex]);
+						var value = Double.Parse (splittedLine [nodeIndex], CultureInfo.InvariantCulture);
 
-						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (value);
+						var valueHolder = new LoadPressureValueHolderCarryInfo ();
+						valueHolder.Value = value;
+
+						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (valueHolder);
 
 					} else {
-						// here we give NaN in order to ease debugging because if the
-						// headers do not contain a node present in the given delay construction dictionary
-						// so the value for that node have to be handled in the parent parser code (
-						// in other word the Double.NaN value should be ignored).
-						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (Double.NaN);
+
+						var valueHolder = new LoadPressureValueHolderNoInfoShouldBeRequested ();
+						valueHolder.Exception = new Exception (string.Format ("No value should be requested because" +
+							" the definition says that node {0} is a passive" +
+							" node, so it has load 0, hence this value request is meaningless.",
+						                                                     aNodeLine.Identifier)
+						);
+
+						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (valueHolder);
 					}
 
 					nodes.Add (aNodeLine.Identifier, aNode);

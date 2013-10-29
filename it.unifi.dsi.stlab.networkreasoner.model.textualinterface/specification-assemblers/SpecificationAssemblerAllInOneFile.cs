@@ -9,7 +9,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SpecificationAssembler
 		public override SystemRunnerFromTextualGheoNetInput assemble (
-			Dictionary<string, Func<double, GasNodeAbstract>> delayedNodesConstruction, 
+			Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction, 
 			List<NodeSpecificationLine> nodesSpecificationLines,
 			TextualGheoNetInputParser parentParser)
 		{			
@@ -24,7 +24,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					Double.Parse (nodeSpecification.SplittedSpecification [3]) :
 						Double.Parse (nodeSpecification.SplittedSpecification [2]);
 
-				nodesDictionary.Add (nodeSpecification.Identifier, ctorFunction.Invoke (value));
+				var valueHolder = new LoadPressureValueHolderCarryInfo ();
+				valueHolder.Value = value;
+
+				nodesDictionary.Add (nodeSpecification.Identifier, 
+				                     ctorFunction.Invoke (valueHolder));
 			}
 			);
 

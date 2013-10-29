@@ -45,6 +45,9 @@
     <Compile Include="runnable-systems\RunnableSystem.cs" />
     <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandler.cs" />
     <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandlerShortTableSummary.cs" />
+    <Compile Include="specification-assemblers\load-pressure-value-holders\LoadPressureValueHolder.cs" />
+    <Compile Include="specification-assemblers\load-pressure-value-holders\LoadPressureValueHolderCarryInfo.cs" />
+    <Compile Include="specification-assemblers\load-pressure-value-holders\LoadPressureValueHolderNoInfoShouldBeRequested.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -69,5 +72,6 @@
     <Folder Include="specification-assemblers\" />
     <Folder Include="system-runners\" />
     <Folder Include="runnable-systems\" />
+    <Folder Include="specification-assemblers\load-pressure-value-holders\" />
   </ItemGroup>
 </Project>
