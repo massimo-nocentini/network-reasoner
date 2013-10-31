@@ -61,6 +61,7 @@
     <Compile Include="VectorExtensionMethods.cs" />
     <Compile Include="MatrixExtensionMethods.cs" />
     <Compile Include="ListExtensionMethods.cs" />
+    <Compile Include="DictionaryExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -120,12 +120,8 @@ namespace it.unifi.dsi.stlab.math.algebra
 			var aMatrixForSolving = this.forComputationAmong (
 				rowsEnumeration, columnsEnumeration);
 
-			Dictionary<int, RowIndexType> coefficientsInverseEnumeration = 
-				new Dictionary<int, RowIndexType> ();
-
-			foreach (var pair in rowsEnumeration) {
-				coefficientsInverseEnumeration.Add (pair.Value, pair.Key);
-			}
+			Dictionary<int, RowIndexType> rowsEnumerationInverted = 
+				rowsEnumeration.invertMapping ();
 
 			var aVectorForSolving = aVector.forComputationAmong (
 				rowsEnumeration, 0);
@@ -133,13 +129,9 @@ namespace it.unifi.dsi.stlab.math.algebra
 			var solutionVector = aMatrixForSolving.LU ().Solve (aVectorForSolving);
 
 			Vector<RowIndexType> result = new Vector<RowIndexType> ();
-			for (int position = 0; 
-			     position < solutionVector.Count; 
-			     position = position + 1) {
-
-				result.atPut (coefficientsInverseEnumeration [position], 
-				              solutionVector [position]);
-			}
+			solutionVector.forEach (
+				(position, value) => result.atPut (rowsEnumerationInverted [position], value)
+			);
 
 			return result;
 		}

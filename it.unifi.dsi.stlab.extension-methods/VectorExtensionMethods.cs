@@ -17,6 +17,15 @@ namespace it.unifi.dsi.stlab.extensionmethods
 
 			continuation.Invoke (representation);
 		}
+
+		public static void forEach (this MathNet.Numerics.LinearAlgebra.Generic.Vector<Double> aVector, Action<int, double> anAction)
+		{
+			for (int position = 0; 
+			     position < aVector.Count; 
+			     position = position + 1) {
+				anAction.Invoke (position, aVector.At (position));
+			}
+		}
 	}
 }
 
