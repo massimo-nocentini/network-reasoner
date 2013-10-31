@@ -20,7 +20,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			var ratioVector = currentOneStepMutationResults.Unknowns.ratio (
 				previousOneStepMutationResults.Unknowns);
 
-			return ratioVector.atLeastOneTrue (element => {
+			return ratioVector.atLeastOneSatisfy (element => {
 
 				var ratio = ratioVector.valueAt (element);
 

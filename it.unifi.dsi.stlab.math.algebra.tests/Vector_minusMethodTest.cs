@@ -81,7 +81,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (aSecondIndex, 1);
 			aList.Add (aThirdIndex, 2);
 
-			var expectedException = Assert.Catch<Vector<Object>.RightVectorHasMissingIndexException> (
+			var expectedException = Assert.Catch<RightVectorHasMissingIndexException<Object>> (
 				() => aVectorLeft.minus (aVectorRight)
 						.forComputationAmong (aList, 0)
 			);
@@ -119,7 +119,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (aSecondIndex, 1);
 			aList.Add (aThirdIndex, 2);
 
-			var expectedException = Assert.Catch<Vector<Object>.LeftVectorHasMissingIndexException> (
+			var expectedException = Assert.Catch<LeftVectorHasMissingIndexException<Object>> (
 				() => aVectorLeft.minus (aVectorRight)
 						.forComputationAmong (aList, 0)
 			);

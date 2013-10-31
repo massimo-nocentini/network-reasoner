@@ -60,6 +60,7 @@
     <Compile Include="ICollectionExtensionMethods.cs" />
     <Compile Include="VectorExtensionMethods.cs" />
     <Compile Include="MatrixExtensionMethods.cs" />
+    <Compile Include="ListExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -144,7 +144,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (new object (), 2);
 
 			var anIndexIsntCoveredException = Assert.Catch<
-				Vector<Object>.IndexNotCoveredByContextException> (
+				IndexNotCoveredByContextException<Object>> (
 				() => aVector.forComputationAmong (aList, defaultForOthers));
 
 			Assert.AreSame (anotherIndex, anIndexIsntCoveredException.IndexNotCovered);

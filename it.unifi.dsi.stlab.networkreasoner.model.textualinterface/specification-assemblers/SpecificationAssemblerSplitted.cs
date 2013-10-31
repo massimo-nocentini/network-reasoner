@@ -9,61 +9,68 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
 	public class SpecificationAssemblerSplitted : SpecificationAssembler
 	{
-		string NodesDefinisionsFilename{ get; set; }
+		Lazy<List<String>> LazyNodeDefinitionExtensions{ get; set; }
 
 		public SpecificationAssemblerSplitted (
 			string nodesDefinisionsFilename)
 		{
-			NodesDefinisionsFilename = nodesDefinisionsFilename;
+			LazyNodeDefinitionExtensions = new Lazy<List<string>> (
+				() => new List<String> (File.ReadLines (nodesDefinisionsFilename)));
 		}		
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SpecificationAssembler
 		public override SystemRunnerFromTextualGheoNetInput assemble (
 			Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction, 
-			List<NodeSpecificationLine> nodesSpecificationLines, 
+			List<NodeSpecificationLine> nodesSpecificationsGivenFromParser, 
 			TextualGheoNetInputParser parentParser)
 		{
-			var nodesLines = new List<String> (File.ReadLines (NodesDefinisionsFilename));
-
 			Dictionary<String, SystemRunnerFromTextualGheoNetInput> systems = 
 				new Dictionary<string, SystemRunnerFromTextualGheoNetInput> ();
 
-			var headerLine = nodesLines [0];
+			var headerLine = LazyNodeDefinitionExtensions.Value.First ();
 
 			var columns = this.SplitLineOnTabs (headerLine);
 
 			var columnEnumeration = columns.enumerate ();
 
-			// we start from 1 in order to ignore the header line
-			for (int i = 1; i < nodesLines.Count; i = i + 1) {
+			LazyNodeDefinitionExtensions.Value.Rest ().ForEach (
+				extensionLine => {
 
-				string[] splittedLine = this.SplitLineOnTabs (nodesLines [i]);
+				string[] splittedLine = this.SplitLineOnTabs (extensionLine);
 
 				var nodes = new Dictionary<string, GasNodeAbstract> ();
 
-				nodesSpecificationLines.ForEach (
+				nodesSpecificationsGivenFromParser.ForEach (
 					aNodeLine => {
 
 					GasNodeAbstract aNode = null;
 
 					if (columnEnumeration.ContainsKey (aNodeLine.Identifier)) {
 
+						// we have to map the column of the node since in the extension
+						// file the matrix is transposed, ie the loads/pressures
+						// are expressed in column so that each node has a column.
+						// Hence from the parsed definition from the parent parser
+						// we have to find out where the corresponding extension is.
 						var nodeIndex = columnEnumeration [aNodeLine.Identifier];
 
-						var value = Double.Parse (splittedLine [nodeIndex], CultureInfo.InvariantCulture);
+						var value = Double.Parse (splittedLine [nodeIndex], 
+						                          CultureInfo.InvariantCulture);
 
 						var valueHolder = new LoadPressureValueHolderCarryInfo ();
 						valueHolder.Value = value;
 
-						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (valueHolder);
+						aNode = delayedNodesConstruction [aNodeLine.Identifier].
+							Invoke (valueHolder);
 
 					} else {
 
 						var valueHolder = new LoadPressureValueHolderNoInfoShouldBeRequested ();
-						valueHolder.Exception = new Exception (string.Format ("No value should be requested because" +
+						valueHolder.Exception = new Exception (string.Format (
+							"No value should be requested because" +
 							" the definition says that node {0} is a passive" +
 							" node, so it has load 0, hence this value request is meaningless.",
-						                                                     aNodeLine.Identifier)
+							aNodeLine.Identifier)
 						);
 
 						aNode = delayedNodesConstruction [aNodeLine.Identifier].Invoke (valueHolder);
@@ -88,6 +95,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				);
 
 			}
+			);
 
 			var multipleSystemsRunner = new SystemRunnerFromTextualGheoNetInputMultipleSystems ();
 			multipleSystemsRunner.Systems = systems;
