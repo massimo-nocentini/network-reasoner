@@ -78,6 +78,10 @@
       <Project>{B8312B0F-17B4-4685-B994-77495716FDCE}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.textualinterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
+      <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
+      <Name>it.unifi.dsi.stlab.utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="log4net-configurations\" />

@@ -3,6 +3,7 @@ using log4net;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners
 {
@@ -75,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep)
 		{
 			unknownVectorAtPreviousStep.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).stringRepresentation (
+				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"Relative Unknowns at previous step: {0}", representation)
 			);
@@ -112,7 +113,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep)
 		{
 			coefficientsVectorAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).
+				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Coefficients vector at current step: {0}", representation)
@@ -122,7 +123,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void onNegativeUnknownsFixed (Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
 		{
 			unknownVectorAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).stringRepresentation (
+				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"Adimensional unknowns vector at current step after fix negative entries: {0}", representation)
 			);
@@ -134,7 +135,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this.Log.InfoFormat ("-------------------- Iteration {0} ---------------------", 
 				                    iterationNumber.Value);
 			}
-		}	
+		}
 
 		public void onAmatrixComputed (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> Amatrix)
@@ -175,7 +176,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void onUnknownVectorAtCurrentStepComputed (Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
 		{
-			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, -11010101010).
+			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Adimensional unknowns vector at current step before fix negative entries: {0}", representation)
@@ -209,7 +210,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 
 			unknownVector.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).
+				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Relative Unknowns vector at current step: {0}", representation)

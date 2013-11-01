@@ -57,6 +57,10 @@
       <Project>{1A93011C-4839-42D1-B6BB-6A96283291D5}</Project>
       <Name>it.unifi.dsi.stlab.extension-methods</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
+      <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
+      <Name>it.unifi.dsi.stlab.utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="condition-checkers\" />

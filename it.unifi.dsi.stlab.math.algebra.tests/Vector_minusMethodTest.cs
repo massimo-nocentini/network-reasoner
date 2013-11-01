@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra.tests
 {
@@ -39,7 +40,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (aThirdIndex, 2);
 
 			var leftMinusRightVector = aVectorLeft.minus (aVectorRight)
-				.forComputationAmong (aList, 0);
+				.forComputationAmong (aList, new ValueHolderCarryInfo<Double>{Value = 0});
 
 			var expectedVector = new DenseVector (new []{
 				aFirstDoubleLeft - aFirstDoubleRight,
@@ -83,7 +84,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var expectedException = Assert.Catch<RightVectorHasMissingIndexException<Object>> (
 				() => aVectorLeft.minus (aVectorRight)
-						.forComputationAmong (aList, 0)
+						.forComputationAmong (aList, 
+			                      new ValueHolderCarryInfo<Double>{Value = 0})
 			);
 
 			Assert.AreSame (aThirdIndex, expectedException.MissingIndex);
@@ -121,7 +123,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var expectedException = Assert.Catch<LeftVectorHasMissingIndexException<Object>> (
 				() => aVectorLeft.minus (aVectorRight)
-						.forComputationAmong (aList, 0)
+				.forComputationAmong (aList, new ValueHolderCarryInfo<Double>{Value = 0})
 			);
 
 			Assert.AreSame (aThirdIndex, expectedException.MissingIndex);

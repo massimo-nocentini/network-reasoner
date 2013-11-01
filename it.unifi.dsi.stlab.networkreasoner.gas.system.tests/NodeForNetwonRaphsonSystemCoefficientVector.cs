@@ -6,6 +6,7 @@ using it.unifi.dsi.stlab.math.algebra;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -72,7 +73,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (nodeForSystem, 0);
-			var a = aVector.forComputationAmong (aList, 0);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			var expectedVector = new DenseVector (new[] { 1.9103690569894831 });
 
@@ -110,7 +111,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (anotherNode2, 1);
 			aList.Add (nodeForSystem, 2);
 			aList.Add (anotherNode3, 3);
-			var a = aVector.forComputationAmong (aList, defaultForOthers);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -165,7 +166,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (anotherNode3, 3);
 			aList.Add (nodeForSystem2, 4);
 			
-			var a = aVector.forComputationAmong (aList, defaultForOthers);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -196,7 +197,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (nodeForSystem, 0);
-			var a = aVector.forComputationAmong (aList, 0);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			var expectedVector = new DenseVector (new[] { aLoad });
 
@@ -233,7 +234,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (anotherNode2, 1);
 			aList.Add (nodeForSystem, 2);
 			aList.Add (anotherNode3, 3);
-			var a = aVector.forComputationAmong (aList, defaultForOthers);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -288,7 +289,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (anotherNode3, 3);
 			aList.Add (nodeForSystem2, 4);
 			
-			var a = aVector.forComputationAmong (aList, defaultForOthers);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -313,7 +314,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (nodeForSystem, 0);
-			var a = aVector.forComputationAmong (aList, 0);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			var expectedVector = new DenseVector (new[] { 0.0 });
 
@@ -375,7 +376,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (loadNodeForSystem2, 3);
 			aList.Add (supplyNodeForSystem1, 4);
 			
-			var a = aVector.forComputationAmong (aList, 0);
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			var expectedVector = new DenseVector (new[] {
 				aLoad1,

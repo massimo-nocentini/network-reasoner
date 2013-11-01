@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra.tests
 {
@@ -45,7 +46,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (secondRowIndex, 1);
 			aList.Add (thirdRowIndex, 2);
 
-			var computedResult = result.forComputationAmong (aList, 0);
+			var computedResult = result.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			var expectedResult = new DenseVector (new []{3.0,1.0,6.0});
 

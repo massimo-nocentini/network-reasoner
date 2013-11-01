@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra.tests
 {
@@ -20,7 +21,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var aList = new Dictionary<Object, int> ();
 			aList.Add (anIndex, 0);
 
-			var vectorForComputation = aVector.forComputationAmong (aList, 0);
+			var vectorForComputation = aVector.forComputationAmong (aList, 
+			                                                        new ValueHolderCarryInfo<Double>{Value = 0});
 
 			var expectedVector = new DenseVector (new[] { aDouble });
 
@@ -40,7 +42,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var aList = new Dictionary<Object, int> ();
 			aList.Add (anIndex, 1);
 
-			var vectorForComputation = aVector.forComputationAmong (aList, 0);
+			var vectorForComputation = aVector.forComputationAmong (aList, 
+			                                                        new ValueHolderCarryInfo<double>{Value=0});
 
 
 		}
@@ -66,7 +69,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (anotherIndex, 2);
 			aList.Add (new object (), 3);
 
-			var vectorForComputation = aVector.forComputationAmong (aList, defaultForOthers);
+			var vectorForComputation = aVector.forComputationAmong (aList, 
+			                                                        new ValueHolderCarryInfo<double>{Value= defaultForOthers});
 
 			var expectedVector = new DenseVector (new[] {
 				aDouble,
@@ -104,7 +108,8 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			aList.Add (anotherIndex, 2);
 			aList.Add (new object (), 4);
 
-			var vectorForComputation = aVector.forComputationAmong (aList, defaultForOthers);
+			var vectorForComputation = aVector.forComputationAmong (aList, 
+			                                                        new ValueHolderCarryInfo<double>{Value= defaultForOthers});
 
 			var expectedVector = new DenseVector (new[] {
 				aDouble,
@@ -145,7 +150,9 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var anIndexIsntCoveredException = Assert.Catch<
 				IndexNotCoveredByContextException<Object>> (
-				() => aVector.forComputationAmong (aList, defaultForOthers));
+				() => aVector.forComputationAmong (aList, 
+				                                   new ValueHolderCarryInfo<Double>{Value = defaultForOthers})
+			);
 
 			Assert.AreSame (anotherIndex, anIndexIsntCoveredException.IndexNotCovered);
 

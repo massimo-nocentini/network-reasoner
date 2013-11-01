@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Globalization;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra
 {
@@ -54,7 +55,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 		public Vector forComputationAmong (
 			Dictionary<IndexType, int> someIndices, 
-			double defaultForMissingIndices)
+			ValueHolder<Double> defaultForMissingIndices)
 		{
 			List<Tuple<int, double>> orderedEnumerable = 
 				new List<Tuple<int, double>> ();
@@ -77,7 +78,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 					coveringKeys.Add (index);
 				} else {
 					orderedEnumerable.Add (new Tuple<int, double> (
-						position, defaultForMissingIndices)
+						position, defaultForMissingIndices.getValue ())
 					);
 				}
 			}

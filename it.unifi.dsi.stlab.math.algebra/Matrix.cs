@@ -6,6 +6,7 @@ using MathNet.Numerics.LinearAlgebra.Double.Solvers;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers.Iterative;
 using System.Linq;
 using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra
 {
@@ -136,7 +137,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 				rowsEnumeration.invertMapping ();
 
 			var aVectorForSolving = aVector.forComputationAmong (
-				rowsEnumeration, 0);
+				rowsEnumeration, new ValueHolderCarryInfo<Double> {Value = 0});
 
 			var solutionVector = aMatrixForSolving.LU ().Solve (aVectorForSolving);
 

@@ -2,6 +2,7 @@ using System;
 using log4net;
 using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners
 {
@@ -40,7 +41,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void onMutateStepCompleted (OneStepMutationResults result)
 		{
 			result.Unknowns.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).stringRepresentation (
+				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"{0}", representation.Substring (representation.IndexOf ('\n') + 1)
 			)
@@ -64,7 +65,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void onInitializationCompleted (
 			System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, 
-			System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
+			System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, 
+			Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
 		{
 			this.NodesEnumeration = nodesEnumeration;
 			this.Edges = edges;
@@ -74,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> unknownVector)
 		{
 			unknownVector.forComputationAmong (
-				this.NodesEnumeration.Value, -11010101010).
+				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Relative Unknowns vector at current step: {0}", representation)

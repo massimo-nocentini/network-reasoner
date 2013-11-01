@@ -3,6 +3,7 @@ using NUnit.Framework;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra.tests
 {
@@ -24,7 +25,10 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (aNode, 0);
-			Assert.AreEqual (expectedVector, aVector.forComputationAmong (aList, 0));
+			Assert.AreEqual (expectedVector, 
+			                 aVector.forComputationAmong (aList, 
+			                             new ValueHolderCarryInfo<Double> {Value = 0})
+			);
 		}
 
 		[Test()]

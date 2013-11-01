@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.math.algebra.tests
 {
@@ -50,7 +51,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
 				rightProductVector.forComputationAmong (
-					aList, 0);
+					aList, new ValueHolderCarryInfo<Double>{Value = 0});
 
 			Vector expectedRightProductVector = 
 				new DenseVector (new []{3.0,4.0,5.0});
@@ -129,7 +130,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
 				rightProductVector.forComputationAmong (
-					aList, 0);
+					aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			Vector expectedRightProductVector = 
 				new DenseVector (new []{
@@ -219,7 +220,7 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 			var rightProductVector = anIdentityMatrix.rightProduct (aVector);
 			var rightProductVectorForComputation = 
 				rightProductVector.forComputationAmong (
-					aList, 0);
+					aList, new ValueHolderCarryInfo<double>{Value = 0});
 
 			Vector expectedRightProductVector = 
 				new DenseVector (new []{

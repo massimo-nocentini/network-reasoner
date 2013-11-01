@@ -59,5 +59,9 @@
       <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
       <Name>it.unifi.dsi.stlab.math.algebra</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
+      <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
+      <Name>it.unifi.dsi.stlab.utilities</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
