@@ -54,7 +54,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					NodeForNetwonRaphsonSystem aRowNode, 
 					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
 			{
-				aMatrix.doOnRowOf (aRowNode, 
+				aMatrix.updateRow (aRowNode, 
 				                   (aColumnNode, cumulate) => 
 				                   		aRowNode.Equals (aColumnNode) ? 1 : 0
 				);

@@ -44,6 +44,14 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 		}
 
+		void ensureVectorKeysAreCoveredBy (List<IndexType> coveringKeys)
+		{
+			var coveredConstraint = new EnsureVectorIsCoveredByKeySet<IndexType> ();
+			coveredConstraint.VectorKeys = aVector.Keys;
+			coveredConstraint.CoveringKeys = coveringKeys;
+			ConditionChecker.ensure (coveredConstraint);
+		}
+
 		public Vector forComputationAmong (
 			Dictionary<IndexType, int> someIndices, 
 			double defaultForMissingIndices)
@@ -51,14 +59,14 @@ namespace it.unifi.dsi.stlab.math.algebra
 			List<Tuple<int, double>> orderedEnumerable = 
 				new List<Tuple<int, double>> ();
 
-			List<IndexType> coveredKeys = new List<IndexType> ();
+			List<IndexType> coveringKeys = new List<IndexType> ();
 
 			foreach (var pair in someIndices) {
 
 				var index = pair.Key;
 				var position = pair.Value;
 
-				if (aVector.ContainsKey (index)) {
+				if (this.containsKey (index)) {
 
 					var value = this.valueAt (index);
 
@@ -66,7 +74,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 						position, value)
 					);
 
-					coveredKeys.Add (index);
+					coveringKeys.Add (index);
 				} else {
 					orderedEnumerable.Add (new Tuple<int, double> (
 						position, defaultForMissingIndices)
@@ -74,8 +82,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 				}
 			}
 
-			this.ConditionChecker.ensureVectorIsCoveredBy (this.aVector.Keys, 
-			                                               coveredKeys);
+			ensureVectorKeysAreCoveredBy (coveringKeys);
 
 			return DenseVector.OfIndexedEnumerable (
 				orderedEnumerable.Count, orderedEnumerable);
@@ -109,8 +116,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 			Vector<IndexType> anotherVector,
 			Func<IndexType, double, double, double> onBijectionAction)
 		{
-			this.ConditionChecker.ensureBijectionOnVectors<IndexType> (
-				this.aVector.Keys, anotherVector.aVector.Keys);
+			this.ensureBijectionExistsWith (anotherVector);
 
 			Vector<IndexType> result = new Vector<IndexType> ();
 
@@ -124,6 +130,16 @@ namespace it.unifi.dsi.stlab.math.algebra
 			}
 
 			return result;
+		}
+
+		protected virtual void ensureBijectionExistsWith (
+			Vector<IndexType> anotherVector)
+		{
+			var bijectionConstraint = new EnsureBijectionOnVectors<IndexType> ();
+			bijectionConstraint.KeysInLeftVector = aVector.Keys;
+			bijectionConstraint.KeysInRightVector = anotherVector.aVector.Keys;
+
+			this.ConditionChecker.ensure (bijectionConstraint);
 		}
 
 		public bool atLeastOneSatisfy (Predicate<IndexType> predicate)
@@ -153,6 +169,12 @@ namespace it.unifi.dsi.stlab.math.algebra
 
 			return minKey;
 		}
+
+		public bool containsKey (IndexType key)
+		{
+			return aVector.ContainsKey (key);
+		}
+
 
 	}
 }

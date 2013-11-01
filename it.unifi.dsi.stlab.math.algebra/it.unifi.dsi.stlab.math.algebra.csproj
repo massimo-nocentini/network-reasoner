@@ -46,6 +46,10 @@
     <Compile Include="condition-checkers\ConditionCheckerEnabled.cs" />
     <Compile Include="condition-checkers\ConditionViolationExceptions.cs" />
     <Compile Include="condition-checkers\ConditionCheckerDisabled.cs" />
+    <Compile Include="constaints\AlgebraConstraint.cs" />
+    <Compile Include="constaints\EnsureBijectionOnVectors.cs" />
+    <Compile Include="constaints\EnsureVectorIsCoveredByKeySet.cs" />
+    <Compile Include="constaints\VectorShouldCovertColumnsSpaceForMatrixRightProduct.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -56,5 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="condition-checkers\" />
+    <Folder Include="constaints\" />
   </ItemGroup>
 </Project>

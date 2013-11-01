@@ -13,30 +13,33 @@ namespace it.unifi.dsi.stlab.math.algebra
 	{
 		Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, Double> aMatrix{ get; set; }
 
-		Dictionary<RowIndexType, HashSet<KeyValuePair<RowIndexType, ColumnIndexType>>> keysByRowIndex{ get; set; }
+		Dictionary<RowIndexType, HashSet<KeyValuePair<RowIndexType, ColumnIndexType>>> MatrixElementsPerRows{ get; set; }
 
 		HashSet<ColumnIndexType> ColumnIndices { get; set; }
 
 		HashSet<RowIndexType> RowIndices { get; set; }
 
+		ConditionChecker ConditionChecker{ get; set; }
+
 		public Matrix ()
 		{
 			aMatrix = new Dictionary<KeyValuePair<RowIndexType, ColumnIndexType>, Double> ();
-			keysByRowIndex = new Dictionary<RowIndexType, HashSet<KeyValuePair<RowIndexType, ColumnIndexType>>> ();
+			MatrixElementsPerRows = new Dictionary<RowIndexType, HashSet<KeyValuePair<RowIndexType, ColumnIndexType>>> ();
 			RowIndices = new HashSet<RowIndexType> ();
 			ColumnIndices = new HashSet<ColumnIndexType> ();
+			this.ConditionChecker = new ConditionCheckerEnabled ();
 		}
 
 		void memoizeKeyByRowIndex (
 			RowIndexType row, 
 			KeyValuePair<RowIndexType, ColumnIndexType> key)
 		{
-			if (keysByRowIndex.ContainsKey (row) == false) {
-				keysByRowIndex.Add (
+			if (MatrixElementsPerRows.ContainsKey (row) == false) {
+				MatrixElementsPerRows.Add (
 					row, new HashSet<KeyValuePair<RowIndexType, ColumnIndexType>> ());
 			}
 
-			keysByRowIndex [row].Add (key);
+			MatrixElementsPerRows [row].Add (key);
 		}
 
 		void mutateMatrix (
@@ -65,11 +68,11 @@ namespace it.unifi.dsi.stlab.math.algebra
 			memoizeKeyByRowIndex (row, key); 
 		}
 
-		public void doOnRowOf (
+		public void updateRow (
 			RowIndexType rowIndex, 
 			Func<ColumnIndexType, Double, Double> anUpdateBlock)
 		{
-			foreach (var matrixKey in keysByRowIndex[rowIndex]) {
+			foreach (var matrixKey in MatrixElementsPerRows[rowIndex]) {
 
 				var updatedValue = anUpdateBlock.Invoke (
 					matrixKey.Value, this.aMatrix [matrixKey]);
@@ -78,15 +81,24 @@ namespace it.unifi.dsi.stlab.math.algebra
 			}
 		}
 
+		protected virtual void ensureColumnsSpaceCoveredBy (Vector<ColumnIndexType> aVector)
+		{
+			var constraintToCheck = new VectorShouldCovertColumnsSpaceForMatrixRightProduct<RowIndexType, ColumnIndexType> ();
+			constraintToCheck.MatrixElementsPerRows = MatrixElementsPerRows;
+			constraintToCheck.RightVector = aVector;
+			ConditionChecker.ensure (constraintToCheck);
+		}
+
 		public Vector<RowIndexType> rightProduct (
 			Vector<ColumnIndexType> aVector)
 		{
-			Vector<RowIndexType> result =
-				new Vector<RowIndexType> ();
+			ensureColumnsSpaceCoveredBy (aVector);
 
-			foreach (var rowKey in this.keysByRowIndex.Keys) {
+			Vector<RowIndexType> result = new Vector<RowIndexType> ();
+
+			foreach (var rowKey in this.MatrixElementsPerRows.Keys) {
 				var valueForRowKeyResultVectorComponent = 0.0;
-				foreach (var matrixIndex in this.keysByRowIndex[rowKey]) {
+				foreach (var matrixIndex in this.MatrixElementsPerRows[rowKey]) {
 					valueForRowKeyResultVectorComponent +=
 						aVector.valueAt (matrixIndex.Value) * this.aMatrix [matrixIndex];
 				}
