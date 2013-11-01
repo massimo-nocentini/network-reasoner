@@ -45,9 +45,6 @@
     <Compile Include="runnable-systems\RunnableSystem.cs" />
     <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandler.cs" />
     <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandlerShortTableSummary.cs" />
-    <Compile Include="specification-assemblers\load-pressure-value-holders\LoadPressureValueHolder.cs" />
-    <Compile Include="specification-assemblers\load-pressure-value-holders\LoadPressureValueHolderCarryInfo.cs" />
-    <Compile Include="specification-assemblers\load-pressure-value-holders\LoadPressureValueHolderNoInfoShouldBeRequested.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -66,6 +63,10 @@
     <ProjectReference Include="..\it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj">
       <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
       <Name>it.unifi.dsi.stlab.math.algebra</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
+      <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
+      <Name>it.unifi.dsi.stlab.utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
