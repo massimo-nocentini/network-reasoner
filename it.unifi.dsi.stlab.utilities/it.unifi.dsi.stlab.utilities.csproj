@@ -32,7 +32,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="value-holders\ValueHolder.cs" />
     <Compile Include="value-holders\ValueHolderCarryInfo.cs" />

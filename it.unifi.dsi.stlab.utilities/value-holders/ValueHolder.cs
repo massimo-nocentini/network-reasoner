@@ -1,6 +1,6 @@
 using System;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
+namespace it.unifi.dsi.stlab.utilities.value_holders
 {
 	public abstract class ValueHolder<T>
 	{

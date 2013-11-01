@@ -1,6 +1,6 @@
 using System;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
+namespace it.unifi.dsi.stlab.utilities.value_holders
 {
 	public class ValueHolderNoInfoShouldBeRequested<T> : ValueHolder<T>
 	{
@@ -8,13 +8,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			get;
 			set;
 		}
-
-		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.LoadPressureValueHolder
+		
 		public override T getValue ()
 		{
 			throw Exception;
 		}
-		#endregion
+		
 	}
 }
 
