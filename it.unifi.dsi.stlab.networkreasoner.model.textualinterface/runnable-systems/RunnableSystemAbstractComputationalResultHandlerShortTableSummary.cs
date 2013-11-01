@@ -3,15 +3,20 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Text;
+using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.utilities.times_of_computation;
+using System.Linq;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
 	public abstract class RunnableSystemAbstractComputationalResultHandlerShortTableSummary :
 		RunnableSystemAbstractComputationalResultHandler
 	{
-		abstract class SummaryTableItem
+		internal abstract class SummaryTableItem
 		{
 			public abstract void appendValueInto (StringBuilder table);
+
+			public abstract void appendHeaderInto (StringBuilder table);
 
 			public String Identifier{ get; set; }
 
@@ -36,6 +41,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					formatDouble (QvalueSum)
 				);
 			}
+
+			public override void appendHeaderInto (StringBuilder table)
+			{
+				table.AppendFormat ("P_{0}\tSUMQ_{0}", Identifier);
+			}
 			#endregion
 		}
 
@@ -50,74 +60,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			{
 				table.Append (formatDouble (Qvalue));
 			}
-			#endregion
-		}
 
-		abstract class TimeOfComputationHandling
-		{
-			public abstract void buildColumns (
-				Dictionary<string, int> nodeColumnIndexesByNodeIdentifiers, 
-				List<NodeForNetwonRaphsonSystem> nodesEnumerationUsedBySystemSolution,
-				List<EdgeForNetwonRaphsonSystem> edgesEnumerationUsedBySystemSolution);
-
-			public abstract TimeOfComputationHandling advance ();
-		}
-
-		class TimeOfComputationHandlingFirstOne : TimeOfComputationHandling
-		{
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.TimeOfComputationHandling
-			public override void buildColumns (
-				Dictionary<string, int> summaryLineItems, 
-				List<NodeForNetwonRaphsonSystem> nodesEnumerationUsedBySystemSolution,
-				List<EdgeForNetwonRaphsonSystem> edgesEnumerationUsedBySystemSolution)
+			public override void appendHeaderInto (StringBuilder table)
 			{
-				// we start from position 1 since the first column is reserved for system name
-				int columnPosition = 0;
-
-				nodesEnumerationUsedBySystemSolution.ForEach (aNode => {
-
-					summaryLineItems.Add (aNode.Identifier, columnPosition);
-
-					columnPosition = columnPosition + 1;
-				}
-				);
-
-				edgesEnumerationUsedBySystemSolution.ForEach (anEdge => {
-
-					summaryLineItems.Add (anEdge.identifier(), columnPosition);
-
-					columnPosition = columnPosition + 1;
-				}
-				);
-			}
-
-			public override TimeOfComputationHandling advance ()
-			{
-				return new TimeOfComputationHandlingBeyondFirst ();
+				table.AppendFormat ("Q_{0}", Identifier);
 			}
 			#endregion
 		}
 
-		class TimeOfComputationHandlingBeyondFirst : TimeOfComputationHandling
-		{
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.TimeOfComputationHandling
-			public override void buildColumns (
-				Dictionary<string, int> nodeColumnIndexesByNodeIdentifiers, 
-				List<NodeForNetwonRaphsonSystem> nodesEnumerationUsedBySystemSolution,
-				List<EdgeForNetwonRaphsonSystem> edgesEnumerationUsedBySystemSolution)
-			{
-				// nothing to do here because the dictionary is filled by the first time the result-handler 
-				// is called (this object represent from the second time and following)
-			}
 
-			public override TimeOfComputationHandling advance ()
-			{
-				return this;
-			}
-			#endregion
-		}
-
-		Dictionary<String, List<SummaryTableItem>> SummaryTableItems{ get; set; }
+		Dictionary<String, Dictionary<int, SummaryTableItem>> SummaryTableItems{ get; set; }
 
 		TimeOfComputationHandling ComputationHandlingTime{ get; set; }
 
@@ -125,26 +77,56 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		public RunnableSystemAbstractComputationalResultHandlerShortTableSummary ()
 		{
-			SummaryTableItems = new Dictionary<string, List<SummaryTableItem>> ();
+			SummaryTableItems = new Dictionary<string, Dictionary<int, SummaryTableItem>> ();
 			ComputationHandlingTime = new TimeOfComputationHandlingFirstOne ();
 			NodesOrEdgesColumnIndexesByNodeOrEdgeObject = 
 				new Dictionary<string, int> ();
 		}
 
+		protected virtual int columnPositionOf (String tableItemIdentifier)
+		{
+			return NodesOrEdgesColumnIndexesByNodeOrEdgeObject 
+					[tableItemIdentifier];
+		}
+
+		void buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (
+			OneStepMutationResults results)
+		{
+			var columnPositionsForTableSummaryItemsAction = 
+				new ActionTimeComputationOnFirstTime ();
+
+			columnPositionsForTableSummaryItemsAction.Action = () => {
+				int columnPosition = 0;
+
+				results.ComputedBy.Nodes.ForEach (aNode => {
+					NodesOrEdgesColumnIndexesByNodeOrEdgeObject.Add (
+						aNode.Identifier, columnPosition);
+					columnPosition = columnPosition + 1;
+				}
+				);
+
+				results.ComputedBy.Edges.ForEach (anEdge => {
+					NodesOrEdgesColumnIndexesByNodeOrEdgeObject.Add (
+						anEdge.identifier (), columnPosition);
+					columnPosition = columnPosition + 1;
+				}
+				);
+			};
+
+			ComputationHandlingTime.perform (
+				columnPositionsForTableSummaryItemsAction);
+		}
+
 		protected override void onComputationFinished (
 			string systemName, OneStepMutationResults results)
 		{
-			// here we build the ordering only for the first call of this method.
-			ComputationHandlingTime.buildColumns (
-				NodesOrEdgesColumnIndexesByNodeOrEdgeObject,
-				results.ComputedBy.Nodes,
-				results.ComputedBy.Edges);
+			buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (results);
 
 			var dimensionalUnknowns = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
 
-			List<SummaryTableItem> summaryTableItemsForCurrentSystem = 
-				new List<SummaryTableItem> ();
+			var summaryTableItemsForCurrentSystem = 
+				new Dictionary<int, SummaryTableItem> ();
 
 			Dictionary<NodeForNetwonRaphsonSystem, double> sumOfQsByNodes = 
 					new Dictionary<NodeForNetwonRaphsonSystem, double> ();
@@ -158,12 +140,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var Qvalue = results.Qvector.valueAt (anEdge);
 
+				var columnPosition = this.columnPositionOf (anEdge.identifier ());
+
 				EdgeForSummaryTable summaryEdge = new EdgeForSummaryTable{
 					Identifier = anEdge.identifier(),
 					Qvalue = Qvalue,
-					ColumnPosition = NodesOrEdgesColumnIndexesByNodeOrEdgeObject[anEdge.identifier()]
+					ColumnPosition = columnPosition
 				};
-				summaryTableItemsForCurrentSystem.Add (summaryEdge);
+				summaryTableItemsForCurrentSystem.Add (columnPosition, summaryEdge);
 
 				sumOfQsByNodes [anEdge.StartNode] += Qvalue;
 				sumOfQsByNodes [anEdge.EndNode] -= Qvalue;
@@ -172,14 +156,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			foreach (var pair in sumOfQsByNodes) {
 
+				int columnPosition = this.columnPositionOf (pair.Key.Identifier);
+
 				NodeForSummaryTable summaryNode = new NodeForSummaryTable{
-					ColumnPosition = this.NodesOrEdgesColumnIndexesByNodeOrEdgeObject[pair.Key.Identifier],
+					ColumnPosition = columnPosition,
 					Identifier = pair.Key.Identifier,
 					QvalueSum = pair.Value,
 					DimensionalPressure = dimensionalUnknowns.valueAt(pair.Key)
 				};
 
-				summaryTableItemsForCurrentSystem.Add (summaryNode);
+				summaryTableItemsForCurrentSystem.Add (columnPosition, summaryNode);
 			}
 
 			this.SummaryTableItems.Add (systemName, summaryTableItemsForCurrentSystem);
@@ -188,27 +174,52 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		}
 
+		internal virtual void appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
+			StringBuilder table, 
+			Dictionary<int, SummaryTableItem> resultLineForFirstSystem, 
+			ListExtensionMethods.ListItemDecoratedWithTimeComputation<string> timedDecoredItem)
+		{
+			ActionTimeComputation actionForFirstSystemLine = 
+				new ActionTimeComputationOnFirstTime ();
+
+			actionForFirstSystemLine.Action = () => {
+				table.Append ("SYSNAME\t");
+				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (aColumnIndex => {
+					var item = resultLineForFirstSystem [aColumnIndex];
+					item.appendHeaderInto (table);
+					table.Append ("\t");
+				}
+				);
+				table.Append ("\n");
+			};
+
+			timedDecoredItem.ComputationTime.perform (actionForFirstSystemLine);
+		}
+
 		public virtual String buildTableSummary ()
 		{
 			StringBuilder table = new StringBuilder ();
 
-			foreach (var pair in this.SummaryTableItems) {
-				table.Append (pair.Key + "\t");
+			SummaryTableItems.Keys.ToList ().DecoreWithTimeComputation ().ForEach (
+				timedDecoredItem => {
 
-				for (int columnIndex = 0; 
-				     columnIndex < pair.Value.Count; 
-				     columnIndex = columnIndex + 1) {
+				var resultLineForFirstSystem = SummaryTableItems [timedDecoredItem.Item];
 
-					SummaryTableItem item = pair.Value.Find (
-						anItem => anItem.ColumnPosition == columnIndex);
+				appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
+					table, resultLineForFirstSystem, timedDecoredItem);
 
+				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
+					aColumnPosition => {
+
+					SummaryTableItem item = resultLineForFirstSystem [aColumnPosition];
 					item.appendValueInto (table);
-
 					table.Append ("\t");
 				}
+				);
 
 				table.Append ("\n");
 			}
+			);
 
 			return table.ToString ();
 		}

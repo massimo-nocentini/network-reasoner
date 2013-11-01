@@ -62,6 +62,13 @@
     <Compile Include="MatrixExtensionMethods.cs" />
     <Compile Include="ListExtensionMethods.cs" />
     <Compile Include="DictionaryExtensionMethods.cs" />
+    <Compile Include="IntegerExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
+      <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
+      <Name>it.unifi.dsi.stlab.utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
