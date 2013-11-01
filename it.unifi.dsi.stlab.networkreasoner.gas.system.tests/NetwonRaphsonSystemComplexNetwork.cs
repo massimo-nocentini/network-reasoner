@@ -327,8 +327,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			parameters.ViscosityInPascalTimesSecond = .0000108;
 
 			return parameters;
-
-
 		}
 
 		[Test()]
@@ -365,6 +363,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var relativeUnknowns = system.makeUnknownsDimensional (
 				resultsAfterOneMutation.Unknowns);
+
+
+			var node = resultsAfterOneMutation.findNodeByIdentifier (
+				"<dummy identifier>");
+
+			Assert.That (relativeUnknowns.valueAt (node), 
+			             Is.EqualTo (32.34).Within (1e-5));
 		}
 	}
 }
