@@ -2,9 +2,9 @@ using System;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
-	public abstract class LoadPressureValueHolder
+	public abstract class ValueHolder<T>
 	{
-		public abstract Double getValue ();
+		public abstract T getValue ();
 	}
 }
 

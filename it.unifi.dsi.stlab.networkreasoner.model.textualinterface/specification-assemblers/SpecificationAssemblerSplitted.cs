@@ -20,7 +20,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SpecificationAssembler
 		public override SystemRunnerFromTextualGheoNetInput assemble (
-			Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction, 
+			Dictionary<string, Func<ValueHolder<Double>, GasNodeAbstract>> delayedNodesConstruction, 
 			List<NodeSpecificationLine> nodesSpecificationsGivenFromParser, 
 			TextualGheoNetInputParser parentParser)
 		{
@@ -57,7 +57,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 						var value = Double.Parse (splittedLine [nodeIndex], 
 						                          CultureInfo.InvariantCulture);
 
-						var valueHolder = new LoadPressureValueHolderCarryInfo ();
+						var valueHolder = new ValueHolderCarryInfo<Double> ();
 						valueHolder.Value = value;
 
 						aNode = delayedNodesConstruction [aNodeLine.Identifier].
@@ -65,7 +65,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 					} else {
 
-						var valueHolder = new LoadPressureValueHolderNoInfoShouldBeRequested ();
+						var valueHolder = new ValueHolderNoInfoShouldBeRequested<Double> ();
 						valueHolder.Exception = new Exception (string.Format (
 							"No value should be requested because" +
 							" the definition says that node {0} is a passive" +

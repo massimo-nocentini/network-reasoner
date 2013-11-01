@@ -34,9 +34,9 @@
   <ItemGroup>
     <Compile Include="MyClass.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="value-holders\LoadPressureValueHolder.cs" />
-    <Compile Include="value-holders\LoadPressureValueHolderCarryInfo.cs" />
-    <Compile Include="value-holders\LoadPressureValueHolderNoInfoShouldBeRequested.cs" />
+    <Compile Include="value-holders\ValueHolder.cs" />
+    <Compile Include="value-holders\ValueHolderCarryInfo.cs" />
+    <Compile Include="value-holders\ValueHolderNoInfoShouldBeRequested.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

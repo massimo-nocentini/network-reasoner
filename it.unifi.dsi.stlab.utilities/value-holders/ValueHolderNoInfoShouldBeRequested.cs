@@ -2,7 +2,7 @@ using System;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
-	public class LoadPressureValueHolderNoInfoShouldBeRequested : LoadPressureValueHolder
+	public class ValueHolderNoInfoShouldBeRequested<T> : ValueHolder<T>
 	{
 		public Exception Exception {
 			get;
@@ -10,7 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		}
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.LoadPressureValueHolder
-		public override double getValue ()
+		public override T getValue ()
 		{
 			throw Exception;
 		}

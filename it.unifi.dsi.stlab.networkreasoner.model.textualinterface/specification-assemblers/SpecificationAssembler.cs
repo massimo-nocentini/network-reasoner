@@ -8,7 +8,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	public abstract class SpecificationAssembler
 	{
 		public abstract SystemRunnerFromTextualGheoNetInput assemble (
-			Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction, 
+			Dictionary<string, Func<ValueHolder<Double>, GasNodeAbstract>> delayedNodesConstruction, 
 			List<NodeSpecificationLine> nodesSpecificationLines,
 			TextualGheoNetInputParser parentParser);
 	}

@@ -20,7 +20,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			List<NodeSpecificationLine> nodesSpecificationLines;
 
-			Dictionary<String, Func<LoadPressureValueHolder, GasNodeAbstract>> delayedNodesConstruction = 
+			Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> delayedNodesConstruction = 
 				this.parseNodeDelayedConstruction (
 					out nodesSpecificationLines);
 
@@ -34,11 +34,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return systemRunner;
 		}
 
-		protected virtual Dictionary<String, Func<LoadPressureValueHolder, GasNodeAbstract>> parseNodeDelayedConstruction (
+		protected virtual Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> parseNodeDelayedConstruction (
 				out List<NodeSpecificationLine> nodesSpecificationLinesOut)
 		{
-			Dictionary<String, Func<LoadPressureValueHolder, GasNodeAbstract>> delayConstructedNodes = 
-				new Dictionary<string, Func<LoadPressureValueHolder, GasNodeAbstract>> ();
+			Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> delayConstructedNodes = 
+				new Dictionary<string, Func<ValueHolder<Double>, GasNodeAbstract>> ();
 
 			var nodesSpecificationLines = new List<NodeSpecificationLine> ();
 
@@ -57,7 +57,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				semanticLine.Type = splittedSpecification [1].Equals ("1") ? 
 					NodeType.WithSupplyGadget : NodeType.WithLoadGadget;
 
-				Func<LoadPressureValueHolder, GasNodeAbstract> delayedConstruction = 
+				Func<ValueHolder<Double>, GasNodeAbstract> delayedConstruction = 
 					aValueHolder => {
 
 					GasNodeAbstract aNode = new GasNodeTopological{
