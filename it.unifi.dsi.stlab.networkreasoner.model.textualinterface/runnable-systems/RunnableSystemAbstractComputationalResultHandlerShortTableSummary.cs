@@ -24,7 +24,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			protected virtual String formatDouble (Double value)
 			{
-				return value.ToString ("0.000");
+				return value.ToString ("E3");
 			}
 		}
 
@@ -207,6 +207,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
 					table, resultLineForFirstSystem, timedDecoredItem);
+
+				table.AppendFormat ("{0}\t", timedDecoredItem.Item);
 
 				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
 					aColumnPosition => {
