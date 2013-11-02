@@ -4,6 +4,7 @@ using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using System.Collections.Generic;
 using System.Linq;
+using it.unifi.dsi.stlab.utilities.object_with_substitution;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -268,14 +269,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public abstract OneStepMutationResults doSubstitution (
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
-				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
+				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions, 
 				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions);
 
 			public abstract OneStepMutationResults continueComputationFor (
 				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
 				List<UntilConditionAbstract> untilConditions, 
-				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes);
+				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions);
 
 
 		}
@@ -288,19 +291,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public override OneStepMutationResults doSubstitution (
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
-				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
+				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions,
 				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions)
 			{
 				var newNode = this.Substitution.Invoke ();
 
 				// we keep note that a new node has been created
-				fixedNodesWithLoadGadgetByOriginalNodes.Add (
-						originalNode, newNode);
+				nodesSubstitutions.Add (
+					new ObjectWithSubstitutionInSameType<GasNodeAbstract>{
+					Original = originalNode,
+					Substituted = newNode
+				}
+				);
 
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgeSubstitutions;
 				GasNetwork networkWithFixedNodesWithLoadGadget = 
 						aGasNetwork.makeFromRemapping (
-							fixedNodesWithLoadGadgetByOriginalNodes);
+							nodesSubstitutions,
+							out edgeSubstitutions);
 
 				// start here a new iteration of the method
 				var innerSystem = new NetwonRaphsonSystem {
@@ -318,14 +328,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public override OneStepMutationResults continueComputationFor (
 				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
 				List<UntilConditionAbstract> untilConditions, 
-				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
+				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions)
 			{
 				var systemToBeUsed = resultAfterFixingOneNodeWithLoadGadget.ComputedBy;
 
 				return systemToBeUsed.fixNodesWithLoadGadgetNegativePressure (
 					resultAfterFixingOneNodeWithLoadGadget, 
 					untilConditions,
-					fixedNodesWithLoadGadgetByOriginalNodes);
+					nodesSubstitutions,
+					edgesSubstitutions);
 			}
 			#endregion
 		}
@@ -336,7 +348,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public override OneStepMutationResults doSubstitution (
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
-				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes, 
+				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions,
 				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions)
 			{
@@ -347,7 +360,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public override OneStepMutationResults continueComputationFor (
 				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
 				List<UntilConditionAbstract> untilConditions, 
-				Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
+				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions)
 			{
 				// since no substitution have to be done, we do not have to continue to fix
 				// any other node since all of them have valid pressures at this time.

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.utilities.times_of_computation;
+using it.unifi.dsi.stlab.utilities.object_with_substitution;
 
 namespace it.unifi.dsi.stlab.extensionmethods
 {
@@ -52,6 +53,34 @@ namespace it.unifi.dsi.stlab.extensionmethods
 			);
 
 			return decored;
+		}
+
+		public static Dictionary<T, T> OriginalsBySubstituted<T> (
+			this List<ObjectWithSubstitutionInSameType<T>> aList)
+		{
+			Dictionary<T, T> originalsBySubstituted = 
+				new Dictionary<T, T> ();
+
+			aList.ForEach (anObjWithSubstitution => 
+			               originalsBySubstituted.Add (anObjWithSubstitution.Substituted, 
+			                            anObjWithSubstitution.Original)
+			);
+
+			return originalsBySubstituted;
+		}
+
+		public static Dictionary<T, T> SubstitutedByOriginals<T> (
+			this List<ObjectWithSubstitutionInSameType<T>> aList)
+		{
+			Dictionary<T, T> substitutedByOriginals = 
+				new Dictionary<T, T> ();
+
+			aList.ForEach (anObjWithSubstitution => 
+			               substitutedByOriginals.Add (anObjWithSubstitution.Original, 
+			                            anObjWithSubstitution.Substituted)
+			);
+
+			return substitutedByOriginals;
 		}
 	}
 }

@@ -10,7 +10,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> 
 				CustomNodesByGeneralNodes{ get; set; }
 
-
 		public EdgeForNetwonRaphsonSystem CustomEdgeUnderBuilding{ get; set; }
 
 			#region GasEdgeVisitor implementation
@@ -29,6 +28,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			CustomEdgeUnderBuilding.EndNode = 
 					CustomNodesByGeneralNodes [gasEdgeTopological.EndNode];
+
+			CustomEdgeUnderBuilding.Identifier = 
+				gasEdgeTopological.Identifier;
 		}
 
 		public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)

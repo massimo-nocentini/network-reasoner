@@ -107,7 +107,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				results.ComputedBy.Edges.ForEach (anEdge => {
 					NodesOrEdgesColumnIndexesByNodeOrEdgeObject.Add (
-						anEdge.identifier (), columnPosition);
+						anEdge.Identifier, columnPosition);
 					columnPosition = columnPosition + 1;
 				}
 				);
@@ -140,10 +140,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var Qvalue = results.Qvector.valueAt (anEdge);
 
-				var columnPosition = this.columnPositionOf (anEdge.identifier ());
+				var columnPosition = this.columnPositionOf (anEdge.Identifier);
 
 				EdgeForSummaryTable summaryEdge = new EdgeForSummaryTable{
-					Identifier = anEdge.identifier(),
+					Identifier = anEdge.Identifier,
 					Qvalue = Qvalue,
 					ColumnPosition = columnPosition
 				};

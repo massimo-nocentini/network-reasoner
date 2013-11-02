@@ -125,6 +125,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				var edgeIdentifier = splittedSpecification [0];
 
 				GasEdgeAbstract anEdge = new GasEdgeTopological{
+					Identifier = edgeIdentifier,
 					StartNode = nodes[splittedSpecification[1]],
 					EndNode = nodes[splittedSpecification[2]]
 				};

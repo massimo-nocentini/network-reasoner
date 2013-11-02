@@ -42,10 +42,12 @@
     <Compile Include="times-of-computation\ActionTimeComputationOnFirstTime.cs" />
     <Compile Include="times-of-computation\ActionTimeComputationForBeyondFirstTime.cs" />
     <Compile Include="times-of-computation\ActionTimeComputation.cs" />
+    <Compile Include="object-with-substitution\ObjectWithSubstitutionInSameType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="value-holders\" />
     <Folder Include="times-of-computation\" />
+    <Folder Include="object-with-substitution\" />
   </ItemGroup>
 </Project>

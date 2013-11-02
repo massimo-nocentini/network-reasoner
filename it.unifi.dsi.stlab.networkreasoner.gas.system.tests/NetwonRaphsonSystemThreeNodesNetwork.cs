@@ -8,6 +8,7 @@ using log4net.Config;
 using System.IO;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
+using it.unifi.dsi.stlab.utilities.object_with_substitution;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -253,14 +254,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var mainComputationResults = system.repeatMutateUntil (untilConditions);
 
-			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes = 
-				new Dictionary<GasNodeAbstract, GasNodeAbstract> ();
+			var nodesSubstitutions = 
+				new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
+			var edgesSubstitutions = 
+				new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
 
 			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
 				system.fixNodesWithLoadGadgetNegativePressure (
 					mainComputationResults, 
 					untilConditions,
-					fixedNodesWithLoadGadgetByOriginalNodes);
+					nodesSubstitutions,
+					edgesSubstitutions);
 
 			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
 				makeUnknownsDimensional (

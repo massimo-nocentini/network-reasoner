@@ -1,6 +1,8 @@
 using System;
 using it.unifi.dsi.stlab.networkreasoner.model.rdfinterface;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.extensionmethods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
@@ -104,11 +106,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		}
 
 		public GasNetwork makeFromRemapping (
-			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
+			List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> fixedNodesWithLoadGadgetByOriginalNodes,
+			out List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgeSubstitutions)
 		{
 			GasNetwork newNetwork = new GasNetwork {
 				AmbientParameters = this.AmbientParameters
 			};
+
+			var substitutedByOriginalsNodesDictionary = 
+				fixedNodesWithLoadGadgetByOriginalNodes.SubstitutedByOriginals ();
 
 			this.doOnNodes (new NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 				(aNodeKey, aNode) => {
@@ -116,14 +122,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				// here isn't necessary to visit the structure of the node since 
 				// all the properties are mantained by the node to be substituted,
 				// the only thing that change is the gadget.
-				var nodeForNewNetwork = fixedNodesWithLoadGadgetByOriginalNodes.ContainsKey (aNode) ?
-					fixedNodesWithLoadGadgetByOriginalNodes [aNode] : aNode;
+				var nodeForNewNetwork = substitutedByOriginalsNodesDictionary.ContainsKey (aNode) ?
+					substitutedByOriginalsNodesDictionary [aNode] : aNode;
 
 				newNetwork.Nodes.Add (aNodeKey, nodeForNewNetwork);
 			}
 			)
 			);
 
+			var innerEdgeSubstitutions = new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
 
 			this.doOnEdges (new NodeHandlerWithDelegateOnKeyedNode<GasEdgeAbstract> (
 				(anEdgeKey, anEdge) => {
@@ -133,17 +140,25 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				// of this block.
 				SubstituteNodeInsideEdge substituteNodeInsideEdge = 
 				new SubstituteNodeInsideEdge{
-					NewByOldNodesMapping = fixedNodesWithLoadGadgetByOriginalNodes
+					NewByOldNodesMapping = substitutedByOriginalsNodesDictionary
 				};
 
 				anEdge.accept (substituteNodeInsideEdge);
 
 				var edgeForNewNetwork = substituteNodeInsideEdge.buildEdge ();
 
+				innerEdgeSubstitutions.Add (new ObjectWithSubstitutionInSameType<GasEdgeAbstract>{
+					Original = anEdge,
+					Substituted = edgeForNewNetwork
+				}
+				);
+
 				newNetwork.Edges.Add (anEdgeKey, edgeForNewNetwork);
 			}
 			)
 			);
+
+			edgeSubstitutions = innerEdgeSubstitutions;
 
 			return newNetwork;
 		}

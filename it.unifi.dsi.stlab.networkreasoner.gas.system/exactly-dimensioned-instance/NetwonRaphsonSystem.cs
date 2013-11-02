@@ -10,6 +10,7 @@ using System.Linq;
 using it.unifi.dsi.stlab.extensionmethods;
 using System.Globalization;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
+using it.unifi.dsi.stlab.utilities.object_with_substitution;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -156,7 +157,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			#endregion
 		}
 
-		public  OneStepMutationResults repeatMutateUntilRevertingDomainBack (
+		public  OneStepMutationResults solve (
 			List<UntilConditionAbstract> untilConditions,
 			out Dictionary<GasNodeAbstract, double> unknownsByNodes, 
 			out Dictionary<GasEdgeAbstract, double> QvaluesByEdges)
@@ -166,17 +167,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			var oneStepMutationResults = this.repeatMutateUntil (untilConditions);
 
-			var relativeUnknowns = this.makeUnknownsDimensional (oneStepMutationResults.Unknowns);
-			
-			foreach (var nodePair in this.OriginalNodesByComputationNodes) {
-				unknownsByNodes.Add (nodePair.Value, 
-				                     relativeUnknowns.valueAt (nodePair.Key));
+			var nodesSubstitutions = new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
+			var edgesSubstitutions = new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
+
+
+			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
+				this.fixNodesWithLoadGadgetNegativePressure (
+					oneStepMutationResults, 
+					untilConditions,
+					nodesSubstitutions,
+					edgesSubstitutions);
+
+			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
+					makeUnknownsDimensional (resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
+
+			var originalNodesBySubstitutedNodes = nodesSubstitutions.OriginalsBySubstituted ();
+			foreach (var aNode in resultsAfterFixingNodeWithLoadGadgetPressure.
+			         ComputedBy.OriginalNodesByComputationNodes) {
+
+				var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNode.Value) ?
+					originalNodesBySubstitutedNodes [aNode.Value] : aNode.Value;
+
+				unknownsByNodes.Add (originalNode, 
+				                     dimensionalUnknowns.valueAt (aNode.Key));
 			}
 
-			foreach (var edgePair in this.OriginalEdgesByComputationEdges) {
+			foreach (var edgePair in resultsAfterFixingNodeWithLoadGadgetPressure.
+			         ComputedBy.OriginalEdgesByComputationEdges) {
 				QvaluesByEdges.Add (edgePair.Value,
 				                    oneStepMutationResults.Qvector.valueAt (edgePair.Key));
-			}			
+			}
 
 			return oneStepMutationResults;
 		}
@@ -536,7 +556,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public OneStepMutationResults fixNodesWithLoadGadgetNegativePressure (
 			OneStepMutationResults previousMutationResults, 
 			List<UntilConditionAbstract> untilConditions,
-			Dictionary<GasNodeAbstract, GasNodeAbstract> fixedNodesWithLoadGadgetByOriginalNodes)
+			List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitions,
+			List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions)
 		{
 			var relativeUnknowns = this.makeUnknownsDimensional (previousMutationResults.Unknowns);
 
@@ -555,14 +576,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				substitutionDriver.doSubstitution (
 					previousMutationResults,
 					originalNode,
-					fixedNodesWithLoadGadgetByOriginalNodes,
+					nodesSubstitions,
+					edgesSubstitutions,
 					this.OriginalNetwork,
 					untilConditions);
 
 			return substitutionDriver.continueComputationFor (
 				resultAfterFixingOneNodeWithLoadGadget, 
 				untilConditions, 
-				fixedNodesWithLoadGadgetByOriginalNodes);
+				nodesSubstitions,
+				edgesSubstitutions);
 
 		}
 

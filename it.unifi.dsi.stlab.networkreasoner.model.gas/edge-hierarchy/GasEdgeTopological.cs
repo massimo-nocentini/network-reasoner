@@ -4,6 +4,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
 	public class GasEdgeTopological : GasEdgeAbstract
 	{
+		public string Identifier{ get; set; }
+
 		public GasNodeAbstract StartNode{ get; set; }
 
 		public GasNodeAbstract EndNode{ get; set; }
