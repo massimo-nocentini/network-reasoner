@@ -292,7 +292,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				OneStepMutationResults previousMutationResults,
 				GasNodeAbstract originalNode, 
 				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions,
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> givenEdgesSubstitutions,
 				GasNetwork aGasNetwork,
 				List<UntilConditionAbstract> untilConditions)
 			{
@@ -306,11 +306,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				}
 				);
 
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgeSubstitutions;
+				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> currentEdgeSubstitutions;
 				GasNetwork networkWithFixedNodesWithLoadGadget = 
 						aGasNetwork.makeFromRemapping (
 							nodesSubstitutions,
-							out edgeSubstitutions);
+							out currentEdgeSubstitutions);
+
+				currentEdgeSubstitutions.ForEach (aCurrentEdgeSubstitution => {
+
+					ObjectWithSubstitutionInSameType<GasEdgeAbstract> transitiveSubstitutedNode = 
+						givenEdgesSubstitutions.Find (aGivenEdgeSubstitution => 
+						aGivenEdgeSubstitution.Substituted.Equals (
+								aCurrentEdgeSubstitution.Original)					
+					);
+
+					if (transitiveSubstitutedNode != null) {
+						transitiveSubstitutedNode.Substituted = 
+							aCurrentEdgeSubstitution.Substituted;
+					} else {
+						givenEdgesSubstitutions.Add (aCurrentEdgeSubstitution);
+					}
+				}
+				);
 
 				// start here a new iteration of the method
 				var innerSystem = new NetwonRaphsonSystem {

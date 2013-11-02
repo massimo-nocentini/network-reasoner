@@ -206,11 +206,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		}
 
-		public void onUnknownWithDimensionReverted (Vector<NodeForNetwonRaphsonSystem> unknownVector)
+		public void onUnknownWithDimensionReverted (
+			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration, 
+			Vector<NodeForNetwonRaphsonSystem> unknownVector)
 		{
 
 			unknownVector.forComputationAmong (
-				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
+				nodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Relative Unknowns vector at current step: {0}", representation)

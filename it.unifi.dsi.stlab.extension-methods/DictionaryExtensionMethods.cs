@@ -17,6 +17,14 @@ namespace it.unifi.dsi.stlab.extensionmethods
 
 			return invertedDictionary;
 		}
+
+		public static void ForEach<TKey, TValue> (
+			this Dictionary<TKey, TValue> aDictionary, Action<TKey, TValue> anAction)
+		{
+			foreach (var pair in aDictionary) {
+				anAction.Invoke (pair.Key, pair.Value);
+			}
+		}
 	}
 }
 

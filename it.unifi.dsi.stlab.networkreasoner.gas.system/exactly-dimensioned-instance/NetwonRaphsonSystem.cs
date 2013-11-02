@@ -170,7 +170,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var nodesSubstitutions = new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
 			var edgesSubstitutions = new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
 
-
 			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
 				this.fixNodesWithLoadGadgetNegativePressure (
 					oneStepMutationResults, 
@@ -182,20 +181,25 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					makeUnknownsDimensional (resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
 
 			var originalNodesBySubstitutedNodes = nodesSubstitutions.OriginalsBySubstituted ();
-			foreach (var aNode in resultsAfterFixingNodeWithLoadGadgetPressure.
+			foreach (var aNodePair in resultsAfterFixingNodeWithLoadGadgetPressure.
 			         ComputedBy.OriginalNodesByComputationNodes) {
 
-				var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNode.Value) ?
-					originalNodesBySubstitutedNodes [aNode.Value] : aNode.Value;
+				var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNodePair.Value) ?
+					originalNodesBySubstitutedNodes [aNodePair.Value] : aNodePair.Value;
 
 				unknownsByNodes.Add (originalNode, 
-				                     dimensionalUnknowns.valueAt (aNode.Key));
+				                     dimensionalUnknowns.valueAt (aNodePair.Key));
 			}
 
+			var originalEdgesBySubstitutedNodes = edgesSubstitutions.OriginalsBySubstituted ();
 			foreach (var edgePair in resultsAfterFixingNodeWithLoadGadgetPressure.
 			         ComputedBy.OriginalEdgesByComputationEdges) {
-				QvaluesByEdges.Add (edgePair.Value,
-				                    oneStepMutationResults.Qvector.valueAt (edgePair.Key));
+
+				var originalEdge = originalEdgesBySubstitutedNodes.ContainsKey (edgePair.Value) ?
+					originalEdgesBySubstitutedNodes [edgePair.Value] : edgePair.Value; 
+
+				QvaluesByEdges.Add (originalEdge,
+				                    resultsAfterFixingNodeWithLoadGadgetPressure.Qvector.valueAt (edgePair.Key));
 			}
 
 			return oneStepMutationResults;
@@ -548,7 +552,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 			);
 
-			this.EventsListener.onUnknownWithDimensionReverted (dimensionalUnknowns);
+
+			this.EventsListener.onUnknownWithDimensionReverted (
+				this.NodesEnumeration.Value, dimensionalUnknowns);
 
 			return dimensionalUnknowns;
 		}

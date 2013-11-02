@@ -47,9 +47,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		void onFvectorAtCurrentStepComputed (Vector<EdgeForNetwonRaphsonSystem> Fvector);
 
-		void onUnknownWithDimensionReverted (Vector<NodeForNetwonRaphsonSystem> unknownVector);
+		void onUnknownWithDimensionReverted (
+			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration, 
+			Vector<NodeForNetwonRaphsonSystem> unknownVector);
 
-		void onRepeatMutateUntilEnded (OneStepMutationResults result);		
+		void onRepeatMutateUntilEnded (OneStepMutationResults result);
 
 		void onMutateStepCompleted (OneStepMutationResults result);
 	}

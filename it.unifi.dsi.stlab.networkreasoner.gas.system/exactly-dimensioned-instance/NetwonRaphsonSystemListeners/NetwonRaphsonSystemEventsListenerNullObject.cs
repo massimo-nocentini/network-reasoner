@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners
 {
@@ -84,7 +85,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			
 		}
 
-		public void onUnknownWithDimensionReverted (it.unifi.dsi.stlab.math.algebra.Vector<NodeForNetwonRaphsonSystem> unknownVector)
+		public void onUnknownWithDimensionReverted (
+			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration,
+			it.unifi.dsi.stlab.math.algebra.Vector<NodeForNetwonRaphsonSystem> unknownVector)
 		{
 			
 		}

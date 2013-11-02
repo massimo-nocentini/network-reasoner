@@ -3,6 +3,7 @@ using log4net;
 using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.utilities.value_holders;
+using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners
 {
@@ -73,10 +74,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public void onUnknownWithDimensionReverted (
+			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration,
 			Vector<NodeForNetwonRaphsonSystem> unknownVector)
 		{
 			unknownVector.forComputationAmong (
-				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
+				nodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Relative Unknowns vector at current step: {0}", representation)

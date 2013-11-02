@@ -106,7 +106,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		}
 
 		public GasNetwork makeFromRemapping (
-			List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> fixedNodesWithLoadGadgetByOriginalNodes,
+			List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
 			out List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgeSubstitutions)
 		{
 			GasNetwork newNetwork = new GasNetwork {
@@ -114,7 +114,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			};
 
 			var substitutedByOriginalsNodesDictionary = 
-				fixedNodesWithLoadGadgetByOriginalNodes.SubstitutedByOriginals ();
+				nodesSubstitutions.SubstitutedByOriginals ();
 
 			this.doOnNodes (new NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
 				(aNodeKey, aNode) => {
@@ -197,6 +197,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 			GasNodeAbstract EndNode{ get; set; }
 
+			String Identifier{ get; set; }
+
 			#endregion
 
 			#region GasEdgeVisitor implementation
@@ -215,6 +217,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				this.StartNode = applySubstitutionOn (gasEdgeTopological.StartNode);
 
 				this.EndNode = applySubstitutionOn (gasEdgeTopological.EndNode);
+
+				this.Identifier = gasEdgeTopological.Identifier;
 			}
 
 			GasNodeAbstract applySubstitutionOn (GasNodeAbstract aNode)
@@ -234,7 +238,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			{
 				GasEdgeAbstract newEdge = new GasEdgeTopological{
 					StartNode = this.StartNode,
-					EndNode = this.EndNode
+					EndNode = this.EndNode,
+					Identifier = this.Identifier
 				};
 
 				newEdge = new GasEdgePhysical{
