@@ -18,6 +18,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 	{
 		class FiveNodesNetworkRunnableSystem : RunnableSystemAbstractComputationalResultHandlerShortTableSummary
 		{
+			Action<string, OneStepMutationResults> ActionWithAsserts{ get; set; }
+
+			public FiveNodesNetworkRunnableSystem (Action<string, OneStepMutationResults> asserts)
+			{
+				this.ActionWithAsserts = asserts;
+			}
+
 			#region RunnableSystem implementation
 			public override void compute (
 				String systemName,
@@ -75,6 +82,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 				this.onComputationFinished (systemName, resultsAfterFixingNodeWithLoadGadgetPressure);
 
+				// here we perform the necessary tests using the plugged behaviour
+				this.ActionWithAsserts.Invoke (systemName, 
+				                               resultsAfterFixingNodeWithLoadGadgetPressure);
 			}
 			#endregion
 		}
@@ -87,10 +97,43 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"gheonet-textual-networks/five-nodes-network.dat");
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
-				parser.parse (new SpecificationAssemblerAllInOneFile ());
+				parser.parse (new SpecificationAssemblerAllInOneFile ()
+			);
 
-			systemRunner.run (new FiveNodesNetworkRunnableSystem ());
+			systemRunner.run (new FiveNodesNetworkRunnableSystem (
+					assertsForSpecificationAllInOneFile)
+			);
 		}
+
+		#region assertions for the single system relative to all-in-one file specification
+
+		// this method contains assertions for the test above.
+		void assertsForSpecificationAllInOneFile (
+			string systemName, OneStepMutationResults results)
+		{
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+
+			
+			var edgeR1 = results.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+			
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets_with_splitted_specification this instance.
@@ -105,14 +148,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerSplitted (
-					"gheonet-textual-networks/five-nodes-network-extension.dat"));
+					"gheonet-textual-networks/five-nodes-network-extension.dat")
+			);
 
-			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem ();
+			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem (
+				noAssertionsForGivenSystem);
+
 			systemRunner.run (fiveNodesNetworkRunnableSystem);
 
 			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output.dat", 
 			                  fiveNodesNetworkRunnableSystem.buildTableSummary ());
 			
+		}
+
+		void noAssertionsForGivenSystem (string systemName, OneStepMutationResults results)
+		{
+			// simply do no assertion at all for the given system and its results.
 		}
 
 		[Test()]
@@ -123,15 +174,154 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerSplitted (
-					"gheonet-textual-networks/five-nodes-network-extension-small.dat"));
+					"gheonet-textual-networks/five-nodes-network-extension-small.dat")
+			);
 
-			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem ();
+			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem (
+				assertsForSpecificationInSplittedFiles);
+
 			systemRunner.run (fiveNodesNetworkRunnableSystem);
 
 			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output-small.dat", 
 			                  fiveNodesNetworkRunnableSystem.buildTableSummary ());
 			
 		}
+
+		#region assertions for the five systems relative to splitted configuration
+
+		// this method contains assertions for the test above. We need to provide
+		// tests for 5 systems, hence we procede by cases, creating the
+		// submethods below.
+		void assertsForSpecificationInSplittedFiles (string systemName, OneStepMutationResults results)
+		{
+			Dictionary<String, Action<OneStepMutationResults>> assertionsBySystems = 
+				new Dictionary<string, Action<OneStepMutationResults>> ();
+
+			assertionsBySystems.Add ("0", assertionForSystem0);
+			assertionsBySystems.Add ("1", assertionForSystem1);
+			assertionsBySystems.Add ("2", assertionForSystem2);
+			assertionsBySystems.Add ("3", assertionForSystem3);
+			assertionsBySystems.Add ("4", assertionForSystem4);
+
+			assertionsBySystems [systemName].Invoke (results);
+		}
+
+		void assertionForSystem0 (OneStepMutationResults results)
+		{
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+
+			
+			var edgeR1 = results.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+		}
+
+		void assertionForSystem1 (OneStepMutationResults results)
+		{
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+
+			
+			var edgeR1 = results.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+		}
+
+		void assertionForSystem2 (OneStepMutationResults results)
+		{
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+
+			
+			var edgeR1 = results.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+		}
+
+		void assertionForSystem3 (OneStepMutationResults results)
+		{
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+
+			
+			var edgeR1 = results.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+		}
+
+		void assertionForSystem4 (OneStepMutationResults results)
+		{
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+
+			
+			var edgeR1 = results.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+		}
+
+		#endregion
 	}
 }
 
