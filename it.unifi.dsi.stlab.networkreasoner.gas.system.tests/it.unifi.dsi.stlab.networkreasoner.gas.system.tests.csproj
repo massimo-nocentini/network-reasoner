@@ -54,6 +54,8 @@
     <Compile Include="NetwonRaphsonSystemComplexNetwork.cs" />
     <Compile Include="NetwonRaphsonSystemFiveNodesWithNegativePressures.cs" />
     <Compile Include="NetwonRaphsonSystemFiveNodesWithNegativePressuresSolveComplete.cs" />
+    <Compile Include="NetwonRaphsonSystemThreeNodesNetworkRepeatUntilConditions.cs" />
+    <Compile Include="NetwonRaphsonSystemThreeNodesNetworkLoadNodesWithNegativePressures.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

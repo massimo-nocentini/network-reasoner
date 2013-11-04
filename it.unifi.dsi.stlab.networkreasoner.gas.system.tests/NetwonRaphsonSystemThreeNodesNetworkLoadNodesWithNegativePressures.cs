@@ -13,7 +13,7 @@ using it.unifi.dsi.stlab.utilities.object_with_substitution;
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
 	[TestFixture()]
-	public class NetwonRaphsonSystemThreeNodesNetwork
+	public class NetwonRaphsonSystemThreeNodesNetworkLoadNodesWithNegativePressures
 	{
 		GasNetwork aGasNetwork{ get; set; }
 
@@ -146,7 +146,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		}
 
 		[Test()]
-		public void do_some_mutation_steps ()
+		public void do_mutation_via_repetition_checking_pressure_correctness_after_main_computation ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
 
@@ -154,48 +154,56 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-
+			var ambientParameters = valid_initial_ambient_parameters ();
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = valid_initial_ambient_parameters ()
+				AmbientParameters = ambientParameters
 			};
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
 				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
 					Log = log
 				}
-			
 			};
 
-
-
+			this.aGasNetwork.AmbientParameters = ambientParameters;
 			system.initializeWith (this.aGasNetwork);
-			var results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
 
-			var dimensionalUnknowns = system.makeUnknownsDimensional (
-				results.Unknowns);
+			var untilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached {
+					Precision = 1e-4
+				}
+			};
 
-			var nodeA = results.findNodeByIdentifier ("nA");
-			var nodeB = results.findNodeByIdentifier ("nB");
-			var nodeC = results.findNodeByIdentifier ("nC");
+			var mainComputationResults = system.repeatMutateUntil (untilConditions);
+
+			var nodesSubstitutions = 
+				new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
+			var edgesSubstitutions = 
+				new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
+
+			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
+				system.fixNodesWithLoadGadgetNegativePressure (
+					mainComputationResults, 
+					untilConditions,
+					nodesSubstitutions,
+					edgesSubstitutions);
+
+			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
+				makeUnknownsDimensional (
+					resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
+
+			var nodeA = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nA");
+			var nodeB = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nB");
+			var nodeC = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nC");
 			Assert.That (dimensionalUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (dimensionalUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (dimensionalUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
 
-			var edgeAB = results.findEdgeByIdentifier ("edgeAB");
-			var edgeCB = results.findEdgeByIdentifier ("edgeCB");
-			Assert.That (results.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
+			var edgeAB = resultsAfterFixingNodeWithLoadGadgetPressure.findEdgeByIdentifier ("edgeAB");
+			var edgeCB = resultsAfterFixingNodeWithLoadGadgetPressure.findEdgeByIdentifier ("edgeCB");
+			Assert.That (resultsAfterFixingNodeWithLoadGadgetPressure.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (resultsAfterFixingNodeWithLoadGadgetPressure.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
 
 		}
 	}

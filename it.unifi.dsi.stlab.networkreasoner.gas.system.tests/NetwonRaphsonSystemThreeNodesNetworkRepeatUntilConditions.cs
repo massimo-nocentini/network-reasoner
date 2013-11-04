@@ -13,7 +13,7 @@ using it.unifi.dsi.stlab.utilities.object_with_substitution;
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
 	[TestFixture()]
-	public class NetwonRaphsonSystemThreeNodesNetwork
+	public class NetwonRaphsonSystemThreeNodesNetworkRepeatUntilConditions
 	{
 		GasNetwork aGasNetwork{ get; set; }
 
@@ -146,7 +146,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		}
 
 		[Test()]
-		public void do_some_mutation_steps ()
+		public void do_mutation_via_repetition ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
 
@@ -154,33 +154,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-
+			var ambientParameters = valid_initial_ambient_parameters ();
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = valid_initial_ambient_parameters ()
+				AmbientParameters = ambientParameters
 			};
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
 				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
 					Log = log
 				}
-			
 			};
 
-
-
+			this.aGasNetwork.AmbientParameters = ambientParameters;
 			system.initializeWith (this.aGasNetwork);
-			var results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
+
+			var results = system.repeatMutateUntil (
+				new List<UntilConditionAbstract>{
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = 1e-4
+				}
+			}
+			);
 
 			var dimensionalUnknowns = system.makeUnknownsDimensional (
 				results.Unknowns);
@@ -198,6 +193,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			Assert.That (results.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
 
 		}
+
 	}
 }
 
