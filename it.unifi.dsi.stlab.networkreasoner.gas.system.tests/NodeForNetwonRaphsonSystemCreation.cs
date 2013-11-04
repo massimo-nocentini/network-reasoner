@@ -18,7 +18,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var anIdentifier = "an simple identifier";
 
 			var aSupplier = new GasNodeWithGadget ();
-			aSupplier.Gadget = new GasNodeGadgetSupply{ SetupPressure = aSetupPressure };
+			aSupplier.Gadget = new GasNodeGadgetSupply{ 
+				SetupPressure = aSetupPressure };
 			aSupplier.Equipped = new GasNodeTopological { 
 				Comment= aComment,
 				Height = anHeight,
@@ -63,7 +64,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		}
 
 		[Test()]
-		public void creating_a_node_for_system_from_one_without_gadget_should_produce_a_passive_node_with_load_zero()
+		public void creating_a_node_for_system_from_one_without_gadget_should_produce_a_passive_node_with_load_zero ()
 		{
 
 			var aComment = "a simple comment";

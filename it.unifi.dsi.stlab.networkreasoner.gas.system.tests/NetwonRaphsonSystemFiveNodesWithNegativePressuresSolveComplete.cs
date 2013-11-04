@@ -57,10 +57,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				};
 
 				Dictionary<GasNodeAbstract, double> nodesPressures;
-				Dictionary<GasEdgeAbstract, double> edgesMeasures;
+				Dictionary<GasEdgeAbstract, double> edgesFlows;
 				var results = system.solve (untilConditions, 
 				                            out nodesPressures, 
-				                            out edgesMeasures);
+				                            out edgesFlows);
 
 				nodes.ForEach ((nodeKey, originalNode) => {
 					Assert.That (nodesPressures.ContainsKey (originalNode), Is.True);
@@ -68,7 +68,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				);
 
 				edges.ForEach ((edgeKey, originalEdge) => {
-					Assert.That (edgesMeasures.ContainsKey (originalEdge), Is.True);
+					Assert.That (edgesFlows.ContainsKey (originalEdge), Is.True);
 				}
 				);
 

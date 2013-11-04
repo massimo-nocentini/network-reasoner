@@ -21,9 +21,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var ctorFunction = delayedNodesConstruction [nodeSpecification.Identifier];
 
+				var supplyValue = parentParser.parseDoubleCultureInvariant (
+					nodeSpecification.SplittedSpecification [3]).Value;
+				var loadValue = parentParser.parseDoubleCultureInvariant (
+					nodeSpecification.SplittedSpecification [2]).Value;
+
 				var value = nodeSpecification.Type == NodeType.WithSupplyGadget ?
-					Double.Parse (nodeSpecification.SplittedSpecification [3]) :
-						Double.Parse (nodeSpecification.SplittedSpecification [2]);
+					supplyValue : loadValue;
 
 				var valueHolder = new ValueHolderCarryInfo<Double> ();
 				valueHolder.Value = value;

@@ -54,6 +54,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				aNode => aNode.Identifier.Equals (identifier));
 		}
 
+		public EdgeForNetwonRaphsonSystem findEdgeByIdentifier (
+			String identifier)
+		{
+			return this.ComputedBy.Edges.Find (
+				anEdge => anEdge.Identifier.Equals (identifier));
+		}
+
 		public EdgeForNetwonRaphsonSystem findEdgeByStartEndNodes (
 			NodeForNetwonRaphsonSystem startNode, 
 			NodeForNetwonRaphsonSystem endNode)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.IO;
 using it.unifi.dsi.stlab.utilities.value_holders;
+using System.Globalization;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
@@ -29,13 +30,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				aSpecAssembler.assemble (
 					delayedNodesConstruction, 
 					nodesSpecificationLines,
-					this
-			);
+					this);
 
 			return systemRunner;
 		}
 
-		protected virtual Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> parseNodeDelayedConstruction (
+		protected virtual Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> 
+			parseNodeDelayedConstruction (
 				out List<NodeSpecificationLine> nodesSpecificationLinesOut)
 		{
 			Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> delayConstructedNodes = 
@@ -116,7 +117,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				new Dictionary<string, GasEdgeAbstract> ();
 
 
-			var edgesSpecificationLines = SpecificationLines.Value.FindAll (line => line.StartsWith ("R"));
+			var edgesSpecificationLines = SpecificationLines.Value.FindAll (
+				line => line.StartsWith ("R"));
 
 			edgesSpecificationLines.ForEach (edgeSpecification => {
 
@@ -132,9 +134,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			
 				anEdge = new GasEdgePhysical{
 					Described = anEdge,
-					Diameter = Double.Parse(splittedSpecification[3]),
-					Length = Double.Parse(splittedSpecification[4]),
-					Roughness = Double.Parse(splittedSpecification[5])
+					Diameter = parseDoubleCultureInvariant(splittedSpecification[3]).Value,
+					Length = parseDoubleCultureInvariant(splittedSpecification[4]).Value,
+					Roughness = parseDoubleCultureInvariant(splittedSpecification[5]).Value
 				};
 
 				parsedEdges.Add (edgeIdentifier, anEdge);
@@ -152,28 +154,46 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			string[] splittedSpecification = ambientParametersLine.Split (' ');
 
 			// parametriCalcoloGas.pressioneAtmosferica
-			result.AirPressureInBar = Double.Parse (splittedSpecification [2]) / 1000; 
+			result.AirPressureInBar = parseDoubleCultureInvariant (
+				splittedSpecification [2]).Value / 1000; 
 
 			// parametriCalcoloGas.temperaturaAria
-			result.AirTemperatureInKelvin = Double.Parse (splittedSpecification [5]) + 273.15;
+			result.AirTemperatureInKelvin = parseDoubleCultureInvariant (
+				splittedSpecification [5]).Value + 273.15;
+
 			result.ElementName = "methane";
 
 			// parametriCalcoloGas.temperaturaGas
-			result.ElementTemperatureInKelvin = Double.Parse (splittedSpecification [4]) + 273.15;
+			result.ElementTemperatureInKelvin = parseDoubleCultureInvariant (
+				splittedSpecification [4]).Value + 273.15;
 
 			// parametriCalcoloGas.pesoMolecolareGas
-			result.MolWeight = Double.Parse (splittedSpecification [6]);
+			result.MolWeight = parseDoubleCultureInvariant (
+				splittedSpecification [6]).Value;
+
 			result.RefPressureInBar = 1.01325;
 			result.RefTemperatureInKelvin = 288.15; // da interfacciare
 
 			// parametriCalcoloGas.viscositaGas
-			result.ViscosityInPascalTimesSecond = Double.Parse (splittedSpecification [9]) * 1e-3;
+			result.ViscosityInPascalTimesSecond = parseDoubleCultureInvariant (
+				splittedSpecification [9]).Value * 1e-3;
 
 			return result;
 		}
 
+		internal virtual Nullable<double> parseDoubleCultureInvariant (
+			String doubleAsString)
+		{
+			double value;
+			if (Double.TryParse (doubleAsString, 
+			                     System.Globalization.NumberStyles.Any, 
+			                     CultureInfo.InvariantCulture, 
+			                     out value)) {
+				return value;
+			}
 
-
+			return null;
+		}
 	}
 }
 

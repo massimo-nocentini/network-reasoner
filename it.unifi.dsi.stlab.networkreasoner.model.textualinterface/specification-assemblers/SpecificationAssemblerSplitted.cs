@@ -55,8 +55,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 						// we have to find out where the corresponding extension is.
 						var nodeIndex = columnEnumeration [aNodeLine.Identifier];
 
-						var value = Double.Parse (splittedLine [nodeIndex], 
-						                          CultureInfo.InvariantCulture);
+						var value = parentParser.parseDoubleCultureInvariant (
+							splittedLine [nodeIndex]).Value;
 
 						var valueHolder = new ValueHolderCarryInfo<Double> ();
 						valueHolder.Value = value;
@@ -108,7 +108,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		protected virtual String[] SplitLineOnTabs (String toSplit)
 		{
-			return toSplit.Split (new char[]{'\t'}, StringSplitOptions.RemoveEmptyEntries);
+			return toSplit.Split (
+				new char[]{'\t'}, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 

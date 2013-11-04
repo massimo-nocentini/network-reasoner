@@ -47,7 +47,6 @@
     <Compile Include="NodeForNetwonRaphsonSystemCreation.cs" />
     <Compile Include="NodeForNetwonRaphsonSystemCoefficientVector.cs" />
     <Compile Include="EdgeForNetwonRaphsonSystemCreation.cs" />
-    <Compile Include="NetwonRaphsonSystemLogging.cs" />
     <Compile Include="NetwonRaphsonSystemThreeNodesNetwork.cs" />
     <Compile Include="NetwonRaphsonSystemRingNetwork.cs" />
     <Compile Include="repeat-until-conditions\RepeatUntilConditionMaxIterationsReachedTest.cs" />
@@ -109,6 +108,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="gheonet-textual-networks\five-nodes-network-extension.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="gheonet-textual-networks\five-nodes-network-extension-small.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

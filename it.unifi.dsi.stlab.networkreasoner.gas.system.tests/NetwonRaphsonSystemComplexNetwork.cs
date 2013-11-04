@@ -8,6 +8,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using System.Collections.Generic;
 using System.IO;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -15,6 +16,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 	public class NetwonRaphsonSystemComplexNetwork
 	{
 		GasNetwork aGasNetwork{ get; set; }
+
+		const string IdentifierNodeA = "nodeA";
+		const string IdentifierNodeB = "nodeB";
+		const string IdentifierNodeC = "nodeC";
+		const string IdentifierNodeD = "nodeD";
+		const string IdentifierNodeE = "nodeE";
+		const string IdentifierNodeF = "nodeF";
+		const string IdentifierNodeG = "nodeG";
+		const string IdentifierNodeH = "nodeH";
+		const string IdentifierNodeI = "nodeI";
+		const String IdentifierEdgeAB = "eAB";
+		const String IdentifierEdgeBC = "eBC";
+		const String IdentifierEdgeCD = "eCD";
+		const String IdentifierEdgeAE = "eAE";
+		const String IdentifierEdgeAF = "eAF";
+		const String IdentifierEdgeBF = "eBF";
+		const String IdentifierEdgeBG = "eBG";
+		const String IdentifierEdgeCG = "eCG";
+		const String IdentifierEdgeEF = "eEF";
+		const String IdentifierEdgeEH = "eEH";
+		const String IdentifierEdgeGI = "eGI";
 
 		[SetUp()]
 		public void SetupNetwork ()
@@ -34,6 +56,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeAB = makeEdge (
 				nodeAwithSupplyGadget,
 				nodeBpassive,
+				IdentifierEdgeAB,
 				1000,
 				55,
 				100);
@@ -41,6 +64,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeBC = makeEdge (
 				nodeBpassive,
 				nodeCpassive,
+				IdentifierEdgeBC,
 				2000,
 				55,
 				150);
@@ -48,6 +72,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeCD = makeEdge (
 				nodeCpassive,
 				nodeDwithLoadGadget,
+				IdentifierEdgeCD,
 				500,
 				55,
 				80);
@@ -55,6 +80,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeAE = makeEdge (
 				nodeAwithSupplyGadget,
 				nodeEpassive,
+				IdentifierEdgeAE,
 				1000,
 				55,
 				100);
@@ -62,6 +88,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeAF = makeEdge (
 				nodeAwithSupplyGadget,
 				nodeFwithLoadGadger,
+				IdentifierEdgeAF,
 				1500,
 				55,
 				100);
@@ -69,6 +96,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeBF = makeEdge (
 				nodeBpassive,
 				nodeFwithLoadGadger,
+				IdentifierEdgeBF,
 				1000,
 				55,
 				100);
@@ -76,6 +104,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeBG = makeEdge (
 				nodeBpassive,
 				nodeGwithSupplyGadget,
+				IdentifierEdgeBG,
 				1500,
 				55,
 				100);
@@ -83,6 +112,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeCG = makeEdge (
 				nodeCpassive,
 				nodeGwithSupplyGadget,
+				IdentifierEdgeCG,
 				500,
 				55,
 				100);
@@ -90,6 +120,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeEF = makeEdge (
 				nodeEpassive,
 				nodeFwithLoadGadger,
+				IdentifierEdgeEF,
 				1000,
 				55,
 				50);
@@ -97,6 +128,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeEH = makeEdge (
 				nodeEpassive,
 				nodeHwithLoadGadget,
+				IdentifierEdgeEH,
 				500,
 				55,
 				80);
@@ -104,32 +136,33 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasEdgeAbstract edgeGI = makeEdge (
 				nodeGwithSupplyGadget,
 				nodeIwithLoadGadger,
+				IdentifierEdgeGI,
 				500,
 				55,
 				80);
 
-			this.aGasNetwork.Nodes.Add ("nodeA", nodeAwithSupplyGadget);
-			this.aGasNetwork.Nodes.Add ("nodeB", nodeBpassive);
-			this.aGasNetwork.Nodes.Add ("nodeC", nodeCpassive);
-			this.aGasNetwork.Nodes.Add ("nodeD", nodeDwithLoadGadget);
-			this.aGasNetwork.Nodes.Add ("nodeE", nodeEpassive);
-			this.aGasNetwork.Nodes.Add ("nodeF", nodeFwithLoadGadger);
-			this.aGasNetwork.Nodes.Add ("nodeG", nodeGwithSupplyGadget);
-			this.aGasNetwork.Nodes.Add ("nodeH", nodeHwithLoadGadget);
-			this.aGasNetwork.Nodes.Add ("nodeI", nodeIwithLoadGadger);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeA, nodeAwithSupplyGadget);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeB, nodeBpassive);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeC, nodeCpassive);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeD, nodeDwithLoadGadget);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeE, nodeEpassive);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeF, nodeFwithLoadGadger);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeG, nodeGwithSupplyGadget);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeH, nodeHwithLoadGadget);
+			this.aGasNetwork.Nodes.Add (IdentifierNodeI, nodeIwithLoadGadger);
 
 
-			this.aGasNetwork.Edges.Add ("edgeAB", edgeAB);
-			this.aGasNetwork.Edges.Add ("edgeAE", edgeAE);
-			this.aGasNetwork.Edges.Add ("edgeAF", edgeAF);
-			this.aGasNetwork.Edges.Add ("edgeBC", edgeBC);
-			this.aGasNetwork.Edges.Add ("edgeBF", edgeBF);
-			this.aGasNetwork.Edges.Add ("edgeBG", edgeBG);
-			this.aGasNetwork.Edges.Add ("edgeCD", edgeCD);
-			this.aGasNetwork.Edges.Add ("edgeCG", edgeCG);
-			this.aGasNetwork.Edges.Add ("edgeEF", edgeEF);
-			this.aGasNetwork.Edges.Add ("edgeEH", edgeEH);
-			this.aGasNetwork.Edges.Add ("edgeGI", edgeGI);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeAB, edgeAB);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeAE, edgeAE);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeAF, edgeAF);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeBC, edgeBC);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeBF, edgeBF);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeBG, edgeBG);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeCD, edgeCD);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeCG, edgeCG);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeEF, edgeEF);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeEH, edgeEH);
+			this.aGasNetwork.Edges.Add (IdentifierEdgeGI, edgeGI);
 		}
 
 		GasNodeAbstract makeNodeA ()
@@ -137,7 +170,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node A with supply gadget",
 				Height = 0,
-				Identifier = "nA"
+				Identifier = IdentifierNodeA
 			};
 
 			GasNodeGadget supplyGadget = new GasNodeGadgetSupply{
@@ -155,7 +188,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node B with load gadget",
 				Height = 50,
-				Identifier = "nB"
+				Identifier = IdentifierNodeB
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -173,7 +206,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node C with supply gadget",
 				Height = 500,
-				Identifier = "nC"
+				Identifier = IdentifierNodeC
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -191,7 +224,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node D with supply gadget",
 				Height = 500,
-				Identifier = "nD"
+				Identifier = IdentifierNodeD
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -209,7 +242,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node E with supply gadget",
 				Height = 0,
-				Identifier = "nE"
+				Identifier = IdentifierNodeE
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -227,7 +260,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node F with supply gadget",
 				Height = 0,
-				Identifier = "nF"
+				Identifier = IdentifierNodeF
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -245,7 +278,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node G with supply gadget",
 				Height = 200,
-				Identifier = "nG"
+				Identifier = IdentifierNodeG
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetSupply{
@@ -263,7 +296,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node H with supply gadget",
 				Height = 100,
-				Identifier = "nH"
+				Identifier = IdentifierNodeH
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -281,7 +314,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			GasNodeAbstract supplyNode = new GasNodeTopological{
 				Comment = "node I with supply gadget",
 				Height = 200,
-				Identifier = "nI"
+				Identifier = IdentifierNodeI
 			};
 
 			GasNodeGadget gadget = new GasNodeGadgetLoad{
@@ -297,13 +330,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		GasEdgeAbstract makeEdge (
 			GasNodeAbstract aStartNode, 
 			GasNodeAbstract anEndNode,
+			string identifier,
 			long length,
 			double roughness,
 			double diameter)
 		{
 			GasEdgeAbstract anEdgeAB = new GasEdgeTopological{
 				StartNode = aStartNode,
-				EndNode = anEndNode
+				EndNode = anEndNode,
+				Identifier = identifier
 			};
 
 			return new GasEdgePhysical{
@@ -353,7 +388,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			this.aGasNetwork.AmbientParameters = ambientParameters;
 			system.initializeWith (this.aGasNetwork);
 
-			var resultsAfterOneMutation = system.repeatMutateUntil (
+			var results = system.repeatMutateUntil (
 				new List<UntilConditionAbstract>{
 				new UntilConditionAdimensionalRatioPrecisionReached{
 					Precision = 75e-6
@@ -362,14 +397,61 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			);
 
 			var relativeUnknowns = system.makeUnknownsDimensional (
-				resultsAfterOneMutation.Unknowns);
+				results.Unknowns);
 
 
-			var node = resultsAfterOneMutation.findNodeByIdentifier (
-				"<dummy identifier>");
+			assertsOnNodesPressures (results, relativeUnknowns);
 
-			Assert.That (relativeUnknowns.valueAt (node), 
-			             Is.EqualTo (32.34).Within (1e-5));
+			assertsOnEdgesFlows (results);
+		}
+
+		void assertsOnNodesPressures (OneStepMutationResults results, 
+		                Vector<NodeForNetwonRaphsonSystem> relativeUnknowns)
+		{
+			var nodeA = results.findNodeByIdentifier (IdentifierNodeA);
+			var nodeB = results.findNodeByIdentifier (IdentifierNodeB);
+			var nodeC = results.findNodeByIdentifier (IdentifierNodeC);
+			var nodeD = results.findNodeByIdentifier (IdentifierNodeD);
+			var nodeE = results.findNodeByIdentifier (IdentifierNodeE);
+			var nodeF = results.findNodeByIdentifier (IdentifierNodeF);
+			var nodeG = results.findNodeByIdentifier (IdentifierNodeG);
+			var nodeH = results.findNodeByIdentifier (IdentifierNodeH);
+			var nodeI = results.findNodeByIdentifier (IdentifierNodeI);
+			Assert.That (relativeUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeD), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeE), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeF), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeG), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeH), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeI), Is.EqualTo (32.34).Within (1e-5));
+		}
+
+		void assertsOnEdgesFlows (OneStepMutationResults results)
+		{
+			var edgeAB = results.findEdgeByIdentifier (IdentifierEdgeAB);
+			var edgeAE = results.findEdgeByIdentifier (IdentifierEdgeAE);
+			var edgeAF = results.findEdgeByIdentifier (IdentifierEdgeAF);
+			var edgeBC = results.findEdgeByIdentifier (IdentifierEdgeBC);
+			var edgeBF = results.findEdgeByIdentifier (IdentifierEdgeBF);
+			var edgeBG = results.findEdgeByIdentifier (IdentifierEdgeBG);
+			var edgeCD = results.findEdgeByIdentifier (IdentifierEdgeCD);
+			var edgeCG = results.findEdgeByIdentifier (IdentifierEdgeCG);
+			var edgeEF = results.findEdgeByIdentifier (IdentifierEdgeEF);
+			var edgeEH = results.findEdgeByIdentifier (IdentifierEdgeEH);
+			var edgeGI = results.findEdgeByIdentifier (IdentifierEdgeGI);
+			Assert.That (results.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeAE), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeAF), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeBC), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeBF), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeBG), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeCD), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeCG), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeEF), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeEH), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeGI), Is.EqualTo (32.34).Within (1e-5));
 		}
 	}
 }

@@ -76,6 +76,5 @@
     <Folder Include="specification-assemblers\" />
     <Folder Include="system-runners\" />
     <Folder Include="runnable-systems\" />
-    <Folder Include="specification-assemblers\load-pressure-value-holders\" />
   </ItemGroup>
 </Project>
