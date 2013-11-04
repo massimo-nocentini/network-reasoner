@@ -396,18 +396,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			);
 
-			var relativeUnknowns = system.makeUnknownsDimensional (
-				results.Unknowns);
-
-
-			assertsOnNodesPressures (results, relativeUnknowns);
+			assertsOnNodesPressures (results);
 
 			assertsOnEdgesFlows (results);
 		}
 
-		void assertsOnNodesPressures (OneStepMutationResults results, 
-		                Vector<NodeForNetwonRaphsonSystem> relativeUnknowns)
+		void assertsOnNodesPressures (OneStepMutationResults results)
 		{
+			Vector<NodeForNetwonRaphsonSystem> relativeUnknowns = 
+				results.ComputedBy.makeUnknownsDimensional (results.Unknowns);
+
 			var nodeA = results.findNodeByIdentifier (IdentifierNodeA);
 			var nodeB = results.findNodeByIdentifier (IdentifierNodeB);
 			var nodeC = results.findNodeByIdentifier (IdentifierNodeC);

@@ -7,6 +7,7 @@ using System.IO;
 using log4net.Config;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
+using System.Collections.Generic;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -208,7 +209,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = gRF,
-				EndNode = node1
+				EndNode = node1,
+				Identifier = "edge4"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -226,7 +228,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = gRF,
-				EndNode = node4
+				EndNode = node4,
+				Identifier = "edge5"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -244,7 +247,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node1,
-				EndNode = nodeA
+				EndNode = nodeA,
+				Identifier = "edge6"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -262,7 +266,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node1,
-				EndNode = node2
+				EndNode = node2,
+				Identifier = "edge7"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -280,7 +285,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node2,
-				EndNode = nodeB
+				EndNode = nodeB,
+				Identifier = "edge8"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -298,7 +304,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node2,
-				EndNode = node3
+				EndNode = node3,
+				Identifier = "edge9"
+
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -321,7 +329,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node4,
-				EndNode = nodeC
+				EndNode = nodeC,
+				Identifier = "edge10"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -339,7 +348,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node3,
-				EndNode = node4
+				EndNode = node4,
+				Identifier = "edge11"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -357,7 +367,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		{
 			GasEdgeAbstract edgeTopological = new GasEdgeTopological{
 				StartNode = node3,
-				EndNode = nodeD
+				EndNode = nodeD,
+				Identifier = "edge12"
 			};
 
 			GasEdgeAbstract edgePhysical = new GasEdgePhysical{
@@ -388,7 +399,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		}
 
 		[Test()]
-		public void TestCase ()
+		public void test_ring_network_using_complete_solving_system ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
 
@@ -396,19 +407,72 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				"log4net-configurations/for-ring-network.xml")
 			);
 
+			var ambientParameters = valid_initial_ambient_parameters ();
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = valid_initial_ambient_parameters ()
+				AmbientParameters = ambientParameters
 			};
 
 			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
 				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
+				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
 					Log = log
 				}
 			};
 
+			this.aGasNetwork.AmbientParameters = ambientParameters;
 			system.initializeWith (this.aGasNetwork);
-			var resultsAfterOneMutation = system.mutateWithoutIterationNumber ();
+
+			var results = system.repeatMutateUntil (
+				new List<UntilConditionAbstract>{
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = 75e-6
+				}
+			}
+			);
+
+			// here we do not check for correcting nodes with load gadgets that occurs in
+			// a final negative pressure.
+
+			var relativeUnknowns = results.ComputedBy.
+					makeUnknownsDimensional (results.Unknowns);
+
+			var node1 = results.findNodeByIdentifier ("N1");
+			var node2 = results.findNodeByIdentifier ("N2");
+			var node3 = results.findNodeByIdentifier ("N3");
+			var node4 = results.findNodeByIdentifier ("N4");
+			var nodeGRF = results.findNodeByIdentifier ("GRF");
+			var nodeA = results.findNodeByIdentifier ("NA");
+			var nodeB = results.findNodeByIdentifier ("NB");
+			var nodeC = results.findNodeByIdentifier ("NC");
+			var nodeD = results.findNodeByIdentifier ("ND");
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeGRF), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (nodeD), Is.EqualTo (32.34).Within (1e-5));
+			
+			var edge4 = results.findEdgeByIdentifier ("edge4");
+			var edge5 = results.findEdgeByIdentifier ("edge5");
+			var edge6 = results.findEdgeByIdentifier ("edge6");
+			var edge7 = results.findEdgeByIdentifier ("edge7");
+			var edge8 = results.findEdgeByIdentifier ("edge8");
+			var edge9 = results.findEdgeByIdentifier ("edge9");
+			var edge10 = results.findEdgeByIdentifier ("edge10");
+			var edge11 = results.findEdgeByIdentifier ("edge11");
+			var edge12 = results.findEdgeByIdentifier ("edge12");
+			Assert.That (results.Qvector.valueAt (edge4), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge5), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge6), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge7), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge8), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge9), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge10), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge11), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edge12), Is.EqualTo (32.34).Within (1e-5));		
 		}
 	}
 }
