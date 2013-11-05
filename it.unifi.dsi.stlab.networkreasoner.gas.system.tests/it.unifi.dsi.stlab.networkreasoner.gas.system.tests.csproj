@@ -59,6 +59,9 @@
     <Compile Include="NetwonRaphsonSystemSzoplikNetwork.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="NetwonRaphsonSystemTerranovaStubNetwork.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -125,5 +128,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="gheonet-textual-networks\diameter-conversion-table-for-szoplik-network.txt" />
+    <None Include="gheonet-textual-networks\terranova-stub-network.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net-configurations\terranova-stub-network.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
