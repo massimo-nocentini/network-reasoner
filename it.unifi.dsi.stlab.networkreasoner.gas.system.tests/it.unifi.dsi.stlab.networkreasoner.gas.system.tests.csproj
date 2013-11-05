@@ -124,5 +124,6 @@
     <None Include="log4net-configurations\szoplik-network.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="gheonet-textual-networks\diameter-conversion-table-for-szoplik-network.txt" />
   </ItemGroup>
 </Project>
