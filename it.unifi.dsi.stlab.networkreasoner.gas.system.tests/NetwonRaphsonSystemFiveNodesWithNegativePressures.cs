@@ -77,9 +77,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					nodesSubstitutions,
 					edgeSubstitutions);
 
-				var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
-					makeUnknownsDimensional (resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
-
 				this.onComputationFinished (systemName, resultsAfterFixingNodeWithLoadGadgetPressure);
 
 				// here we perform the necessary tests using the plugged behaviour
@@ -118,18 +115,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var node2 = results.findNodeByIdentifier ("N2");
 			var node3 = results.findNodeByIdentifier ("N3");
 			var node4 = results.findNodeByIdentifier ("N4");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (30.000).Within (1e-3));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (27.792).Within (1e-3));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (25.527).Within (1e-3));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (27.016).Within (1e-3));
 
 			
 			var edgeR1 = results.findEdgeByIdentifier ("R1");
 			var edgeR2 = results.findEdgeByIdentifier ("R2");
 			var edgeR3 = results.findEdgeByIdentifier ("R3");
-			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (200.000).Within (1e-3));
+			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (-100.000).Within (1e-3));
+			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (-100.000).Within (1e-3));
 			
 		}
 

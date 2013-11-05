@@ -430,9 +430,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			);
 
-			// here we do not check for correcting nodes with load gadgets that occurs in
-			// a final negative pressure.
-
 			var relativeUnknowns = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
 
@@ -445,15 +442,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeB = results.findNodeByIdentifier ("NB");
 			var nodeC = results.findNodeByIdentifier ("NC");
 			var nodeD = results.findNodeByIdentifier ("ND");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (nodeGRF), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (nodeD), Is.EqualTo (32.34).Within (1e-5));
+			var precision = 1e-1;
+			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (529.643).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (444.374).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (435.396).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (575.737).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (nodeGRF), Is.EqualTo (699.999).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (nodeA), Is.EqualTo (506.404).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (nodeB), Is.EqualTo (272.014).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (nodeC), Is.EqualTo (505.433).Within (precision));
+			Assert.That (relativeUnknowns.valueAt (nodeD), Is.EqualTo (327.100).Within (precision));
 			
 			var edge4 = results.findEdgeByIdentifier ("edge4");
 			var edge5 = results.findEdgeByIdentifier ("edge5");
@@ -464,15 +462,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var edge10 = results.findEdgeByIdentifier ("edge10");
 			var edge11 = results.findEdgeByIdentifier ("edge11");
 			var edge12 = results.findEdgeByIdentifier ("edge12");
-			Assert.That (results.Qvector.valueAt (edge4), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge5), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge6), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge7), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge8), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge9), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge10), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge11), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edge12), Is.EqualTo (32.34).Within (1e-5));		
+			Assert.That (results.Qvector.valueAt (edge4), Is.EqualTo (400).Within (precision));
+			Assert.That (results.Qvector.valueAt (edge5), Is.EqualTo (350).Within (precision));
+			Assert.That (results.Qvector.valueAt (edge6), Is.EqualTo (200).Within (precision));
+			Assert.That (results.Qvector.valueAt (edge7), Is.EqualTo (200).Within (precision));
+			Assert.That (results.Qvector.valueAt (edge8), Is.EqualTo (200).Within (precision));
+			Assert.That (results.Qvector.containsKey (edge9), Is.False);
+			Assert.That (results.Qvector.valueAt (edge10), Is.EqualTo (150).Within (precision));
+			Assert.That (results.Qvector.valueAt (edge11), Is.EqualTo (-200).Within (precision));
+			Assert.That (results.Qvector.valueAt (edge12), Is.EqualTo (200).Within (precision));		
 		}
 	}
 }

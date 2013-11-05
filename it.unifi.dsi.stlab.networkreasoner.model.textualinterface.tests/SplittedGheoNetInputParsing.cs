@@ -181,8 +181,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (16, ambientParameters.MolWeight);
 				Assert.AreEqual (1.01325, ambientParameters.RefPressureInBar);
 				Assert.AreEqual (288.15, ambientParameters.RefTemperatureInKelvin);
-				Assert.IsTrue (1.08e-5 < ambientParameters.ViscosityInPascalTimesSecond);			
-				Assert.IsTrue (1.08e-5 + 1e-10 > ambientParameters.ViscosityInPascalTimesSecond);			
+				Assert.That (ambientParameters.ViscosityInPascalTimesSecond, 
+				             Is.EqualTo (1.08e-5).Within (.0001));
 			}
 			#endregion
 		}
