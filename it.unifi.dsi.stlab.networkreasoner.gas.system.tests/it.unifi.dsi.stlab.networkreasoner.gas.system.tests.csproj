@@ -56,6 +56,9 @@
     <Compile Include="NetwonRaphsonSystemFiveNodesWithNegativePressuresSolveComplete.cs" />
     <Compile Include="NetwonRaphsonSystemThreeNodesNetworkRepeatUntilConditions.cs" />
     <Compile Include="NetwonRaphsonSystemThreeNodesNetworkLoadNodesWithNegativePressures.cs" />
+    <Compile Include="NetwonRaphsonSystemSzoplikNetwork.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -114,6 +117,12 @@
     </None>
     <None Include="gheonet-textual-networks\five-nodes-network-extension-small.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="gheonet-textual-networks\szoplik-network.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net-configurations\szoplik-network.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>

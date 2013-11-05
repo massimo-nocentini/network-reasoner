@@ -35,6 +35,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return systemRunner;
 		}
 
+		protected virtual List<string> fetchRegion (string regionIdentifier)
+		{
+			int startNodesRegionIndex = SpecificationLines.Value.IndexOf (
+				string.Format ("#{0}", regionIdentifier));
+
+			int endNodesRegionIndex = SpecificationLines.Value.IndexOf (
+				string.Format ("#end{0}", regionIdentifier));
+
+			var region = SpecificationLines.Value.GetRange (
+				startNodesRegionIndex + 1, endNodesRegionIndex - startNodesRegionIndex - 1);
+
+			return region;
+		}
+
 		protected virtual Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> 
 			parseNodeDelayedConstruction (
 				out List<NodeSpecificationLine> nodesSpecificationLinesOut)
@@ -44,8 +58,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			var nodesSpecificationLines = new List<NodeSpecificationLine> ();
 
-			var rawNodesSpecificationLines = SpecificationLines.Value.FindAll (
-				line => line.StartsWith ("N"));
+			var rawNodesSpecificationLines = fetchRegion ("nodes");
 
 			rawNodesSpecificationLines.ForEach (nodeSpecification => {
 
@@ -116,15 +129,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			Dictionary<string, GasEdgeAbstract> parsedEdges = 
 				new Dictionary<string, GasEdgeAbstract> ();
 
-
-			var edgesSpecificationLines = SpecificationLines.Value.FindAll (
-				line => line.StartsWith ("R"));
+			var edgesSpecificationLines = fetchRegion ("edges");
 
 			edgesSpecificationLines.ForEach (edgeSpecification => {
 
 				var splittedSpecification = edgeSpecification.Split (' ');
 
 				var edgeIdentifier = splittedSpecification [0];
+
+				if (nodes.ContainsKey (splittedSpecification [1]) == false) {
+					int a = 4;
+				} else if (nodes.ContainsKey (splittedSpecification [2]) == false) {
+					int a = 4;
+				}
+
 
 				GasEdgeAbstract anEdge = new GasEdgeTopological{
 					Identifier = edgeIdentifier,
