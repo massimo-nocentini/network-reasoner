@@ -53,10 +53,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		#region initialization
 
-		void initializeNodes (
-			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode,
+		protected virtual void initializeNodes (
+			out Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode,
 			GasNetwork network)
 		{
+			var originalNodesMapping = new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
+
 			this.UnknownVector = new DimensionalObjectWrapperWithoutDimension<
 				Vector<NodeForNetwonRaphsonSystem>> ();
 			this.UnknownVector.WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ();
@@ -68,7 +70,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
 				newtonRaphsonNode.initializeWith (aNode);
 
-				newtonRaphsonNodesByOriginalNode.Add (aNode, newtonRaphsonNode);
+				originalNodesMapping.Add (aNode, newtonRaphsonNode);
 
 				this.UnknownVector.WrappedObject.atPut (newtonRaphsonNode, 
 				                                        initialUnknownGuessVector [aNode]);
@@ -78,7 +80,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			)
 			);
 
-			this.Nodes = newtonRaphsonNodesByOriginalNode.Values.ToList ();
+			newtonRaphsonNodesByOriginalNode = originalNodesMapping;
+			this.Nodes = originalNodesMapping.Values.ToList ();
 			this.NodesEnumeration = this.Nodes.enumerate ();
 		}
 
@@ -113,7 +116,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return initialUnknowns;
 		}
 
-		void initializeEdges (
+		protected virtual void initializeEdges (
 			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode,
 			GasNetwork network)
 		{
@@ -140,10 +143,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void initializeWith (GasNetwork network)
 		{
 			// TODO: maybe this dictionary can be useful in the rest of computation?
-			var newtonRaphsonNodesByOriginalNode = 
-				new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
-
-			initializeNodes (newtonRaphsonNodesByOriginalNode, network);
+			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode;
+		
+			initializeNodes (out newtonRaphsonNodesByOriginalNode, network);
 
 			initializeEdges (newtonRaphsonNodesByOriginalNode, network);
 
