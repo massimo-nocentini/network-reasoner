@@ -60,8 +60,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var originalNodesMapping = new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
 
 			this.UnknownVector = new DimensionalObjectWrapperWithoutDimension<
-				Vector<NodeForNetwonRaphsonSystem>> ();
-			this.UnknownVector.WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ();
+				Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ()};
 
 			var initialUnknownGuessVector = this.makeInitialGuessForUnknowns (
 				new UnknownInitializationSimplyRandomized (), network);
@@ -140,7 +140,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				};
 				var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
 				this.Edges.Add (edgeForNetwonRaphsonSystem);
-				// here we get the initial F values guess for the current node
 				this.Fvector.atPut (edgeForNetwonRaphsonSystem, initialFvalueGuessVector [anEdge]);
 				this.OriginalEdgesByComputationEdges.Add (edgeForNetwonRaphsonSystem, anEdge);
 			}
