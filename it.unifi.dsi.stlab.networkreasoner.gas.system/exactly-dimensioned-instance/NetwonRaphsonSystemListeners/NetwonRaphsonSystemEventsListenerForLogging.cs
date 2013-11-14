@@ -15,7 +15,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-		Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration {
+		Dictionary<NodeForNetwonRaphsonSystem, int> NodesEnumeration {
 			get;
 			set;
 		}
@@ -35,7 +35,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void onInitializationCompleted (
 			System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, 
 			System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges,
-			Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
+			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration)
 		{
 			this.NodesEnumeration = nodesEnumeration;
 			this.Edges = edges;
@@ -44,7 +44,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Log.Info ("Start of a new mutation step");
 
 			this.Log.Info ("The following nodes enumeration is used throughout the system computation:");
-			foreach (var pair in this.NodesEnumeration.Value) {
+			foreach (var pair in this.NodesEnumeration) {
 				this.Log.InfoFormat ("Node: {0} -> Index: {1}", 
 				                     pair.Key.Identifier, pair.Value);
 			}
@@ -76,7 +76,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep)
 		{
 			unknownVectorAtPreviousStep.forComputationAmong (
-				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
+				this.NodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"Relative Unknowns at previous step: {0}", representation)
 			);
@@ -99,13 +99,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep)
 		{
 			AmatrixAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).stringRepresentation (
+				this.NodesEnumeration, 
+				this.NodesEnumeration).stringRepresentation (
 				representation => this.Log.InfoFormat ("A matrix at current step after supply node fix it:\n{0}", representation));
 
 			JacobianMatrixAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).stringRepresentation (
+				this.NodesEnumeration, 
+				this.NodesEnumeration).stringRepresentation (
 				representation => this.Log.InfoFormat ("Jacobian matrix at current step after supply node fix it:\n{0}", representation));
 		}
 
@@ -113,7 +113,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep)
 		{
 			coefficientsVectorAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
+				this.NodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Coefficients vector at current step: {0}", representation)
@@ -123,7 +123,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void onNegativeUnknownsFixed (Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
 		{
 			unknownVectorAtCurrentStep.forComputationAmong (
-				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
+				this.NodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"Adimensional unknowns vector at current step after fix negative entries: {0}", representation)
 			);
@@ -141,8 +141,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> Amatrix)
 		{
 			Amatrix.forComputationAmong (
-				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).
+				this.NodesEnumeration, 
+				this.NodesEnumeration).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"A matrix at current step before supply node fix it:\n{0}", representation)
@@ -154,8 +154,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrix)
 		{
 			JacobianMatrix.forComputationAmong (
-				this.NodesEnumeration.Value, 
-				this.NodesEnumeration.Value).
+				this.NodesEnumeration, 
+				this.NodesEnumeration).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Jacobian matrix at current step before supply node fix it:\n{0}", representation)
@@ -176,7 +176,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void onUnknownVectorAtCurrentStepComputed (Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
 		{
-			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).
+			unknownVectorAtCurrentStep.forComputationAmong (this.NodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).
 				stringRepresentation (
 					representation => this.Log.InfoFormat (
 					"Adimensional unknowns vector at current step before fix negative entries: {0}", representation)

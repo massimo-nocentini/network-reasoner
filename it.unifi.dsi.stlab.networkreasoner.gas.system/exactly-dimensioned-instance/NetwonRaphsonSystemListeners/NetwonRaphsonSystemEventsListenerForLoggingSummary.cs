@@ -10,7 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 	public class NetwonRaphsonSystemEventsListenerForLoggingSummary :
 		NetwonRaphsonSystemEventsListener
 	{
-		Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration {
+		Dictionary<NodeForNetwonRaphsonSystem, int> NodesEnumeration {
 			get;
 			set;
 		}
@@ -42,7 +42,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void onMutateStepCompleted (OneStepMutationResults result)
 		{
 			result.Unknowns.WrappedObject.forComputationAmong (
-				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
+				this.NodesEnumeration, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"{0}", representation.Substring (representation.IndexOf ('\n') + 1)
 			)
@@ -67,7 +67,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void onInitializationCompleted (
 			System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, 
 			System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, 
-			Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
+			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration)
 		{
 			this.NodesEnumeration = nodesEnumeration;
 			this.Edges = edges;

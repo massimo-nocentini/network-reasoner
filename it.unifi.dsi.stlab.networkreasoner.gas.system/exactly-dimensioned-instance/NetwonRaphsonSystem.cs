@@ -31,9 +31,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public NetwonRaphsonSystemEventsListener EventsListener{ get; set; }
 
-		public  Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> NodesEnumeration { get; set; }
+		public Dictionary<NodeForNetwonRaphsonSystem, int> NodesEnumeration { get; set; }
 
-		public  Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> EdgesEnumeration { get; set; }
+		public Dictionary<EdgeForNetwonRaphsonSystem, int> EdgesEnumeration { get; set; }
 
 		public Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> OriginalNodesByComputationNodes { get; set; }
 
@@ -41,12 +41,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public NetwonRaphsonSystem ()
 		{
-			NodesEnumeration = new Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> (
-				() => this.Nodes.enumerate ());
-
-			EdgesEnumeration = new Lazy<Dictionary<EdgeForNetwonRaphsonSystem, int>> (
-				() => this.Edges.enumerate ());
-
 			OriginalNodesByComputationNodes =
 				new Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> ();
 
@@ -66,8 +60,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<NodeForNetwonRaphsonSystem>> ();
 			this.UnknownVector.WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ();
 
-			this.Nodes = new List<NodeForNetwonRaphsonSystem> ();
-			
 			var initialUnknownGuessVector = this.makeInitialGuessForUnknowns (
 				new UnknownInitializationSimplyRandomized (), network);
 
@@ -86,6 +78,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			);
 
 			this.Nodes = newtonRaphsonNodesByOriginalNode.Values.ToList ();
+			this.NodesEnumeration = this.Nodes.enumerate ();
 		}
 
 		protected virtual Dictionary<GasEdgeAbstract, double> makeInitialGuessForFvector (
@@ -123,6 +116,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode,
 			GasNetwork network)
 		{
+			this.Edges = new List<EdgeForNetwonRaphsonSystem> ();
 			this.Fvector = new Vector<EdgeForNetwonRaphsonSystem> ();
 			var initialFvalueGuessVector = this.makeInitialGuessForFvector (network);
 
@@ -139,6 +133,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			)
 			);
 
+			this.EdgesEnumeration = this.Edges.enumerate ();
 		}
 
 		public void initializeWith (GasNetwork network)
@@ -526,8 +521,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
 				jacobianMatrixAtCurrentStep.SolveWithGivenEnumerations (
-					this.NodesEnumeration.Value,
-					this.NodesEnumeration.Value,
+					this.NodesEnumeration,
+					this.NodesEnumeration,
 					coefficientVectorForJacobianSystemFactorization);
 
 			unknownVectorFromJacobianSystemAtCurrentStep.updateEach (
@@ -584,7 +579,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				fromAdimensionalUnknownsToDimensionalUnknowns);
 
 			this.EventsListener.onUnknownWithDimensionReverted (
-				this.NodesEnumeration.Value, result.WrappedObject);
+				this.NodesEnumeration, result.WrappedObject);
 
 			return result;
 		}

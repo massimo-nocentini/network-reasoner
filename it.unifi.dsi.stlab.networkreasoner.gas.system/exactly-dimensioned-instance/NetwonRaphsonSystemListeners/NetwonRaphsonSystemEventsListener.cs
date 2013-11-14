@@ -8,7 +8,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 	{
 		void onInitializationCompleted (List<NodeForNetwonRaphsonSystem> nodes, 
 		                                List<EdgeForNetwonRaphsonSystem> edges, 
-		                                Lazy<Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration);
+		                                Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration);
 
 		void onRepeatMutateUntilStarted ();
 

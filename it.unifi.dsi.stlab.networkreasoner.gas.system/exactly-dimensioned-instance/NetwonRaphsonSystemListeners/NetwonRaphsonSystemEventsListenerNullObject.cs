@@ -10,7 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 		}
 		#region NetwonRaphsonSystemEventsListener implementation
-		public void onInitializationCompleted (System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, Lazy<System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int>> nodesEnumeration)
+		public void onInitializationCompleted (System.Collections.Generic.List<NodeForNetwonRaphsonSystem> nodes, System.Collections.Generic.List<EdgeForNetwonRaphsonSystem> edges, System.Collections.Generic.Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration)
 		{
 		
 		}
