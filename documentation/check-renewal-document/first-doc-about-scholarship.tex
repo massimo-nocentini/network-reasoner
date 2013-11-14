@@ -1,0 +1,210 @@
+\documentclass[twoside,openright,titlepage,fleqn,
+headinclude,11pt,a4paper,BCOR5mm,footinclude ]{scrbook}
+%--------------------------------------------------------------
+        \newcommand{\myTitle}{Analisi di reti metaboliche basata su
+          propriet\`a di connessione\xspace}
+% use the right myDegree option
+\newcommand{\myDegree}{Corso di Laurea in Informatica\xspace}
+%\newcommand{\myDegree}{
+	%Corso di Laurea Specialistica in Scienze e Tecnologie 
+	%dell'Informazione\xspace}
+\newcommand{\myName}{Massimo Nocentini\xspace}
+\newcommand{\myProf}{Pierluigi Crescenzi\xspace}
+\newcommand{\myOtherProf}{Nome Cognome\xspace}
+\newcommand{\mySupervisor}{Nome Cognome\xspace}
+\newcommand{\myFaculty}{
+	Facolt\`a di Scienze Matematiche, Fisiche e Naturali\xspace}
+\newcommand{\myDepartment}{
+	Dipartimento di Sistemi e Informatica\xspace}
+\newcommand{\myUni}{\protect{
+	Universit\`a degli Studi di Firenze}\xspace}
+\newcommand{\myLocation}{Firenze\xspace}
+\newcommand{\myTime}{Anno Accademico 2010-2011\xspace}
+\newcommand{\myVersion}{Version 0.1\xspace}
+%--------------------------------------------------------------
+\usepackage[latin1]{inputenc} 
+\usepackage[T1]{fontenc} 
+\usepackage[square,numbers]{natbib} 
+\usepackage[fleqn]{amsmath}  
+\usepackage[italian]{babel}
+%--------------------------------------------------------------
+\usepackage{dia-classicthesis-ldpkg} 
+%--------------------------------------------------------------
+% Options for classicthesis.sty:
+% tocaligned eulerchapternumbers drafting linedheaders 
+% listsseparated subfig nochapters beramono eulermath parts 
+% minionpro pdfspacing
+\usepackage[eulerchapternumbers,subfig,beramono,eulermath,
+	parts]{classicthesis}
+%--------------------------------------------------------------
+\newlength{\abcd} % for ab..z string length calculation
+% how all the floats will be aligned
+\newcommand{\myfloatalign}{\centering} 
+\setlength{\extrarowheight}{3pt} % increase table row height
+\captionsetup{format=hang,font=small}
+%--------------------------------------------------------------
+% Layout setting
+%--------------------------------------------------------------
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	ignoremp,
+	bindingoffset = 1cm, 
+	textwidth     = 13.5cm,
+	textheight    = 21.5cm,
+	lmargin       = 3.5cm, % left margin
+	tmargin       = 4cm    % top margin 
+}
+%--------------------------------------------------------------
+\usepackage{listings}
+\usepackage{hyperref}
+% My Theorem
+\newtheorem{oss}{Observation}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+
+\newtheorem{lem}[thm]{Lemma}
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+% questo comando e' relativo alle correzioni che puo
+% apportare il prof se lo desidera.
+\newcommand{\prof}[1]{\boldsymbol{#1}}
+
+% instead of boldsymbol I can use the arrow above the letter with
+%\newcommand{\vect}[1]{\vec{#1}}
+
+% page settings
+% \pagestyle{headings}
+%--------------------------------------------------------------
+\begin{document}
+\frenchspacing
+\raggedbottom
+\pagenumbering{roman}
+\pagestyle{plain}
+%--------------------------------------------------------------
+% Frontmatter
+%--------------------------------------------------------------
+%\include{titlePage}
+\pagestyle{scrheadings}
+%--------------------------------------------------------------
+% Mainmatter
+%--------------------------------------------------------------
+\pagenumbering{arabic}
+
+% settings for the lstlisting environment
+\lstset{
+	language = java
+	, numbers = left 
+	, basicstyle=\sffamily%\footnotesize
+	%, frame=single
+	, tabsize=2
+	, captionpos=b
+	, breaklines=true
+	, showspaces=false
+	, showstringspaces=false
+}
+
+\chapter*{First doc about scholarship: ``a'' }
+\begin{description}
+\item[Fellow] Massimo Nocentini, \url{massimo.nocentini@gmail.com}
+\item[Professor] Enrico Vicario, \url{enrico.vicario@unifi.it}
+\end{description}
+
+In this document we describe the state of the project under ``put here the name
+of the founding''. The work is supervised by Prof. Enrico Vicario, the study of
+fluid dynamics equations and optimizations is due to Eng. Fabio Tarani and
+implemented by Doct. Massimo Nocentini using the $C\#$ programming language.
+\\\\
+Problem: write a library that, consuming a fluid dynamics network specification 
+containing topological connections and physical data such as loads and
+setup pressures on nodes, produces for each node the relative pressure and for
+each edge the relative flow.
+\\\\
+In the beginning stage of the project there was a phase of study, performed in
+two distinct branches: $(i)$ study of existing product ``GeoNet'' supplied by
+Terranova Software, $(ii)$ analysis of suitable object-oriented implementation
+for the network concept. These branches joined together with the study of equations
+about fluid dynamics context. Since that point the implementation phase has 
+dominated the others and is currently active despite it is quite stable.
+
+We describe the implementation and proceed step by step, from the architecture
+toward input/output, observing the main points of interest:
+\begin{description}
+\item[architecture] the problem of describing the input network is solved using
+a ``language'' based on the idea of inductive set construction. We provide an
+example regarding the definition of nodes set:
+\begin{itemize}
+	\item a topological node $t$ with identifier $id$ and height $h$ is a node;
+	\item if $n$ is a node then a node $m$ decorating $n$ with a gadget $g$ 
+		(which in turn is defined by induction), say with setup pressure $p$, 
+		 is a node. 
+\end{itemize}
+
+Using this approach to define \emph{every} object of the network under study
+allow us to tackle the problem from a functional point of view. In fact, given a
+network specified using the above schema, it is possible to create dedicated
+sub domains, each relative to an aspect of interest, extracting the
+necessary informations only. For example it
+is possible to generate a domain for the visual representation of the network or
+to generate a domain for the Newton-Raphson algorithm in order to compute
+pressures and flows and so on.
+
+\item[Visitor pattern]
+the process of sub domain creation (aka a function over a recursively defined
+type) is the counterpart of a proof by structural
+induction done in mathematics. This creation process is implemented using the
+\emph{Visitor} design pattern, which has the following pros:
+\begin{itemize}
+	\item allow the implementation of a domain creation to be written in a
+		single class;
+	\item decouple the type's variants from the operations which can be 
+		defined over them, keeping the variants' code clean;
+\end{itemize}
+We've experienced a cons of this approach regarding the possibility of adding a
+new variant, since we have to resort to a downcast to type check our implementation.
+
+\item[input specification] it is possible to specify the input instance using
+two main formalisms:
+\begin{itemize}
+	\item \emph{RDF triples}, this formalism is based on the W3C
+		recommendation for data description in the semantic web. It is a
+		verbose input specification but allow a user friendly way to
+		describe the network;
+	\item \emph{GeoNet format}, this formalism is used by the existing
+		engine and is a ``quick and dirty'' way to define the network,
+		without the overhead of RDF triples notation but less
+		readable.
+\end{itemize}
+
+\item[Newton-Raphson algorithm] we implemented this algorithm to compute
+pressures on nodes and flows on edges by consecutive iterations. 
+Actually we coded a variant which use
+$(i)$ a theoretical idea about smart Jacobi an matrix construction reached by Fabio
+Tarani and $(ii)$ a relaxing factor in order to cut down the number of
+iterations due to oscillation of some variables.
+
+\item[pure $C\#$ library] the entire code base has been implemented using
+\emph{only} $C\#$ code, paying attention to focus on the ``message passing''
+paradigm which is the base for true object orientation. We promote delegation
+over inheritance and don't use ``exotic'' features of $C\#$
+such as coroutines, threads and external process invocation in favor of a 
+minimal core. We divided the solution in many little projects in order to be 
+modular and, possibly, allow reuse in other projects. It is important to note that
+Terranova Software's projects implementation is completely written in $C\#$ and
+currently the GeoNet engine, written in $C++$ instead, is invoked as an external
+process: using our implementation it is possible to have a complete solution running 
+on .NET platform without resorting to foreign calls.
+
+\item[simulations] we've exercised the library against some test networks, some
+of them are simple and are to be considered as ``toy'' networks in order to
+check the consistency of the computation. In the last month Fabio Tarani found a
+network which abstract a real context of a Polish town: running the analysis for
+that network we obtain satisfactory results both for execution time both for the
+correctness of computed pressures and flows. Comparing with GeoNet our
+implementation computes smaller values for pressures.
+\end{description}
+
+
+\end{document}
