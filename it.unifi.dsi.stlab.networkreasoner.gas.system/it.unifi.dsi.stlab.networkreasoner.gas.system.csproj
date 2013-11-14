@@ -55,6 +55,12 @@
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerNullObject.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLoggingSummary.cs" />
     <Compile Include="exactly-dimensioned-instance\AbstractItemForNetwonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapper.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithDimension.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithoutDimension.cs" />
+    <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitialization.cs" />
+    <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />
+    <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationMinMaxSetupPressure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -82,5 +88,6 @@
   <ItemGroup>
     <Folder Include="exactly-dimensioned-instance\repeat-until-condition\" />
     <Folder Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\" />
+    <Folder Include="exactly-dimensioned-instance\objects-with-dimension\" />
   </ItemGroup>
 </Project>

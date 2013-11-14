@@ -162,7 +162,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					ColumnPosition = columnPosition,
 					Identifier = pair.Key.Identifier,
 					QvalueSum = pair.Value,
-					DimensionalPressure = dimensionalUnknowns.valueAt(pair.Key)
+					DimensionalPressure = dimensionalUnknowns.WrappedObject.valueAt(pair.Key)
 				};
 
 				summaryTableItemsForCurrentSystem.Add (columnPosition, summaryNode);

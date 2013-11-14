@@ -177,8 +177,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			);
 
-			var dimensionalUnknowns = system.makeUnknownsDimensional (
+			var dimensionalUnknownsWrapper = system.makeUnknownsDimensional (
 				results.Unknowns);
+
+			var dimensionalUnknowns = dimensionalUnknownsWrapper.WrappedObject;
 
 			var nodeA = results.findNodeByIdentifier ("nA");
 			var nodeB = results.findNodeByIdentifier ("nB");

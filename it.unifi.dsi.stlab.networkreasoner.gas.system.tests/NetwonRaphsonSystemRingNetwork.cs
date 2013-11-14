@@ -430,8 +430,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			);
 
-			var relativeUnknowns = results.ComputedBy.
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");

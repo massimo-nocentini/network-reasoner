@@ -53,36 +53,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public DotRepresentationValidator DotRepresentationValidator { get; set; }
 
-		public Dictionary<GasEdgeAbstract, double> makeInitialGuessForFvector ()
-		{
-			var initialFvector = new Dictionary<GasEdgeAbstract, double> ();
-
-			doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
-				anEdge => initialFvector.Add (anEdge, .015))
-			);
-
-			return initialFvector;
-		}
-
-		public Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns (
-			UnknownInitialization unknownInitialization)
-		{
-			var initialUnknowns = new  Dictionary<GasNodeAbstract, double> ();
-			var rand = new Random (DateTime.Now.Millisecond);
-
-			doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
-				aVertex => {
-
-				double value = unknownInitialization.initialValueFor (aVertex, rand);
-
-				initialUnknowns.Add (aVertex, value);
-			}
-			)
-			);
-
-			return initialUnknowns;
-		}
-
 		public void applyValidators ()
 		{
 			this.ReachabilityValidator.validate (this);

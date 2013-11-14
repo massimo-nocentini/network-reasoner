@@ -189,9 +189,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					nodesSubstitutions,
 					edgesSubstitutions);
 
-			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
+			var dimensionalUnknownsWrapper = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
 				makeUnknownsDimensional (
 					resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
+
+			var dimensionalUnknowns = dimensionalUnknownsWrapper.WrappedObject;
 
 			var nodeA = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nA");
 			var nodeB = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nB");

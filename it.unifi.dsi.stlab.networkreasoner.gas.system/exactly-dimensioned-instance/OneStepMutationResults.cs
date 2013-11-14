@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -11,7 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-		public Vector<NodeForNetwonRaphsonSystem> Unknowns {
+		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> Unknowns {
 			get;
 			set;
 		}

@@ -403,8 +403,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertsOnNodesPressures (OneStepMutationResults results)
 		{
-			Vector<NodeForNetwonRaphsonSystem> relativeUnknowns = 
+			
+			var relativeUnknownsWrapper = 
 				results.ComputedBy.makeUnknownsDimensional (results.Unknowns);
+
+			Vector<NodeForNetwonRaphsonSystem> relativeUnknowns = 
+				relativeUnknownsWrapper.WrappedObject;
 
 			var nodeA = results.findNodeByIdentifier (IdentifierNodeA);
 			var nodeB = results.findNodeByIdentifier (IdentifierNodeB);

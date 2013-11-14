@@ -108,8 +108,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		void assertsForSpecificationAllInOneFile (
 			string systemName, OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");
@@ -205,8 +207,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertionForSystem0 (OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");
@@ -228,8 +232,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertionForSystem1 (OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");
@@ -251,8 +257,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertionForSystem2 (OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
+			
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");
@@ -274,8 +283,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertionForSystem3 (OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
+			
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");
@@ -297,8 +309,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertionForSystem4 (OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
+			
+			var relativeUnknownsWrapper = results.ComputedBy.
 					makeUnknownsDimensional (results.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
 
 			var node1 = results.findNodeByIdentifier ("N1");
 			var node2 = results.findNodeByIdentifier ("N2");

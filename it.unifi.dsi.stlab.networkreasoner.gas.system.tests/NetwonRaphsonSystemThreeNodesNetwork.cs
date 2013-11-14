@@ -188,9 +188,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var nodeA = results.findNodeByIdentifier ("nA");
 			var nodeB = results.findNodeByIdentifier ("nB");
 			var nodeC = results.findNodeByIdentifier ("nC");
-			Assert.That (dimensionalUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (dimensionalUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (dimensionalUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (dimensionalUnknowns.WrappedObject.valueAt (nodeA), 
+			             Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (dimensionalUnknowns.WrappedObject.valueAt (nodeB), 
+			             Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (dimensionalUnknowns.WrappedObject.valueAt (nodeC), 
+			             Is.EqualTo (32.34).Within (1e-5));
 
 			var edgeAB = results.findEdgeByIdentifier ("edgeAB");
 			var edgeCB = results.findEdgeByIdentifier ("edgeCB");

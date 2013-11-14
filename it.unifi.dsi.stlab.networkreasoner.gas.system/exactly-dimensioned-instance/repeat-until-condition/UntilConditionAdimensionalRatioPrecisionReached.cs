@@ -17,8 +17,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				return true;
 			}
 
-			var ratioVector = currentOneStepMutationResults.Unknowns.ratio (
-				previousOneStepMutationResults.Unknowns);
+			var ratioVector = currentOneStepMutationResults.Unknowns.WrappedObject.ratio (
+				previousOneStepMutationResults.Unknowns.WrappedObject);
 
 			return ratioVector.atLeastOneSatisfy (element => {
 

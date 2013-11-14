@@ -41,7 +41,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void onMutateStepCompleted (OneStepMutationResults result)
 		{
-			result.Unknowns.forComputationAmong (
+			result.Unknowns.WrappedObject.forComputationAmong (
 				this.NodesEnumeration.Value, new ValueHolderNoInfoShouldBeRequested<Double> ()).stringRepresentation (
 				representation => this.Log.InfoFormat (
 				"{0}", representation.Substring (representation.IndexOf ('\n') + 1)

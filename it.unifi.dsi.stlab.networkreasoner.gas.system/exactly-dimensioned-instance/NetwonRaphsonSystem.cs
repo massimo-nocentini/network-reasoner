@@ -11,6 +11,7 @@ using it.unifi.dsi.stlab.extensionmethods;
 using System.Globalization;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -20,7 +21,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public  Vector<EdgeForNetwonRaphsonSystem> Fvector{ get; set; }
 
-		public  Vector<NodeForNetwonRaphsonSystem> UnknownVector { get; set; }
+		public  DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> UnknownVector { get; set; }
 
 		public  List<NodeForNetwonRaphsonSystem> Nodes{ get; set; }
 
@@ -61,23 +62,61 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode,
 			GasNetwork network)
 		{
-			this.UnknownVector = new Vector<NodeForNetwonRaphsonSystem> ();
+			this.UnknownVector = new DimensionalObjectWrapperWithoutDimension<
+				Vector<NodeForNetwonRaphsonSystem>> ();
+			this.UnknownVector.WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ();
+
 			this.Nodes = new List<NodeForNetwonRaphsonSystem> ();
 			
-			var initialUnknownGuessVector = network.makeInitialGuessForUnknowns (new UnknownInitializationSimplyRandomized ());
+			var initialUnknownGuessVector = this.makeInitialGuessForUnknowns (
+				new UnknownInitializationSimplyRandomized (), network);
+
 			network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (aNode => {
 				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
 				newtonRaphsonNode.initializeWith (aNode);
-				// un prelievo positivo implica che stiamo prelevando dalla rete
-				// quindi i bilanci dei nodi di supply saranno negativi.
+
 				newtonRaphsonNodesByOriginalNode.Add (aNode, newtonRaphsonNode);
-				// here we get the initial unknown guess for the current node
-				this.UnknownVector.atPut (newtonRaphsonNode, initialUnknownGuessVector [aNode]);
+
+				this.UnknownVector.WrappedObject.atPut (newtonRaphsonNode, 
+				                                        initialUnknownGuessVector [aNode]);
+
 				this.OriginalNodesByComputationNodes.Add (newtonRaphsonNode, aNode);
 			}
 			)
 			);
+
 			this.Nodes = newtonRaphsonNodesByOriginalNode.Values.ToList ();
+		}
+
+		protected virtual Dictionary<GasEdgeAbstract, double> makeInitialGuessForFvector (
+			GasNetwork aNetwork)
+		{
+			var initialFvector = new Dictionary<GasEdgeAbstract, double> ();
+
+			aNetwork.doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+				anEdge => initialFvector.Add (anEdge, .015))
+			);
+
+			return initialFvector;
+		}
+
+		protected virtual Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns (
+			UnknownInitialization unknownInitialization, GasNetwork network)
+		{
+			var initialUnknowns = new  Dictionary<GasNodeAbstract, double> ();
+			var rand = new Random (DateTime.Now.Millisecond);
+
+			network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+				aVertex => {
+
+				double value = unknownInitialization.initialValueFor (aVertex, rand);
+
+				initialUnknowns.Add (aVertex, value);
+			}
+			)
+			);
+
+			return initialUnknowns;
 		}
 
 		void initializeEdges (
@@ -85,21 +124,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			GasNetwork network)
 		{
 			this.Fvector = new Vector<EdgeForNetwonRaphsonSystem> ();
-			var initialFvalueGuessVector = network.makeInitialGuessForFvector ();
-			List<EdgeForNetwonRaphsonSystem> collector = new List<EdgeForNetwonRaphsonSystem> ();
+			var initialFvalueGuessVector = this.makeInitialGuessForFvector (network);
+
 			network.doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (anEdge => {
 				var aBuilder = new EdgeForNetwonRaphsonSystemBuilder {
 					CustomNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode
 				};
 				var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
-				collector.Add (edgeForNetwonRaphsonSystem);
+				this.Edges.Add (edgeForNetwonRaphsonSystem);
 				// here we get the initial F values guess for the current node
 				this.Fvector.atPut (edgeForNetwonRaphsonSystem, initialFvalueGuessVector [anEdge]);
 				this.OriginalEdgesByComputationEdges.Add (edgeForNetwonRaphsonSystem, anEdge);
 			}
 			)
 			);
-			this.Edges = collector;
+
 		}
 
 		public void initializeWith (GasNetwork network)
@@ -177,8 +216,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					nodesSubstitutions,
 					edgesSubstitutions);
 
-			var dimensionalUnknowns = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
+			var dimensionalUnknownsWrapper = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
 					makeUnknownsDimensional (resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
+
+			var dimensionalUnknowns = dimensionalUnknownsWrapper.WrappedObject;
 
 			var originalNodesBySubstitutedNodes = nodesSubstitutions.OriginalsBySubstituted ();
 			foreach (var aNodePair in resultsAfterFixingNodeWithLoadGadgetPressure.
@@ -283,7 +324,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var FvectorAtPreviousStep = this.computeFvectorAtPreviousStep ();
 
 			var KvectorAtCurrentStep = computeKvector (
-				unknownVectorAtPreviousStep,
+				unknownVectorAtPreviousStep.WrappedObject,
 				FvectorAtPreviousStep);
 
 			var AmatrixAtCurrentStep =
@@ -296,17 +337,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			var coefficientsVectorAtCurrentStep = this.computeCoefficientsVectorAtCurrentStep ();
 
-			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
+			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> unknownVectorAtCurrentStep = 
 				this.computeUnknowns (
 					AmatrixAtCurrentStep, 
-					unknownVectorAtPreviousStep, 
+					unknownVectorAtPreviousStep.WrappedObject, 
 					coefficientsVectorAtCurrentStep, 
 					JacobianMatrixAtCurrentStep);
 
-			this.fixNegativeUnknowns (unknownVectorAtCurrentStep);
+			this.fixNegativeUnknowns (unknownVectorAtCurrentStep.WrappedObject);
 
 			var QvectorAtCurrentStep = computeQvector (
-				unknownVectorAtCurrentStep, 
+				unknownVectorAtCurrentStep.WrappedObject, 
 				KvectorAtCurrentStep);
 
 			var FvectorAtCurrentStep = computeFvector (
@@ -331,13 +372,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		#region ``compute'' methods
 
-		public Vector<NodeForNetwonRaphsonSystem> 
+		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> 
 			computeUnknownVectorAtPreviousStep ()
 		{
 			var unknownVectorAtPreviousStep = this.UnknownVector;
 
 			this.EventsListener.onUnknownVectorAtPreviousStepComputed (
-				unknownVectorAtPreviousStep);
+				unknownVectorAtPreviousStep.WrappedObject);
 
 			return unknownVectorAtPreviousStep;
 		}
@@ -395,7 +436,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public void updatePreviousVectorsWithCurrentVectors (
-			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
+			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> unknownVectorAtCurrentStep, 
 			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep)
 		{
 			this.UnknownVector = unknownVectorAtCurrentStep;
@@ -404,7 +445,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public OneStepMutationResults computeOneStepMutationResult (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
-			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep, 
+		    DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> unknownVectorAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
 			Vector<EdgeForNetwonRaphsonSystem> QvectorAtCurrentStep, 
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep, 
@@ -471,7 +512,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return Kvector;
 		}
 
-		public Vector<NodeForNetwonRaphsonSystem> computeUnknowns (
+		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> computeUnknowns (
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> AmatrixAtCurrentStep, 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtPreviousStep, 
 			Vector<NodeForNetwonRaphsonSystem> coefficientsVectorAtCurrentStep, 
@@ -497,7 +538,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			this.EventsListener.onUnknownVectorAtCurrentStepComputed (unknownVectorAtCurrentStep);
 
-			return unknownVectorAtCurrentStep;
+			return new DimensionalObjectWrapperWithoutDimension<Vector<NodeForNetwonRaphsonSystem>>{
+				WrappedObject = unknownVectorAtCurrentStep
+			};
 		}
 
 		public Vector<EdgeForNetwonRaphsonSystem> computeQvector (
@@ -534,29 +577,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		#endregion
 
-		public Vector<NodeForNetwonRaphsonSystem> makeUnknownsDimensional (
+		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional (
+			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> adimensionalWrapper)
+		{
+			var result = adimensionalWrapper.makeAdimensional (
+				fromAdimensionalUnknownsToDimensionalUnknowns);
+
+			this.EventsListener.onUnknownWithDimensionReverted (
+				this.NodesEnumeration.Value, result.WrappedObject);
+
+			return result;
+		}
+
+		protected virtual Vector<NodeForNetwonRaphsonSystem> fromAdimensionalUnknownsToDimensionalUnknowns (
 			Vector<NodeForNetwonRaphsonSystem> adimensionalUnknowns)
 		{
-			Vector<NodeForNetwonRaphsonSystem> dimensionalUnknowns = 
-				new Vector<NodeForNetwonRaphsonSystem> ();
+			var dimensionalUnknowns = new Vector<NodeForNetwonRaphsonSystem> ();
 
 			this.Nodes.ForEach (aNode => {
 
 				double adimensionalPressure = adimensionalUnknowns.valueAt (aNode);
 
 				double dimensionalPressure = aNode.dimensionalPressureOf (
-					adimensionalPressure, this.FormulaVisitor);
+						adimensionalPressure, this.FormulaVisitor);
 
 				dimensionalUnknowns.atPut (aNode, dimensionalPressure);
-
 			}
 			);
 
-
-			this.EventsListener.onUnknownWithDimensionReverted (
-				this.NodesEnumeration.Value, dimensionalUnknowns);
-
 			return dimensionalUnknowns;
+			
 		}
 
 		public OneStepMutationResults fixNodesWithLoadGadgetNegativePressure (
@@ -565,7 +615,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitions,
 			List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions)
 		{
-			var relativeUnknowns = this.makeUnknownsDimensional (previousMutationResults.Unknowns);
+			var relativeUnknownsDimensionalWrapper = this.makeUnknownsDimensional (
+				previousMutationResults.Unknowns);
+
+			var relativeUnknowns = relativeUnknownsDimensionalWrapper.WrappedObject;
 
 			var nodeWithMinValue = relativeUnknowns.findKeyWithMinValue ();
 

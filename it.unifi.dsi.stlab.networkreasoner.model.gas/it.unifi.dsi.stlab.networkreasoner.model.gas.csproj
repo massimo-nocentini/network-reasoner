@@ -59,9 +59,6 @@
     <Compile Include="gadgets\for-edges\GasEdgeGadgetVisitor.cs" />
     <Compile Include="parameters\AmbientParametersGas.cs" />
     <Compile Include="parameters\AmbientParametersWater.cs" />
-    <Compile Include="unknowns-initializations\UnknownInitialization.cs" />
-    <Compile Include="unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />
-    <Compile Include="unknowns-initializations\UnknownInitializationMinMaxSetupPressure.cs" />
     <Compile Include="handlers-for-network-iteration\NetworkIteratorHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -72,7 +69,6 @@
     <Folder Include="validators\" />
     <Folder Include="parameters\" />
     <Folder Include="edge-hierarchy\" />
-    <Folder Include="unknowns-initializations\" />
     <Folder Include="handlers-for-network-iteration\" />
   </ItemGroup>
   <ItemGroup>

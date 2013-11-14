@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -34,9 +35,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = 1e-10
 			};
 
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = previousUnknowns
+			};
+
+			
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = currentUnknowns
+			};
+
 			Assert.IsFalse (untilCondition.canContinue (
-				new OneStepMutationResults{ Unknowns= previousUnknowns}, 
-				new OneStepMutationResults{ Unknowns= currentUnknowns})
+				new OneStepMutationResults{ Unknowns= previousUnknownsWrapper}, 
+				new OneStepMutationResults{ Unknowns= currentUnknownsWrapper})
 			);
 
 
@@ -71,9 +83,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = previousUnknowns
+			};
+
+			
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = currentUnknowns
+			};
+
+
 			Assert.IsFalse (untilCondition.canContinue (
-				new OneStepMutationResults{ Unknowns= previousUnknowns}, 
-				new OneStepMutationResults{ Unknowns= currentUnknowns})
+				new OneStepMutationResults{ Unknowns= previousUnknownsWrapper}, 
+				new OneStepMutationResults{ Unknowns= currentUnknownsWrapper})
 			);
 
 
@@ -107,9 +131,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = previousUnknowns
+			};
+
+			
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = currentUnknowns
+			};
+
 			Assert.IsFalse (untilCondition.canContinue (
-				new OneStepMutationResults{ Unknowns= previousUnknowns}, 
-				new OneStepMutationResults{ Unknowns= currentUnknowns})
+				new OneStepMutationResults{ Unknowns= previousUnknownsWrapper}, 
+				new OneStepMutationResults{ Unknowns= currentUnknownsWrapper})
 			);
 
 
@@ -143,9 +178,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = previousUnknowns
+			};
+
+			
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = currentUnknowns
+			};
+
 			Assert.IsTrue (untilCondition.canContinue (
-				new OneStepMutationResults{ Unknowns= previousUnknowns}, 
-				new OneStepMutationResults{ Unknowns= currentUnknowns})
+				new OneStepMutationResults{ Unknowns= previousUnknownsWrapper}, 
+				new OneStepMutationResults{ Unknowns= currentUnknownsWrapper})
 			);
 
 
@@ -179,9 +225,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = previousUnknowns
+			};
+
+			
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			Vector<NodeForNetwonRaphsonSystem>> {
+				WrappedObject = currentUnknowns
+			};
+
+
 			Assert.IsTrue (untilCondition.canContinue (
-				new OneStepMutationResults{ Unknowns= previousUnknowns}, 
-				new OneStepMutationResults{ Unknowns= currentUnknowns})
+				new OneStepMutationResults{ Unknowns= previousUnknownsWrapper}, 
+				new OneStepMutationResults{ Unknowns= currentUnknownsWrapper})
 			);
 
 
