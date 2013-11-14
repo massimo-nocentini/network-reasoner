@@ -106,18 +106,20 @@ headinclude,11pt,a4paper,BCOR5mm,footinclude ]{scrbook}
 	, showstringspaces=false
 }
 
-\chapter*{First doc about scholarship: ``a'' }
+\chapter*{First doc about scholarship: ``Architetture e metodi per la 
+cooperazione applicativa'' }
 \begin{description}
 \item[Fellow] Massimo Nocentini, \url{massimo.nocentini@gmail.com}
 \item[Professor] Enrico Vicario, \url{enrico.vicario@unifi.it}
 \end{description}
 
-In this document we describe the state of the project under ``put here the name
-of the founding''. The work is supervised by Prof. Enrico Vicario, the study of
-fluid dynamics equations and optimizations is due to Eng. Fabio Tarani and
-implemented by Doct. Massimo Nocentini using the $C\#$ programming language.
+In this document we describe the state of the project under the scholarship 
+``Architetture e metodi per la cooperazione applicativa''. 
+The work is supervised by Prof. Enrico Vicario, the study of
+fluid dynamics equations and optimizations is due to Fabio Tarani and
+implemented by Massimo Nocentini using the $C\#$ programming language.
 \\\\
-Problem: write a library that, consuming a fluid dynamics network specification 
+Problem: write a library that, consuming a fluid dynamic network specification 
 containing topological connections and physical data such as loads and
 setup pressures on nodes, produces for each node the relative pressure and for
 each edge the relative flow.
@@ -133,20 +135,20 @@ We describe the implementation and proceed step by step, from the architecture
 toward input/output, observing the main points of interest:
 \begin{description}
 \item[architecture] the problem of describing the input network is solved using
-a ``language'' based on the idea of inductive set construction. We provide an
-example regarding the definition of nodes set:
-\begin{itemize}
-	\item a topological node $t$ with identifier $id$ and height $h$ is a node;
-	\item if $n$ is a node then a node $m$ decorating $n$ with a gadget $g$ 
-		(which in turn is defined by induction), say with setup pressure $p$, 
-		 is a node. 
-\end{itemize}
-
-Using this approach to define \emph{every} object of the network under study
+a ``language'' based on the idea of inductive set construction. 
+%We provide an
+%example regarding the definition of nodes set:
+%\begin{itemize}
+%	\item a topological node $t$ with identifier $id$ and height $h$ is a node;
+%	\item if $n$ is a node then a node $m$ decorating $n$ with a gadget $g$ 
+%		(which in turn is defined by induction), say with setup pressure $p$, 
+%		 is a node. 
+%\end{itemize}
+Using this approach to define \emph{every} object of the network,
 allow us to tackle the problem from a functional point of view. In fact, given a
 network specified using the above schema, it is possible to create dedicated
 sub domains, each relative to an aspect of interest, extracting the
-necessary informations only. For example it
+necessary data only. For example it
 is possible to generate a domain for the visual representation of the network or
 to generate a domain for the Newton-Raphson algorithm in order to compute
 pressures and flows and so on.
@@ -173,7 +175,7 @@ two main formalisms:
 		verbose input specification but allow a user friendly way to
 		describe the network;
 	\item \emph{GeoNet format}, this formalism is used by the existing
-		engine and is a ``quick and dirty'' way to define the network,
+		engine and is a ``quick and dirty'' way to describe the network,
 		without the overhead of RDF triples notation but less
 		readable.
 \end{itemize}
@@ -181,7 +183,7 @@ two main formalisms:
 \item[Newton-Raphson algorithm] we implemented this algorithm to compute
 pressures on nodes and flows on edges by consecutive iterations. 
 Actually we coded a variant which use
-$(i)$ a theoretical idea about smart Jacobi an matrix construction reached by Fabio
+$(i)$ a theoretical idea about smart Jacobi matrix construction reached by Fabio
 Tarani and $(ii)$ a relaxing factor in order to cut down the number of
 iterations due to oscillation of some variables.
 
@@ -190,7 +192,7 @@ iterations due to oscillation of some variables.
 paradigm which is the base for true object orientation. We promote delegation
 over inheritance and don't use ``exotic'' features of $C\#$
 such as coroutines, threads and external process invocation in favor of a 
-minimal core. We divided the solution in many little projects in order to be 
+minimal core. We've divided the solution in many little projects in order to be 
 modular and, possibly, allow reuse in other projects. It is important to note that
 Terranova Software's projects implementation is completely written in $C\#$ and
 currently the GeoNet engine, written in $C++$ instead, is invoked as an external
