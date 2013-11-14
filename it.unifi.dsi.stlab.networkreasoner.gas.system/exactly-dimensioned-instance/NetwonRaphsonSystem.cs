@@ -12,6 +12,7 @@ using System.Globalization;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {

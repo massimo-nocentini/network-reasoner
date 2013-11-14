@@ -1,6 +1,7 @@
 using System;
+using it.unifi.dsi.stlab.networkreasoner.model.gas;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.gas
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations
 {
 	public class UnknownInitializationSimplyRandomized : UnknownInitialization
 	{
