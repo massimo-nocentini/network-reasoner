@@ -106,14 +106,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aVertex => {
 
-				double value = unknownInitialization.initialValueFor (aVertex, rand);
+				var value = unknownInitialization.initialValueFor (aVertex, rand);
 
-				initialUnknowns.Add (aVertex, value);
+				initialUnknowns.Add (aVertex, value.makeAdimensional (
+					thisDimensionalTranslatorShouldNeverBeCalled).WrappedObject
+				);
 			}
 			)
 			);
 
 			return initialUnknowns;
+		}
+
+		protected virtual double thisDimensionalTranslatorShouldNeverBeCalled (
+			double aDimensionalValue)
+		{
+			throw new Exception ("dimensional -> adimensional translation " +
+				"requested where it shouldn't for initial unknown guess value."
+			);
 		}
 
 		protected virtual void initializeEdges (

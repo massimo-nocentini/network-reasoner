@@ -1,5 +1,6 @@
 using System;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations
 {
@@ -112,15 +113,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.UnknownInitialization
-		public override double initialValueFor (GasNodeAbstract aVertex, Random rand)
+		public override DimensionalObjectWrapper<double> initialValueFor (GasNodeAbstract aVertex, Random rand)
 		{
-			return MinMaxIntervalFinder.adimensionalizedMinMax (
+			var initialValue = MinMaxIntervalFinder.adimensionalizedMinMax (
 				(min, max) => {
 				var maxMinusMin = max - (min * this.FixingTerm);
 				var value = (min * this.FixingTerm) + (maxMinusMin * rand.NextDouble ());
 				return value;
 			}
 			);
+
+			return new DimensionalObjectWrapperWithoutDimension<double>{
+				WrappedObject = initialValue
+			};
 		}
 		#endregion
 
