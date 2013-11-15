@@ -61,12 +61,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			this.UnknownVector = new DimensionalObjectWrapperWithoutDimension<
 				Vector<NodeForNetwonRaphsonSystem>> {
-				WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ()};
+				WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ()
+			};
 
 			var initialUnknownGuessVector = this.makeInitialGuessForUnknowns (
 				new UnknownInitializationSimplyRandomized (), network);
 
-			network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (aNode => {
+			network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
+				aNode => {
+
 				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
 				newtonRaphsonNode.initializeWith (aNode);
 
@@ -109,7 +112,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				var value = unknownInitialization.initialValueFor (aVertex, rand);
 
 				initialUnknowns.Add (aVertex, value.makeAdimensional (
-					thisDimensionalTranslatorShouldNeverBeCalled).WrappedObject
+					throwExceptionIfThisTranslatorIsCalled).WrappedObject
 				);
 			}
 			)
@@ -118,8 +121,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return initialUnknowns;
 		}
 
-		protected virtual double thisDimensionalTranslatorShouldNeverBeCalled (
-			double aDimensionalValue)
+		protected virtual T throwExceptionIfThisTranslatorIsCalled<T> (
+			T aDimensionalValue)
 		{
 			throw new Exception ("dimensional -> adimensional translation " +
 				"requested where it shouldn't for initial unknown guess value."
@@ -327,6 +330,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.EventsListener.onMutateStepStarted (iterationNumber);
 
 			var unknownVectorAtPreviousStep = this.computeUnknownVectorAtPreviousStep ();
+
+			// we perform the adimensional translation just to ensure that we're 
+			// working with adimensional objects, since the translator raise an exception
+			// if it is called.
+			unknownVectorAtPreviousStep = unknownVectorAtPreviousStep.makeAdimensional (
+				throwExceptionIfThisTranslatorIsCalled);
 
 			var FvectorAtPreviousStep = this.computeFvectorAtPreviousStep ();
 
@@ -587,7 +596,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional (
 			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> adimensionalWrapper)
 		{
-			var result = adimensionalWrapper.makeAdimensional (
+			var result = adimensionalWrapper.makeDimensional (
 				fromAdimensionalUnknownsToDimensionalUnknowns);
 
 			this.EventsListener.onUnknownWithDimensionReverted (
