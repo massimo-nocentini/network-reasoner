@@ -26,7 +26,7 @@ headinclude,11pt,a4paper,BCOR5mm,footinclude ]{scrbook}
 \usepackage[T1]{fontenc} 
 \usepackage[square,numbers]{natbib} 
 \usepackage[fleqn]{amsmath}  
-\usepackage[italian]{babel}
+\usepackage[english]{babel}
 %--------------------------------------------------------------
 \usepackage{dia-classicthesis-ldpkg} 
 %--------------------------------------------------------------
@@ -105,17 +105,12 @@ headinclude,11pt,a4paper,BCOR5mm,footinclude ]{scrbook}
 	, showspaces=false
 	, showstringspaces=false
 }
-
-\chapter*{First doc about scholarship: ``Architetture e metodi per la 
+\chapter*{Report of activity: ``Architetture e metodi per la 
 cooperazione applicativa'' }
-\begin{description}
-\item[Fellow] Massimo Nocentini, \url{massimo.nocentini@gmail.com}
-\item[Professor] Enrico Vicario, \url{enrico.vicario@unifi.it}
-\end{description}
-
+Florence, \today\\\\
 In this document we describe the state of the project under the scholarship 
-``Architetture e metodi per la cooperazione applicativa''. 
-The work is supervised by Prof. Enrico Vicario, the study of
+``Architetture e metodi per la cooperazione applicativa'', started in date
+ $25/06/13$.  The work is supervised by Prof. Enrico Vicario, the study of
 fluid dynamics equations and optimizations is due to Fabio Tarani and
 implemented by Massimo Nocentini using the $C\#$ programming language.
 \\\\
@@ -162,7 +157,7 @@ induction done in mathematics. This creation process is implemented using the
 	\item allow the implementation of a domain creation to be written in a
 		single class;
 	\item decouple the type's variants from the operations which can be 
-		defined over them, keeping the variants' code clean;
+		defined over them, keeping the variants' code clean.
 \end{itemize}
 We've experienced a cons of this approach regarding the possibility of adding a
 new variant, since we have to resort to a downcast to type check our implementation.
@@ -193,9 +188,9 @@ paradigm which is the base for true object orientation. We promote delegation
 over inheritance and don't use ``exotic'' features of $C\#$
 such as coroutines, threads and external process invocation in favor of a 
 minimal core. We've divided the solution in many little projects in order to be 
-modular and, possibly, allow reuse in other projects. It is important to note that
-Terranova Software's projects implementation is completely written in $C\#$ and
-currently the GeoNet engine, written in $C++$ instead, is invoked as an external
+modular and, possibly, allow reuse in other projects. Currently
+Terranova Software's projects are completely implemented in $C\#$, however
+ the GeoNet engine, written in $C++$ instead, is invoked as an external
 process: using our implementation it is possible to have a complete solution running 
 on .NET platform without resorting to foreign calls.
 
@@ -208,5 +203,10 @@ correctness of computed pressures and flows. Comparing with GeoNet our
 implementation computes smaller values for pressures.
 \end{description}
 
+\begin{tabular}{ l c l }
+  written by Massimo Nocentini,  &  & approved by Enrico Vicario,  \\
+  Dr. in Computer Science & & Full Professor \\
+  \url{massimo.nocentini@gmail.com} &  & \url{enrico.vicario@unifi.it} \\
+\end{tabular}
 
 \end{document}
