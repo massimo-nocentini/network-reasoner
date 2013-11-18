@@ -66,8 +66,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				double pressure, 
 				GasNodeAbstract correspondingOriginalNode)
 			{
-				//eventualmente considerare di segnalare un 'errore di control flow'
-				return correspondingOriginalNode;
+				throw new Exception ("It is impossible to perform a substitution " +
+					"during negative loads checking: this is a role for a node with " +
+					"supply gadget, hence a contradiction occurs if we found a " +
+					"negative load for this node."
+				);
 			}
 			#endregion
 
@@ -96,6 +99,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				#region GasNodeVisitor implementation
 				public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 				{
+					throw new Exception ("We cannot visit looking for substitution " +
+						"if we do not find a node decorated with a gadget before this variant."
+					);
 				}
 
 				public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
@@ -239,153 +245,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return formula.accept (aFormulaVisitor);
 		}
 
-		public NodeSubstitutionAbstract substituteNodeIfHasNegativePressure (
-			double pressure, 
-			GasNodeAbstract correspondingOriginalNode,
-			NetwonRaphsonSystem system)
+		public GasNodeAbstract substituteNodeBecauseNegativePressureFound (
+			double pressure, GasNodeAbstract originalNode)
 		{
-			NodeSubstitutionAbstract nodeSostitutionHappens = 
-			new NodeSubstitutionHappens {
-					Substitution = () => this.Role.substituteNodeBecauseNegativePressureFoundFor (
-					this, pressure, correspondingOriginalNode),
-					ParentSystem = system
-				};
-
-			NodeSubstitutionAbstract nodeSostitutionDoesntHappen = 
-			new NodeSubstitutionDoesntHappen {
-				Substitution = () => correspondingOriginalNode
-			};
-
-			return pressure < 0 ? nodeSostitutionHappens : nodeSostitutionDoesntHappen;
+			return Role.substituteNodeBecauseNegativePressureFoundFor (
+				this, pressure, originalNode);
 		}
 
-		public abstract class NodeSubstitutionAbstract
-		{
-			public Func<GasNodeAbstract> Substitution {
-				get;
-				set;
-			}
-		
-			public abstract OneStepMutationResults doSubstitution (
-				OneStepMutationResults previousMutationResults,
-				GasNodeAbstract originalNode, 
-				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions, 
-				GasNetwork aGasNetwork,
-				List<UntilConditionAbstract> untilConditions);
-
-			public abstract OneStepMutationResults continueComputationFor (
-				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
-				List<UntilConditionAbstract> untilConditions, 
-				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions);
-
-
-		}
-
-		public class NodeSubstitutionHappens : NodeSubstitutionAbstract
-		{
-			public NetwonRaphsonSystem ParentSystem { get; set; }
-			
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
-			public override OneStepMutationResults doSubstitution (
-				OneStepMutationResults previousMutationResults,
-				GasNodeAbstract originalNode, 
-				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> givenEdgesSubstitutions,
-				GasNetwork aGasNetwork,
-				List<UntilConditionAbstract> untilConditions)
-			{
-				var newNode = this.Substitution.Invoke ();
-
-				// we keep note that a new node has been created
-				nodesSubstitutions.Add (
-					new ObjectWithSubstitutionInSameType<GasNodeAbstract>{
-					Original = originalNode,
-					Substituted = newNode
-				}
-				);
-
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> currentEdgeSubstitutions;
-				GasNetwork networkWithFixedNodesWithLoadGadget = 
-						aGasNetwork.makeFromRemapping (
-							nodesSubstitutions,
-							out currentEdgeSubstitutions);
-
-				currentEdgeSubstitutions.ForEach (aCurrentEdgeSubstitution => {
-
-					ObjectWithSubstitutionInSameType<GasEdgeAbstract> transitiveSubstitutedNode = 
-						givenEdgesSubstitutions.Find (aGivenEdgeSubstitution => 
-						aGivenEdgeSubstitution.Substituted.Equals (
-								aCurrentEdgeSubstitution.Original)					
-					);
-
-					if (transitiveSubstitutedNode != null) {
-						transitiveSubstitutedNode.Substituted = 
-							aCurrentEdgeSubstitution.Substituted;
-					} else {
-						givenEdgesSubstitutions.Add (aCurrentEdgeSubstitution);
-					}
-				}
-				);
-
-				// start here a new iteration of the method
-				var innerSystem = new NetwonRaphsonSystem {
-					FormulaVisitor = ParentSystem.FormulaVisitor,
-					EventsListener = ParentSystem.EventsListener
-				};
-
-				innerSystem.initializeWith (networkWithFixedNodesWithLoadGadget);
-
-				var innerResults = innerSystem.repeatMutateUntil (untilConditions);
-
-				return innerResults;
-			}
-
-			public override OneStepMutationResults continueComputationFor (
-				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
-				List<UntilConditionAbstract> untilConditions, 
-				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions)
-			{
-				var systemToBeUsed = resultAfterFixingOneNodeWithLoadGadget.ComputedBy;
-
-				return systemToBeUsed.fixNodesWithLoadGadgetNegativePressure (
-					resultAfterFixingOneNodeWithLoadGadget, 
-					untilConditions,
-					nodesSubstitutions,
-					edgesSubstitutions);
-			}
-			#endregion
-		}
-
-		public class NodeSubstitutionDoesntHappen : NodeSubstitutionAbstract
-		{
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NodeForNetwonRaphsonSystem.NodeSostitutionAbstract
-			public override OneStepMutationResults doSubstitution (
-				OneStepMutationResults previousMutationResults,
-				GasNodeAbstract originalNode, 
-				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions,
-				GasNetwork aGasNetwork,
-				List<UntilConditionAbstract> untilConditions)
-			{
-				// simply return the previous mutation results since no substitution have to be done here
-				return previousMutationResults;
-			}
-
-			public override OneStepMutationResults continueComputationFor (
-				OneStepMutationResults resultAfterFixingOneNodeWithLoadGadget, 
-				List<UntilConditionAbstract> untilConditions, 
-				List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
-				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions)
-			{
-				// since no substitution have to be done, we do not have to continue to fix
-				// any other node since all of them have valid pressures at this time.
-				return resultAfterFixingOneNodeWithLoadGadget;
-			}
-			#endregion
-		}
 	}
 }
 

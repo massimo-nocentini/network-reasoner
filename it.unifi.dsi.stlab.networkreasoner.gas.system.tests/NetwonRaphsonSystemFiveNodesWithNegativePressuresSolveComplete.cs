@@ -11,6 +11,8 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
 using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -26,39 +28,60 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Dictionary<string, GasEdgeAbstract> edges, 
 				AmbientParameters ambientParameters)
 			{
-				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
-
-				XmlConfigurator.Configure (
-					new FileInfo ("log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"));
-
-				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-					AmbientParameters = ambientParameters
-				};
-
-				NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-						Log = log
-					}
-				};
-
+				
 				var aGasNetwork = new GasNetwork{
 					Nodes = nodes,
 					Edges = edges,				
 					AmbientParameters = ambientParameters
 				};
 
-				system.initializeWith (aGasNetwork);
+				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+				var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
-				var untilConditions = new List<UntilConditionAbstract> {
-					new UntilConditionAdimensionalRatioPrecisionReached {
-						Precision = 1e-8
-					}
-				};
+				XmlConfigurator.Configure (new FileInfo (
+				"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml")
+				);
+
+				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+				formulaVisitor.AmbientParameters = ambientParameters;
+
+				var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
+				eventListener.Log = log;
+
+				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+				initializationTransition.EventsListener = eventListener;
+				initializationTransition.Network = aGasNetwork;
+				initializationTransition.UnknownInitialization = 
+					new UnknownInitializationSimplyRandomized ();
+				initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+
+				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+				solveTransition.EventsListener = eventListener;
+				solveTransition.FormulaVisitor = formulaVisitor;
+				solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = 1e-4
+				}};
+			
+				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
+				negativeLoadsCheckerTransition.EventsListener = eventListener;
+				negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
+
+				var system = new FluidDynamicSystemStateTransitionCombinator ();
+				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
+				) as FluidDynamicSystemStateNegativeLoadsCorrected;
+
 
 				Dictionary<GasNodeAbstract, double> nodesPressures;
 				Dictionary<GasEdgeAbstract, double> edgesFlows;
-				var results = system.solve (untilConditions, 
+				visitNegativeLoadsCheckedSystemState (finalState, 
 				                            out nodesPressures, 
 				                            out edgesFlows);
 
@@ -72,13 +95,52 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				}
 				);
 
-				this.onComputationFinished (systemName, results);
+				this.onComputationFinished (systemName, 
+				                            finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult);
 
 			}
 			#endregion
+
+			protected virtual void visitNegativeLoadsCheckedSystemState (
+			FluidDynamicSystemStateNegativeLoadsCorrected state,
+			out Dictionary<GasNodeAbstract, double> unknownsByNodes, 
+			out Dictionary<GasEdgeAbstract, double> QvaluesByEdges)
+			{
+				unknownsByNodes = new Dictionary<GasNodeAbstract, double> ();
+				QvaluesByEdges = new Dictionary<GasEdgeAbstract, double> ();
+
+				var dimensionalUnknowns = state.FluidDynamicSystemStateMathematicallySolved.
+				MutationResult.makeUnknownsDimensional ().WrappedObject;
+
+				var originalNodesBySubstitutedNodes = state.NodesSubstitutions.OriginalsBySubstituted ();
+				foreach (var aNodePair in state.FluidDynamicSystemStateMathematicallySolved.MutationResult.
+			         StartingUnsolvedState.OriginalNodesByComputationNodes) {
+
+					var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNodePair.Value) ?
+					originalNodesBySubstitutedNodes [aNodePair.Value] : aNodePair.Value;
+
+					unknownsByNodes.Add (originalNode, 
+				                     dimensionalUnknowns.valueAt (aNodePair.Key));
+				}
+
+				var originalEdgesBySubstitutedNodes = state.EdgesSubstitutions.OriginalsBySubstituted ();
+				foreach (var edgePair in state.FluidDynamicSystemStateMathematicallySolved.MutationResult.
+			         StartingUnsolvedState.OriginalEdgesByComputationEdges) {
+
+					var originalEdge = originalEdgesBySubstitutedNodes.ContainsKey (edgePair.Value) ?
+					originalEdgesBySubstitutedNodes [edgePair.Value] : edgePair.Value; 
+
+					QvaluesByEdges.Add (originalEdge,
+				                    state.FluidDynamicSystemStateMathematicallySolved.
+				                    MutationResult.Qvector.valueAt (edgePair.Key)
+					);
+				}
+
+			}
+		
 		}
 
-		
+
 		[Test()]
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets_with_splitted_specification ()
 		{

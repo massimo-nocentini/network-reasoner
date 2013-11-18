@@ -10,6 +10,8 @@ using log4net.Config;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -32,60 +34,65 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Dictionary<string, GasEdgeAbstract> edges, 
 				AmbientParameters ambientParameters)
 			{
-				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
-
-				XmlConfigurator.Configure (
-					new FileInfo ("log4net-configurations/szoplik-network.xml"));
-
-				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-					AmbientParameters = ambientParameters
-				};
-
-				NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-						Log = log
-					}
-				};
-
+				
 				var aGasNetwork = new GasNetwork{
 					Nodes = nodes,
 					Edges = edges,				
 					AmbientParameters = ambientParameters
 				};
 
-				system.initializeWith (aGasNetwork);
+				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+				var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
-				var untilConditions = new List<UntilConditionAbstract> {
-					new UntilConditionAdimensionalRatioPrecisionReached {
-						Precision = 1e-8
-					}
-				};
+				XmlConfigurator.Configure (new FileInfo (
+				"log4net-configurations/szoplik-network.xml")
+				);
 
-				var mainComputationResults = system.repeatMutateUntil (untilConditions);
+				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+				formulaVisitor.AmbientParameters = ambientParameters;
 
-				var nodesSubstitutions = 
-					new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
+				var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
+				eventListener.Log = log;
 
-				var edgeSubstitutions = 
-					new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
+				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+				initializationTransition.EventsListener = eventListener;
+				initializationTransition.Network = aGasNetwork;
+				initializationTransition.UnknownInitialization = 
+				new UnknownInitializationSimplyRandomized ();
+				initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
 
-				OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
-				system.fixNodesWithLoadGadgetNegativePressure (
-					mainComputationResults, 
-					untilConditions,
-					nodesSubstitutions,
-					edgeSubstitutions);
+				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+				solveTransition.EventsListener = eventListener;
+				solveTransition.FormulaVisitor = formulaVisitor;
+				solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = 1e-8
+				}};
+			
+				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
+				negativeLoadsCheckerTransition.EventsListener = eventListener;
+				negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
 
-				this.onComputationFinished (systemName, resultsAfterFixingNodeWithLoadGadgetPressure);
+				var system = new FluidDynamicSystemStateTransitionCombinator ();
+				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
+				) as FluidDynamicSystemStateMathematicallySolved;
+
+				var results = finalState.MutationResult;
+
+				this.onComputationFinished (systemName, results);
 
 				// here we perform the necessary tests using the plugged behaviour
-				this.ActionWithAsserts.Invoke (systemName, 
-				                               resultsAfterFixingNodeWithLoadGadgetPressure);
+				this.ActionWithAsserts.Invoke (systemName, results);
 			}
 			#endregion
 		}
-
 
 		[Test()]
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets ()
@@ -113,8 +120,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		void assertsForSpecificationAllInOneFile (
 			string systemName, OneStepMutationResults results)
 		{
-			var relativeUnknowns = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
+			var relativeUnknowns = results.makeUnknownsDimensional();
 
 //			var node1 = results.findNodeByIdentifier ("N1");
 //			var node2 = results.findNodeByIdentifier ("N2");

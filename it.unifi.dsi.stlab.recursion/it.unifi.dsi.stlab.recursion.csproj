@@ -39,6 +39,10 @@
     <Compile Include="Testing.cs" />
     <Compile Include="DomainClasses.cs" />
     <Compile Include="RecursionClasses.cs" />
+    <Compile Include="covariant-on-override\Classes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="covariant-on-override\" />
+  </ItemGroup>
 </Project>

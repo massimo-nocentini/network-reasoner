@@ -6,6 +6,7 @@ using System.Text;
 using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.utilities.times_of_computation;
 using System.Linq;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
@@ -98,14 +99,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			columnPositionsForTableSummaryItemsAction.Action = () => {
 				int columnPosition = 0;
 
-				results.ComputedBy.Nodes.ForEach (aNode => {
+				results.StartingUnsolvedState.Nodes.ForEach (aNode => {
 					NodesOrEdgesColumnIndexesByNodeOrEdgeObject.Add (
 						aNode.Identifier, columnPosition);
 					columnPosition = columnPosition + 1;
 				}
 				);
 
-				results.ComputedBy.Edges.ForEach (anEdge => {
+				results.StartingUnsolvedState.Edges.ForEach (anEdge => {
 					NodesOrEdgesColumnIndexesByNodeOrEdgeObject.Add (
 						anEdge.Identifier, columnPosition);
 					columnPosition = columnPosition + 1;
@@ -122,8 +123,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (results);
 
-			var dimensionalUnknowns = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
+			var translator = new DimensionalDelegates ().makeAdimensionalToDimensionalTranslator (
+				results.StartingUnsolvedState.Nodes,  null);
+			var dimensionalUnknowns = results.Unknowns.makeDimensional (translator);
 
 			var summaryTableItemsForCurrentSystem = 
 				new Dictionary<int, SummaryTableItem> ();
@@ -132,10 +134,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					new Dictionary<NodeForNetwonRaphsonSystem, double> ();
 
 			// initialize the dictionary
-			results.ComputedBy.Nodes.ForEach (
+			results.StartingUnsolvedState.Nodes.ForEach (
 					aNode => sumOfQsByNodes.Add (aNode, 0));
 
-			results.ComputedBy.Edges.ForEach (
+			results.StartingUnsolvedState.Edges.ForEach (
 					anEdge => {
 
 				var Qvalue = results.Qvector.valueAt (anEdge);

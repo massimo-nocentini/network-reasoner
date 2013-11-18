@@ -9,6 +9,8 @@ using System.IO;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -149,63 +151,63 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void do_mutation_via_repetition_checking_pressure_correctness_after_main_computation ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
 			XmlConfigurator.Configure (new FileInfo (
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-			var ambientParameters = valid_initial_ambient_parameters ();
-			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = ambientParameters
-			};
+			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+			formulaVisitor.AmbientParameters = valid_initial_ambient_parameters();
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-					Log = log
-				}
-			};
+			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
+			eventListener.Log = log;
 
-			this.aGasNetwork.AmbientParameters = ambientParameters;
-			system.initializeWith (this.aGasNetwork);
+			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+			initializationTransition.EventsListener = eventListener;
+			initializationTransition.Network = aGasNetwork;
+			initializationTransition.UnknownInitialization = 
+					new UnknownInitializationSimplyRandomized ();
+			initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
 
-			var untilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached {
+			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+			solveTransition.EventsListener = eventListener;
+			solveTransition.FormulaVisitor = formulaVisitor;
+			solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+			solveTransition.UntilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached{
 					Precision = 1e-4
-				}
-			};
+				}};
+			
+			var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
+			negativeLoadsCheckerTransition.EventsListener = eventListener;
+			negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
 
-			var mainComputationResults = system.repeatMutateUntil (untilConditions);
+			var system = new FluidDynamicSystemStateTransitionCombinator ();
+			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
+			) as FluidDynamicSystemStateMathematicallySolved;
 
-			var nodesSubstitutions = 
-				new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
-			var edgesSubstitutions = 
-				new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
+			var results = finalState.MutationResult;
 
-			OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
-				system.fixNodesWithLoadGadgetNegativePressure (
-					mainComputationResults, 
-					untilConditions,
-					nodesSubstitutions,
-					edgesSubstitutions);
+			var dimensionalUnknowns = results.makeUnknownsDimensional ().WrappedObject;
 
-			var dimensionalUnknownsWrapper = resultsAfterFixingNodeWithLoadGadgetPressure.ComputedBy.
-				makeUnknownsDimensional (
-					resultsAfterFixingNodeWithLoadGadgetPressure.Unknowns);
-
-			var dimensionalUnknowns = dimensionalUnknownsWrapper.WrappedObject;
-
-			var nodeA = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nA");
-			var nodeB = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nB");
-			var nodeC = resultsAfterFixingNodeWithLoadGadgetPressure.findNodeByIdentifier ("nC");
+			var nodeA = results.StartingUnsolvedState.findNodeByIdentifier ("nA");
+			var nodeB = results.StartingUnsolvedState.findNodeByIdentifier ("nB");
+			var nodeC = results.StartingUnsolvedState.findNodeByIdentifier ("nC");
 			Assert.That (dimensionalUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (dimensionalUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (dimensionalUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
 
-			var edgeAB = resultsAfterFixingNodeWithLoadGadgetPressure.findEdgeByIdentifier ("edgeAB");
-			var edgeCB = resultsAfterFixingNodeWithLoadGadgetPressure.findEdgeByIdentifier ("edgeCB");
-			Assert.That (resultsAfterFixingNodeWithLoadGadgetPressure.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (resultsAfterFixingNodeWithLoadGadgetPressure.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
+			var edgeAB = results.StartingUnsolvedState.findEdgeByIdentifier ("edgeAB");
+			var edgeCB = results.StartingUnsolvedState.findEdgeByIdentifier ("edgeCB");
+			Assert.That (results.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
+			Assert.That (results.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
 
 		}
 	}

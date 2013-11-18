@@ -9,6 +9,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using System.Collections.Generic;
 using System.IO;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -368,34 +369,47 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void do_mutation_via_repetition ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
 			XmlConfigurator.Configure (new FileInfo (
 				"log4net-configurations/for-complex-network.xml")
 			);
 
-			var ambientParameters = valid_initial_ambient_parameters ();
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = ambientParameters
+				AmbientParameters = valid_initial_ambient_parameters ()
 			};
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-					Log = log
-				}
-			};
+			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
+				Log = log};
 
-			this.aGasNetwork.AmbientParameters = ambientParameters;
-			system.initializeWith (this.aGasNetwork);
+			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+			initializationTransition.EventsListener = eventListener;
+			initializationTransition.Network = this.aGasNetwork;
+			initializationTransition.UnknownInitialization = 
+				new UnknownInitializationSimplyRandomized ();
+			initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
 
-			var results = system.repeatMutateUntil (
-				new List<UntilConditionAbstract>{
+			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+			solveTransition.EventsListener = eventListener;
+			solveTransition.FormulaVisitor = formulaVisitor;
+			solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+			solveTransition.UntilConditions = new List<UntilConditionAbstract> {
 				new UntilConditionAdimensionalRatioPrecisionReached{
 					Precision = 75e-6
-				}
-			}
-			);
+				}};
 
+			var system = new FluidDynamicSystemStateTransitionCombinator ();
+			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition}
+			) as FluidDynamicSystemStateMathematicallySolved;
+
+			var results = finalState.MutationResult;
+			
 			assertsOnNodesPressures (results);
 
 			assertsOnEdgesFlows (results);
@@ -403,22 +417,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertsOnNodesPressures (OneStepMutationResults results)
 		{
-			
-			var relativeUnknownsWrapper = 
-				results.ComputedBy.makeUnknownsDimensional (results.Unknowns);
-
 			Vector<NodeForNetwonRaphsonSystem> relativeUnknowns = 
-				relativeUnknownsWrapper.WrappedObject;
+				results.makeUnknownsDimensional().WrappedObject;
 
-			var nodeA = results.findNodeByIdentifier (IdentifierNodeA);
-			var nodeB = results.findNodeByIdentifier (IdentifierNodeB);
-			var nodeC = results.findNodeByIdentifier (IdentifierNodeC);
-			var nodeD = results.findNodeByIdentifier (IdentifierNodeD);
-			var nodeE = results.findNodeByIdentifier (IdentifierNodeE);
-			var nodeF = results.findNodeByIdentifier (IdentifierNodeF);
-			var nodeG = results.findNodeByIdentifier (IdentifierNodeG);
-			var nodeH = results.findNodeByIdentifier (IdentifierNodeH);
-			var nodeI = results.findNodeByIdentifier (IdentifierNodeI);
+			var nodeA = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeA);
+			var nodeB = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeB);
+			var nodeC = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeC);
+			var nodeD = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeD);
+			var nodeE = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeE);
+			var nodeF = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeF);
+			var nodeG = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeG);
+			var nodeH = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeH);
+			var nodeI = results.StartingUnsolvedState.findNodeByIdentifier (IdentifierNodeI);
+
 			Assert.That (relativeUnknowns.valueAt (nodeA), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (relativeUnknowns.valueAt (nodeB), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (relativeUnknowns.valueAt (nodeC), Is.EqualTo (32.34).Within (1e-5));
@@ -432,17 +443,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		void assertsOnEdgesFlows (OneStepMutationResults results)
 		{
-			var edgeAB = results.findEdgeByIdentifier (IdentifierEdgeAB);
-			var edgeAE = results.findEdgeByIdentifier (IdentifierEdgeAE);
-			var edgeAF = results.findEdgeByIdentifier (IdentifierEdgeAF);
-			var edgeBC = results.findEdgeByIdentifier (IdentifierEdgeBC);
-			var edgeBF = results.findEdgeByIdentifier (IdentifierEdgeBF);
-			var edgeBG = results.findEdgeByIdentifier (IdentifierEdgeBG);
-			var edgeCD = results.findEdgeByIdentifier (IdentifierEdgeCD);
-			var edgeCG = results.findEdgeByIdentifier (IdentifierEdgeCG);
-			var edgeEF = results.findEdgeByIdentifier (IdentifierEdgeEF);
-			var edgeEH = results.findEdgeByIdentifier (IdentifierEdgeEH);
-			var edgeGI = results.findEdgeByIdentifier (IdentifierEdgeGI);
+			var edgeAB = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeAB);
+			var edgeAE = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeAE);
+			var edgeAF = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeAF);
+			var edgeBC = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeBC);
+			var edgeBF = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeBF);
+			var edgeBG = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeBG);
+			var edgeCD = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeCD);
+			var edgeCG = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeCG);
+			var edgeEF = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeEF);
+			var edgeEH = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeEH);
+			var edgeGI = results.StartingUnsolvedState.findEdgeByIdentifier (IdentifierEdgeGI);
+
 			Assert.That (results.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (results.Qvector.valueAt (edgeAE), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (results.Qvector.valueAt (edgeAF), Is.EqualTo (32.34).Within (1e-5));

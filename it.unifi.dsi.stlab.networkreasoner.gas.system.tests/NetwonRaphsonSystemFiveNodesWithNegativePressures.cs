@@ -10,6 +10,8 @@ using log4net.Config;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -32,56 +34,62 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Dictionary<string, GasEdgeAbstract> edges, 
 				AmbientParameters ambientParameters)
 			{
-				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
-
-				XmlConfigurator.Configure (
-					new FileInfo ("log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"));
-
-				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-					AmbientParameters = ambientParameters
-				};
-
-				NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-						Log = log
-					}
-				};
-
+				
 				var aGasNetwork = new GasNetwork{
 					Nodes = nodes,
 					Edges = edges,				
 					AmbientParameters = ambientParameters
 				};
 
-				system.initializeWith (aGasNetwork);
+				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+				var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
-				var untilConditions = new List<UntilConditionAbstract> {
-					new UntilConditionAdimensionalRatioPrecisionReached {
-						Precision = 1e-8
-					}
-				};
+				XmlConfigurator.Configure (new FileInfo (
+				"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml")
+				);
 
-				var mainComputationResults = system.repeatMutateUntil (untilConditions);
+				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+				formulaVisitor.AmbientParameters = ambientParameters;
 
-				var nodesSubstitutions = 
-					new List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> ();
+				var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
+				eventListener.Log = log;
 
-				var edgeSubstitutions = 
-					new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
+				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+				initializationTransition.EventsListener = eventListener;
+				initializationTransition.Network = aGasNetwork;
+				initializationTransition.UnknownInitialization = 
+				new UnknownInitializationSimplyRandomized ();
+				initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
 
-				OneStepMutationResults resultsAfterFixingNodeWithLoadGadgetPressure = 
-				system.fixNodesWithLoadGadgetNegativePressure (
-					mainComputationResults, 
-					untilConditions,
-					nodesSubstitutions,
-					edgeSubstitutions);
+				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+				solveTransition.EventsListener = eventListener;
+				solveTransition.FormulaVisitor = formulaVisitor;
+				solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = 1e-8
+				}};
+			
+				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
+				negativeLoadsCheckerTransition.EventsListener = eventListener;
+				negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
 
-				this.onComputationFinished (systemName, resultsAfterFixingNodeWithLoadGadgetPressure);
+				var system = new FluidDynamicSystemStateTransitionCombinator ();
+				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
+				) as FluidDynamicSystemStateMathematicallySolved;
+
+				var results = finalState.MutationResult;
+
+				this.onComputationFinished (systemName, results);
 
 				// here we perform the necessary tests using the plugged behaviour
-				this.ActionWithAsserts.Invoke (systemName, 
-				                               resultsAfterFixingNodeWithLoadGadgetPressure);
+				this.ActionWithAsserts.Invoke (systemName, results);
 			}
 			#endregion
 		}
@@ -108,24 +116,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		void assertsForSpecificationAllInOneFile (
 			string systemName, OneStepMutationResults results)
 		{
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
+			Vector<NodeForNetwonRaphsonSystem> relativeUnknowns = 
+				results.makeUnknownsDimensional().WrappedObject;
 
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
-
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
+			var node1 = results.StartingUnsolvedState.findNodeByIdentifier ("N1");
+			var node2 = results.StartingUnsolvedState.findNodeByIdentifier ("N2");
+			var node3 = results.StartingUnsolvedState.findNodeByIdentifier ("N3");
+			var node4 = results.StartingUnsolvedState.findNodeByIdentifier ("N4");
 			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (30.000).Within (1e-3));
 			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (27.792).Within (1e-3));
 			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (25.527).Within (1e-3));
 			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (27.016).Within (1e-3));
 
 			
-			var edgeR1 = results.findEdgeByIdentifier ("R1");
-			var edgeR2 = results.findEdgeByIdentifier ("R2");
-			var edgeR3 = results.findEdgeByIdentifier ("R3");
+			var edgeR1 = results.StartingUnsolvedState.findEdgeByIdentifier ("R1");
+			var edgeR2 = results.StartingUnsolvedState.findEdgeByIdentifier ("R2");
+			var edgeR3 = results.StartingUnsolvedState.findEdgeByIdentifier ("R3");
 			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (200.000).Within (1e-3));
 			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (-100.000).Within (1e-3));
 			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (-100.000).Within (1e-3));
@@ -196,143 +202,143 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			Dictionary<String, Action<OneStepMutationResults>> assertionsBySystems = 
 				new Dictionary<string, Action<OneStepMutationResults>> ();
 
-			assertionsBySystems.Add ("0", assertionForSystem0);
-			assertionsBySystems.Add ("1", assertionForSystem1);
-			assertionsBySystems.Add ("2", assertionForSystem2);
-			assertionsBySystems.Add ("3", assertionForSystem3);
-			assertionsBySystems.Add ("4", assertionForSystem4);
+//			assertionsBySystems.Add ("0", assertionForSystem0);
+//			assertionsBySystems.Add ("1", assertionForSystem1);
+//			assertionsBySystems.Add ("2", assertionForSystem2);
+//			assertionsBySystems.Add ("3", assertionForSystem3);
+//			assertionsBySystems.Add ("4", assertionForSystem4);
 
 			assertionsBySystems [systemName].Invoke (results);
 		}
 
-		void assertionForSystem0 (OneStepMutationResults results)
-		{
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
-
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
-
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
-
-			
-			var edgeR1 = results.findEdgeByIdentifier ("R1");
-			var edgeR2 = results.findEdgeByIdentifier ("R2");
-			var edgeR3 = results.findEdgeByIdentifier ("R3");
-			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
-		}
-
-		void assertionForSystem1 (OneStepMutationResults results)
-		{
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
-
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
-
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
-
-			
-			var edgeR1 = results.findEdgeByIdentifier ("R1");
-			var edgeR2 = results.findEdgeByIdentifier ("R2");
-			var edgeR3 = results.findEdgeByIdentifier ("R3");
-			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
-		}
-
-		void assertionForSystem2 (OneStepMutationResults results)
-		{
-			
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
-
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
-
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
-
-			
-			var edgeR1 = results.findEdgeByIdentifier ("R1");
-			var edgeR2 = results.findEdgeByIdentifier ("R2");
-			var edgeR3 = results.findEdgeByIdentifier ("R3");
-			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
-		}
-
-		void assertionForSystem3 (OneStepMutationResults results)
-		{
-			
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
-
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
-
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
-
-			
-			var edgeR1 = results.findEdgeByIdentifier ("R1");
-			var edgeR2 = results.findEdgeByIdentifier ("R2");
-			var edgeR3 = results.findEdgeByIdentifier ("R3");
-			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
-		}
-
-		void assertionForSystem4 (OneStepMutationResults results)
-		{
-			
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
-
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
-
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
-
-			
-			var edgeR1 = results.findEdgeByIdentifier ("R1");
-			var edgeR2 = results.findEdgeByIdentifier ("R2");
-			var edgeR3 = results.findEdgeByIdentifier ("R3");
-			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
-			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
-		}
-
+//		void assertionForSystem0 (OneStepMutationResults results)
+//		{
+//			var relativeUnknownsWrapper = results.StartingUnsolvedState.
+//					makeUnknownsDimensional (results.Unknowns);
+//
+//			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
+//
+//			var node1 = results.findNodeByIdentifier ("N1");
+//			var node2 = results.findNodeByIdentifier ("N2");
+//			var node3 = results.findNodeByIdentifier ("N3");
+//			var node4 = results.findNodeByIdentifier ("N4");
+//			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+//
+//			
+//			var edgeR1 = results.findEdgeByIdentifier ("R1");
+//			var edgeR2 = results.findEdgeByIdentifier ("R2");
+//			var edgeR3 = results.findEdgeByIdentifier ("R3");
+//			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+//		}
+//
+//		void assertionForSystem1 (OneStepMutationResults results)
+//		{
+//			var relativeUnknownsWrapper = results.StartingUnsolvedState.
+//					makeUnknownsDimensional (results.Unknowns);
+//
+//			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
+//
+//			var node1 = results.findNodeByIdentifier ("N1");
+//			var node2 = results.findNodeByIdentifier ("N2");
+//			var node3 = results.findNodeByIdentifier ("N3");
+//			var node4 = results.findNodeByIdentifier ("N4");
+//			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+//
+//			
+//			var edgeR1 = results.findEdgeByIdentifier ("R1");
+//			var edgeR2 = results.findEdgeByIdentifier ("R2");
+//			var edgeR3 = results.findEdgeByIdentifier ("R3");
+//			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+//		}
+//
+//		void assertionForSystem2 (OneStepMutationResults results)
+//		{
+//			
+//			var relativeUnknownsWrapper = results.StartingUnsolvedState.
+//					makeUnknownsDimensional (results.Unknowns);
+//
+//			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
+//
+//			var node1 = results.findNodeByIdentifier ("N1");
+//			var node2 = results.findNodeByIdentifier ("N2");
+//			var node3 = results.findNodeByIdentifier ("N3");
+//			var node4 = results.findNodeByIdentifier ("N4");
+//			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+//
+//			
+//			var edgeR1 = results.findEdgeByIdentifier ("R1");
+//			var edgeR2 = results.findEdgeByIdentifier ("R2");
+//			var edgeR3 = results.findEdgeByIdentifier ("R3");
+//			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+//		}
+//
+//		void assertionForSystem3 (OneStepMutationResults results)
+//		{
+//			
+//			var relativeUnknownsWrapper = results.StartingUnsolvedState.
+//					makeUnknownsDimensional (results.Unknowns);
+//
+//			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
+//
+//			var node1 = results.findNodeByIdentifier ("N1");
+//			var node2 = results.findNodeByIdentifier ("N2");
+//			var node3 = results.findNodeByIdentifier ("N3");
+//			var node4 = results.findNodeByIdentifier ("N4");
+//			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+//
+//			
+//			var edgeR1 = results.findEdgeByIdentifier ("R1");
+//			var edgeR2 = results.findEdgeByIdentifier ("R2");
+//			var edgeR3 = results.findEdgeByIdentifier ("R3");
+//			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+//		}
+//
+//		void assertionForSystem4 (OneStepMutationResults results)
+//		{
+//			
+//			var relativeUnknownsWrapper = results.StartingUnsolvedState.
+//					makeUnknownsDimensional (results.Unknowns);
+//
+//			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
+//
+//			var node1 = results.findNodeByIdentifier ("N1");
+//			var node2 = results.findNodeByIdentifier ("N2");
+//			var node3 = results.findNodeByIdentifier ("N3");
+//			var node4 = results.findNodeByIdentifier ("N4");
+//			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (32.34).Within (1e-5));
+//
+//			
+//			var edgeR1 = results.findEdgeByIdentifier ("R1");
+//			var edgeR2 = results.findEdgeByIdentifier ("R2");
+//			var edgeR3 = results.findEdgeByIdentifier ("R3");
+//			Assert.That (results.Qvector.valueAt (edgeR1), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR2), Is.EqualTo (32.34).Within (1e-5));
+//			Assert.That (results.Qvector.valueAt (edgeR3), Is.EqualTo (32.34).Within (1e-5));
+//		}
+//
 		#endregion
 	}
 }

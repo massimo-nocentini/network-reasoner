@@ -9,6 +9,8 @@ using System.IO;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -149,45 +151,52 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void do_some_mutation_steps ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
 			XmlConfigurator.Configure (new FileInfo (
 				"log4net-configurations/for-three-nodes-network.xml")
 			);
 
-
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
 				AmbientParameters = valid_initial_ambient_parameters ()
 			};
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLogging{
-					Log = log
-				}
-			
-			};
+			var eventListener = new NetwonRaphsonSystemEventsListenerForLogging{
+				Log = log};
 
+			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+			initializationTransition.EventsListener = eventListener;
+			initializationTransition.Network = this.aGasNetwork;
+			initializationTransition.UnknownInitialization = 
+				new UnknownInitializationSimplyRandomized ();
+			initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
 
+			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+			solveTransition.EventsListener = eventListener;
+			solveTransition.FormulaVisitor = formulaVisitor;
+			solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+			solveTransition.UntilConditions = new List<UntilConditionAbstract> ();
+			solveTransition.UntilConditions.Add (new UntilConditionMaxIterationReached{
+				MaxNumberOfInterations = 12
+			}
+			);
 
-			system.initializeWith (this.aGasNetwork);
-			var results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
-			results = system.mutateWithoutIterationNumber ();
+			var system = new FluidDynamicSystemStateTransitionCombinator ();
+			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition}
+			) as FluidDynamicSystemStateMathematicallySolved;
 
-			var dimensionalUnknowns = system.makeUnknownsDimensional (
-				results.Unknowns);
+			var results = finalState.MutationResult;
+			var dimensionalUnknowns = finalState.MutationResult.makeUnknownsDimensional ();
 
-			var nodeA = results.findNodeByIdentifier ("nA");
-			var nodeB = results.findNodeByIdentifier ("nB");
-			var nodeC = results.findNodeByIdentifier ("nC");
+			var nodeA = results.StartingUnsolvedState.findNodeByIdentifier ("nA");
+			var nodeB = results.StartingUnsolvedState.findNodeByIdentifier ("nB");
+			var nodeC = results.StartingUnsolvedState.findNodeByIdentifier ("nC");
 			Assert.That (dimensionalUnknowns.WrappedObject.valueAt (nodeA), 
 			             Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (dimensionalUnknowns.WrappedObject.valueAt (nodeB), 
@@ -195,8 +204,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			Assert.That (dimensionalUnknowns.WrappedObject.valueAt (nodeC), 
 			             Is.EqualTo (32.34).Within (1e-5));
 
-			var edgeAB = results.findEdgeByIdentifier ("edgeAB");
-			var edgeCB = results.findEdgeByIdentifier ("edgeCB");
+			var edgeAB = results.StartingUnsolvedState.findEdgeByIdentifier ("edgeAB");
+			var edgeCB = results.StartingUnsolvedState.findEdgeByIdentifier ("edgeCB");
 			Assert.That (results.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (results.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
 

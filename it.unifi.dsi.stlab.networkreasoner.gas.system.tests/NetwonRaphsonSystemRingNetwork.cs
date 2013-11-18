@@ -8,6 +8,8 @@ using log4net.Config;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -402,68 +404,79 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void test_ring_network_using_complete_solving_system ()
 		{
 			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			
+			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
 			XmlConfigurator.Configure (new FileInfo (
 				"log4net-configurations/for-ring-network.xml")
 			);
 
-			var ambientParameters = valid_initial_ambient_parameters ();
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = ambientParameters
+				AmbientParameters = valid_initial_ambient_parameters ()
 			};
 
-			NetwonRaphsonSystem system = new NetwonRaphsonSystem {
-				FormulaVisitor = formulaVisitor,
-				EventsListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-					Log = log
-				}
-			};
+			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
+				Log = log};
 
-			this.aGasNetwork.AmbientParameters = ambientParameters;
-			system.initializeWith (this.aGasNetwork);
+			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+			initializationTransition.EventsListener = eventListener;
+			initializationTransition.Network = this.aGasNetwork;
+			initializationTransition.UnknownInitialization = 
+				new UnknownInitializationSimplyRandomized ();
+			initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
 
-			var results = system.repeatMutateUntil (
-				new List<UntilConditionAbstract>{
+			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+			solveTransition.EventsListener = eventListener;
+			solveTransition.FormulaVisitor = formulaVisitor;
+			solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+			solveTransition.UntilConditions = new List<UntilConditionAbstract> {
 				new UntilConditionAdimensionalRatioPrecisionReached{
 					Precision = 75e-6
-				}
-			}
-			);
+				}};
 
-			var relativeUnknownsWrapper = results.ComputedBy.
-					makeUnknownsDimensional (results.Unknowns);
+			var system = new FluidDynamicSystemStateTransitionCombinator ();
+			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition}
+			) as FluidDynamicSystemStateMathematicallySolved;
 
-			var relativeUnknowns = relativeUnknownsWrapper.WrappedObject;
+			var results = finalState.MutationResult;
 
-			var node1 = results.findNodeByIdentifier ("N1");
-			var node2 = results.findNodeByIdentifier ("N2");
-			var node3 = results.findNodeByIdentifier ("N3");
-			var node4 = results.findNodeByIdentifier ("N4");
-			var nodeGRF = results.findNodeByIdentifier ("GRF");
-			var nodeA = results.findNodeByIdentifier ("NA");
-			var nodeB = results.findNodeByIdentifier ("NB");
-			var nodeC = results.findNodeByIdentifier ("NC");
-			var nodeD = results.findNodeByIdentifier ("ND");
+			var dimensionalUnknowns = results.makeUnknownsDimensional ().WrappedObject;
+
+			var node1 = results.StartingUnsolvedState.findNodeByIdentifier ("N1");
+			var node2 = results.StartingUnsolvedState.findNodeByIdentifier ("N2");
+			var node3 = results.StartingUnsolvedState.findNodeByIdentifier ("N3");
+			var node4 = results.StartingUnsolvedState.findNodeByIdentifier ("N4");
+			var nodeGRF = results.StartingUnsolvedState.findNodeByIdentifier ("GRF");
+			var nodeA = results.StartingUnsolvedState.findNodeByIdentifier ("NA");
+			var nodeB = results.StartingUnsolvedState.findNodeByIdentifier ("NB");
+			var nodeC = results.StartingUnsolvedState.findNodeByIdentifier ("NC");
+			var nodeD = results.StartingUnsolvedState.findNodeByIdentifier ("ND");
 			var precision = 1e-1;
-			Assert.That (relativeUnknowns.valueAt (node1), Is.EqualTo (529.643).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (node2), Is.EqualTo (444.374).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (node3), Is.EqualTo (435.396).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (node4), Is.EqualTo (575.737).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (nodeGRF), Is.EqualTo (699.999).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (nodeA), Is.EqualTo (506.404).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (nodeB), Is.EqualTo (272.014).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (nodeC), Is.EqualTo (505.433).Within (precision));
-			Assert.That (relativeUnknowns.valueAt (nodeD), Is.EqualTo (327.100).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (node1), Is.EqualTo (529.643).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (node2), Is.EqualTo (444.374).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (node3), Is.EqualTo (435.396).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (node4), Is.EqualTo (575.737).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (nodeGRF), Is.EqualTo (699.999).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (nodeA), Is.EqualTo (506.404).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (nodeB), Is.EqualTo (272.014).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (nodeC), Is.EqualTo (505.433).Within (precision));
+			Assert.That (dimensionalUnknowns.valueAt (nodeD), Is.EqualTo (327.100).Within (precision));
 			
-			var edge4 = results.findEdgeByIdentifier ("edge4");
-			var edge5 = results.findEdgeByIdentifier ("edge5");
-			var edge6 = results.findEdgeByIdentifier ("edge6");
-			var edge7 = results.findEdgeByIdentifier ("edge7");
-			var edge8 = results.findEdgeByIdentifier ("edge8");
-			var edge9 = results.findEdgeByIdentifier ("edge9");
-			var edge10 = results.findEdgeByIdentifier ("edge10");
-			var edge11 = results.findEdgeByIdentifier ("edge11");
-			var edge12 = results.findEdgeByIdentifier ("edge12");
+			var edge4 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge4");
+			var edge5 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge5");
+			var edge6 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge6");
+			var edge7 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge7");
+			var edge8 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge8");
+			var edge9 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge9");
+			var edge10 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge10");
+			var edge11 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge11");
+			var edge12 = results.StartingUnsolvedState.findEdgeByIdentifier ("edge12");
+
 			Assert.That (results.Qvector.valueAt (edge4), Is.EqualTo (400).Within (precision));
 			Assert.That (results.Qvector.valueAt (edge5), Is.EqualTo (350).Within (precision));
 			Assert.That (results.Qvector.valueAt (edge6), Is.EqualTo (200).Within (precision));
