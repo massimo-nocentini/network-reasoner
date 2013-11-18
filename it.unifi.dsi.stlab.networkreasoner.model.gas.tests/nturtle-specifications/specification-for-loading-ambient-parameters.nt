@@ -87,10 +87,10 @@ network:main
   
 parameter:gas
   a						type:gas-ambient-parameter ;
-  property:GasName				"Methane" ;
+  property:ElementName				"Methane" ;
   property:RefPressureInBar			"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:AirPressureInBar			"1013.25"^^<http://www.w3.org/2001/XMLSchema#double> ;
-  property:GasTemperatureInKelvin		"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+  property:ElementTemperatureInKelvin		"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:AirTemperatureInKelvin		"15.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:MolWeight				"16.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
   property:ViscosityInPascalTimesSecond		"0.0108"^^<http://www.w3.org/2001/XMLSchema#double> .
@@ -101,4 +101,4 @@ type:node			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.
 type:edge			csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeTopological, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:reachability-validator	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.ReachabilityValidator, it.unifi.dsi.stlab.networkreasoner.model.gas" .
 type:gas-network		csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.GasNetwork, it.unifi.dsi.stlab.networkreasoner.model.gas" .
-type:gas-ambient-parameter	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.AmbientParameters, it.unifi.dsi.stlab.networkreasoner.model.gas" .
+type:gas-ambient-parameter	csharp:qualified-fullname	"it.unifi.dsi.stlab.networkreasoner.model.gas.AmbientParametersGas, it.unifi.dsi.stlab.networkreasoner.model.gas" .

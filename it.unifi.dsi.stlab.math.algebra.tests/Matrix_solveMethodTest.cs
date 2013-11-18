@@ -50,9 +50,14 @@ namespace it.unifi.dsi.stlab.math.algebra.tests
 
 			var expectedResult = new DenseVector (new []{3.0,1.0,6.0});
 
-			Assert.AreEqual (expectedResult, computedResult);
-			
-			
+			checkComponentWithinPrecision (computedResult [0], expectedResult [0]);
+			checkComponentWithinPrecision (computedResult [1], expectedResult [1]);
+			checkComponentWithinPrecision (computedResult [2], expectedResult [2]);
+		}
+
+		protected virtual void checkComponentWithinPrecision (double actual, double expected)
+		{
+			Assert.That (actual, Is.EqualTo (expected).Within (1e-3));
 		}
 	}
 }

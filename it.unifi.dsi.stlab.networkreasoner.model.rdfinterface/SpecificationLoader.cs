@@ -163,6 +163,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 					Object instance = objectsByUri [subjectAsString];
 					var propertyToSet = instance.GetType ().GetProperty (propertyName);
 
+					if (propertyToSet == null) {
+						throw new Exception (string.Format ("The property with " +
+							"name {0} cannot be used since it isn't present in " +
+							"the object to be modified", propertyName)
+						);
+					}
+
 					triple.Object.DispatchOnNodeType (new A (
 						forLiteralNode: aLiteralNode => setProperty (
 							propertyToSet, instance, ValueOfLiteralNode (aLiteralNode))

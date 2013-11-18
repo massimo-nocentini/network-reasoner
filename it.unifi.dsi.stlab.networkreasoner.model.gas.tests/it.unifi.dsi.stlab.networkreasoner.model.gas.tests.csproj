@@ -57,5 +57,12 @@
   <ItemGroup>
     <None Include="MessagingForCoefficientVectorConstructionDependentOnGadgets.cs" />
     <None Include="MessagingForMatrixConstructionDependentOnGadgets.cs" />
+    <None Include="nturtle-specifications\specification-for-loading-ambient-parameters.nt" />
+    <None Include="nturtle-specifications\specification-for-loading-a-reachability-validator-for-connected-network.nt" />
+    <None Include="nturtle-specifications\specification-for-loading-a-reachability-validator-for-not-connected-network.nt" />
+    <None Include="nturtle-specifications\specification-for-loading-a-simple-gas-network.nt" />
+    <None Include="nturtle-specifications\specification-for-loading-a-viewer-validator-for-not-connected-network.nt" />
+    <None Include="nturtle-specifications\specification-for-loading-a-viewer-validator-for-not-connected-network-with-switched-off-edges.nt" />
+    <None Include="nturtle-specifications\three-nodes-network-for-newton-raphson-system-testing.nt" />
   </ItemGroup>
 </Project>
