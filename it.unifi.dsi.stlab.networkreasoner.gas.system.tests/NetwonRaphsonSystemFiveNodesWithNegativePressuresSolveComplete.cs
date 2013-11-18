@@ -119,8 +119,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNodePair.Value) ?
 					originalNodesBySubstitutedNodes [aNodePair.Value] : aNodePair.Value;
 
-					unknownsByNodes.Add (originalNode, 
-				                     dimensionalUnknowns.valueAt (aNodePair.Key));
+					unknownsByNodes.Add (originalNode, dimensionalUnknowns.valueAt (aNodePair.Key));
 				}
 
 				var originalEdgesBySubstitutedNodes = state.EdgesSubstitutions.OriginalsBySubstituted ();

@@ -123,9 +123,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (results);
 
-			var translator = new DimensionalDelegates ().makeAdimensionalToDimensionalTranslator (
-				results.StartingUnsolvedState.Nodes,  null);
-			var dimensionalUnknowns = results.Unknowns.makeDimensional (translator);
+			var dimensionalUnknowns = results.makeUnknownsDimensional();
 
 			var summaryTableItemsForCurrentSystem = 
 				new Dictionary<int, SummaryTableItem> ();

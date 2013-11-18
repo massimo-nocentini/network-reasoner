@@ -191,9 +191,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var system = new FluidDynamicSystemStateTransitionCombinator ();
 			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
 				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
-			) as FluidDynamicSystemStateMathematicallySolved;
+			) as FluidDynamicSystemStateNegativeLoadsCorrected;
 
-			var results = finalState.MutationResult;
+			var results = finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult;
 
 			var dimensionalUnknowns = results.makeUnknownsDimensional ().WrappedObject;
 
