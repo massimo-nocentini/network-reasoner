@@ -26,12 +26,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			out Dictionary<GasNodeAbstract, double> pressuresByNodes, 
 			out Dictionary<GasEdgeAbstract, double> flowsByEdges)
 		{
-
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
 			formulaVisitor.AmbientParameters = ambientParameters;
-
 
 			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
 			initializationTransition.EventsListener = eventListener;
@@ -60,17 +58,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
 				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
 			);
-			
-			pressuresByNodes = new Dictionary<GasNodeAbstract, double> ();
-
-			flowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
 
 			var originalDomainReverterVisitor = new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
-			originalDomainReverterVisitor.PressuresByNodes = pressuresByNodes;
-			originalDomainReverterVisitor.FlowsByEdges = flowsByEdges;
-
 			finalState.accept (originalDomainReverterVisitor);
 
+			pressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
+			flowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
 		}
 
 

@@ -37,6 +37,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public void forMathematicallySolvedState (FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved)
 		{
+			PressuresByNodes = new Dictionary<GasNodeAbstract, double> ();
+			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
+
 			var dimensionalUnknowns = fluidDynamicSystemStateMathematicallySolved.
 				MutationResult.makeUnknownsDimensional ().WrappedObject;
 
@@ -62,6 +65,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public void forNegativeLoadsCorrectedState (FluidDynamicSystemStateNegativeLoadsCorrected fluidDynamicSystemStateNegativeLoadsCorrected)
 		{
+			PressuresByNodes = new Dictionary<GasNodeAbstract, double> ();
+			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
+
 			var dimensionalUnknowns = fluidDynamicSystemStateNegativeLoadsCorrected.FluidDynamicSystemStateMathematicallySolved.
 				MutationResult.makeUnknownsDimensional ().WrappedObject;
 

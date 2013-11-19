@@ -78,20 +78,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
 				) as FluidDynamicSystemStateNegativeLoadsCorrected;
 
+				var originalDomainReverterVisitor = new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
+				finalState.accept (originalDomainReverterVisitor);
 
-				Dictionary<GasNodeAbstract, double> nodesPressures;
-				Dictionary<GasEdgeAbstract, double> edgesFlows;
-				visitNegativeLoadsCheckedSystemState (finalState, 
-				                            out nodesPressures, 
-				                            out edgesFlows);
+				Dictionary<GasNodeAbstract, double> pressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
+				Dictionary<GasEdgeAbstract, double> flowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
 
 				nodes.ForEach ((nodeKey, originalNode) => {
-					Assert.That (nodesPressures.ContainsKey (originalNode), Is.True);
+					Assert.That (pressuresByNodes.ContainsKey (originalNode), Is.True);
 				}
 				);
 
 				edges.ForEach ((edgeKey, originalEdge) => {
-					Assert.That (edgesFlows.ContainsKey (originalEdge), Is.True);
+					Assert.That (flowsByEdges.ContainsKey (originalEdge), Is.True);
 				}
 				);
 
@@ -101,41 +100,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			}
 			#endregion
 
-			protected virtual void visitNegativeLoadsCheckedSystemState (
-			FluidDynamicSystemStateNegativeLoadsCorrected state,
-			out Dictionary<GasNodeAbstract, double> unknownsByNodes, 
-			out Dictionary<GasEdgeAbstract, double> QvaluesByEdges)
-			{
-				unknownsByNodes = new Dictionary<GasNodeAbstract, double> ();
-				QvaluesByEdges = new Dictionary<GasEdgeAbstract, double> ();
 
-				var dimensionalUnknowns = state.FluidDynamicSystemStateMathematicallySolved.
-				MutationResult.makeUnknownsDimensional ().WrappedObject;
-
-				var originalNodesBySubstitutedNodes = state.NodesSubstitutions.OriginalsBySubstituted ();
-				foreach (var aNodePair in state.FluidDynamicSystemStateMathematicallySolved.MutationResult.
-			         StartingUnsolvedState.OriginalNodesByComputationNodes) {
-
-					var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNodePair.Value) ?
-					originalNodesBySubstitutedNodes [aNodePair.Value] : aNodePair.Value;
-
-					unknownsByNodes.Add (originalNode, dimensionalUnknowns.valueAt (aNodePair.Key));
-				}
-
-				var originalEdgesBySubstitutedNodes = state.EdgesSubstitutions.OriginalsBySubstituted ();
-				foreach (var edgePair in state.FluidDynamicSystemStateMathematicallySolved.MutationResult.
-			         StartingUnsolvedState.OriginalEdgesByComputationEdges) {
-
-					var originalEdge = originalEdgesBySubstitutedNodes.ContainsKey (edgePair.Value) ?
-					originalEdgesBySubstitutedNodes [edgePair.Value] : edgePair.Value; 
-
-					QvaluesByEdges.Add (originalEdge,
-				                    state.FluidDynamicSystemStateMathematicallySolved.
-				                    MutationResult.Qvector.valueAt (edgePair.Key)
-					);
-				}
-
-			}
 		
 		}
 
