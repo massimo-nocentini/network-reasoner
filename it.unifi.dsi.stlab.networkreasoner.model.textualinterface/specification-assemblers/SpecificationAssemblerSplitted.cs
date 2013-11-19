@@ -16,7 +16,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			string nodesDefinisionsFilename)
 		{
 			LazyNodeDefinitionExtensions = new Lazy<List<string>> (
-				() => new List<String> (File.ReadLines (nodesDefinisionsFilename)));
+				() => {
+				var lines = new List<String> (File.ReadLines (nodesDefinisionsFilename));
+				var result = new List<String> ();
+				lines.RemoveAll (line => line.StartsWith ("|-") || string.IsNullOrEmpty (line));
+				lines.ForEach (line => result.Add (line.Trim ()));
+				return result;
+			}
+			);
 		}		
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.SpecificationAssembler
@@ -30,14 +37,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			var headerLine = LazyNodeDefinitionExtensions.Value.First ();
 
-			var columns = this.SplitLineOnTabs (headerLine);
+			var columns = parentParser.splitOrgRow (headerLine);
 
 			var columnEnumeration = columns.enumerate ();
 
 			LazyNodeDefinitionExtensions.Value.Rest ().ForEach (
 				extensionLine => {
 
-				string[] splittedLine = this.SplitLineOnTabs (extensionLine);
+				string[] splittedLine = parentParser.splitOrgRow (extensionLine);
 
 				var nodes = new Dictionary<string, GasNodeAbstract> ();
 
@@ -105,12 +112,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		}
 		#endregion
-
-		protected virtual String[] SplitLineOnTabs (String toSplit)
-		{
-			return toSplit.Split (
-				new char[]{'\t'}, StringSplitOptions.RemoveEmptyEntries);
-		}
 
 
 	}

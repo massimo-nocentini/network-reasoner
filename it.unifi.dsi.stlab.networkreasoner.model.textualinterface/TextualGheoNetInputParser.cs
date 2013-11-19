@@ -4,6 +4,7 @@ using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.IO;
 using it.unifi.dsi.stlab.utilities.value_holders;
 using System.Globalization;
+using System.Dynamic.Utils;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
@@ -14,7 +15,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		public TextualGheoNetInputParser (string filename)
 		{
 			this.SpecificationLines = new Lazy<List<string>> (
-				() => new List<String> (File.ReadLines (filename)));
+				() => {
+				var lines = new List<String> (File.ReadLines (filename));
+				var result = new List<String> ();
+				lines.ForEach (line => result.Add (line.Trim ()));
+				return result;
+			}
+			);
 		}
 
 		public SystemRunnerFromTextualGheoNetInput parse (
@@ -37,14 +44,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		protected virtual List<string> fetchRegion (string regionIdentifier)
 		{
-			int startNodesRegionIndex = SpecificationLines.Value.IndexOf (
-				string.Format ("#{0}", regionIdentifier));
+			int startNodesRegionIndex = SpecificationLines.Value.FindIndex (
+				line => line.StartsWith (string.Format ("* {0}", regionIdentifier)));
 
-			int endNodesRegionIndex = SpecificationLines.Value.IndexOf (
-				string.Format ("#end{0}", regionIdentifier));
+			int endNodesRegionIndex = SpecificationLines.Value.FindIndex (
+				startNodesRegionIndex + 1,
+				line => line.StartsWith ("*"));
 
 			var region = SpecificationLines.Value.GetRange (
 				startNodesRegionIndex + 1, endNodesRegionIndex - startNodesRegionIndex - 1);
+
+			var headerHorizontalDivisorLineIndex = region.FindIndex (line => line.StartsWith ("|-"));
+
+			if (headerHorizontalDivisorLineIndex > -1) {
+				region = region.GetRange (headerHorizontalDivisorLineIndex + 1, 
+				                         region.Count - headerHorizontalDivisorLineIndex - 1);
+			}
+
+			region.RemoveAll (aLine => string.IsNullOrEmpty (aLine.Replace ("\t", "")));
 
 			return region;
 		}
@@ -62,7 +79,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			rawNodesSpecificationLines.ForEach (nodeSpecification => {
 
-				var splittedSpecification = nodeSpecification.Split (' ');
+				var splittedSpecification = splitOrgRow (nodeSpecification);
 
 				NodeSpecificationLine semanticLine = new NodeSpecificationLine ();
 
@@ -123,6 +140,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return delayConstructedNodes;
 		}
 
+		internal virtual String[] splitOrgRow (String orgTableRow)
+		{
+			return orgTableRow.Replace (" ", string.Empty).Replace ("\t", string.Empty).
+				Split (new []{'|'}, StringSplitOptions.RemoveEmptyEntries);
+		}
+
 		internal virtual Dictionary<string, GasEdgeAbstract> parseEdgesRelating (
 			Dictionary<string, GasNodeAbstract> nodes)
 		{
@@ -133,7 +156,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			edgesSpecificationLines.ForEach (edgeSpecification => {
 
-				var splittedSpecification = edgeSpecification.Split (' ');
+				var splittedSpecification = splitOrgRow (edgeSpecification);
 
 				var edgeIdentifier = splittedSpecification [0];
 
@@ -160,9 +183,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		internal virtual AmbientParameters parseAmbientParameters ()
 		{
 			AmbientParameters result = new AmbientParametersGas ();
-
-			string ambientParametersLine = this.SpecificationLines.Value [1];
-			string[] splittedSpecification = ambientParametersLine.Split (' ');
+			
+			var ambientParametersSpecificationLines = fetchRegion ("ambient parameters");
+			string ambientParametersLine = ambientParametersSpecificationLines [0];
+			string[] splittedSpecification = splitOrgRow (ambientParametersLine);
 
 			// parametriCalcoloGas.pressioneAtmosferica
 			result.AirPressureInBar = parseDoubleCultureInvariant (
