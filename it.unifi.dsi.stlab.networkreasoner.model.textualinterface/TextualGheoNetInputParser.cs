@@ -137,13 +137,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var edgeIdentifier = splittedSpecification [0];
 
-				if (nodes.ContainsKey (splittedSpecification [1]) == false) {
-					int a = 4;
-				} else if (nodes.ContainsKey (splittedSpecification [2]) == false) {
-					int a = 4;
-				}
-
-
 				GasEdgeAbstract anEdge = new GasEdgeTopological{
 					Identifier = edgeIdentifier,
 					StartNode = nodes[splittedSpecification[1]],
@@ -202,15 +195,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		internal virtual Nullable<double> parseDoubleCultureInvariant (
 			String doubleAsString)
 		{
+			Nullable<Double> result = null;
 			double value;
 			if (Double.TryParse (doubleAsString, 
 			                     System.Globalization.NumberStyles.Any, 
 			                     CultureInfo.InvariantCulture, 
 			                     out value)) {
-				return value;
+				result = value;
 			}
 
-			return null;
+			return result;
 		}
 	}
 }

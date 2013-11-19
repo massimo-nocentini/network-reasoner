@@ -27,6 +27,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			{
 				return value.ToString ("E3");
 			}
+			
+			protected virtual string columnSeparator ()
+			{
+				// using this column separator we aim to create an emacs-readable table
+				return "|";
+			}
 		}
 
 		class NodeForSummaryTable :SummaryTableItem
@@ -38,15 +44,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.SummaryTableItem
 			public override void appendValueInto (StringBuilder table)
 			{
-				table.Append (formatDouble (DimensionalPressure) + "\t" + 
-					formatDouble (QvalueSum)
-				);
+				table.AppendFormat ("{0} {2} {1}",
+				                    formatDouble (DimensionalPressure),
+				                    formatDouble (QvalueSum),
+				                    columnSeparator ());
 			}
 
 			public override void appendHeaderInto (StringBuilder table)
 			{
-				table.AppendFormat ("P_{0}\tSUMQ_{0}", Identifier);
+				table.AppendFormat ("P_{0} {1} SUMQ_{0}", Identifier, columnSeparator ());
 			}
+
 			#endregion
 		}
 
@@ -75,6 +83,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		TimeOfComputationHandling ComputationHandlingTime{ get; set; }
 
 		Dictionary<string, int> NodesOrEdgesColumnIndexesByNodeOrEdgeObject { get; set; }
+		
+		string ColumnSeparator = "|";
+		string RowSeparator = "|-";
 
 		public RunnableSystemAbstractComputationalResultHandlerShortTableSummary ()
 		{
@@ -123,7 +134,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (results);
 
-			var dimensionalUnknowns = results.makeUnknownsDimensional();
+			var dimensionalUnknowns = results.makeUnknownsDimensional ();
 
 			var summaryTableItemsForCurrentSystem = 
 				new Dictionary<int, SummaryTableItem> ();
@@ -183,14 +194,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				new ActionTimeComputationOnFirstTime ();
 
 			actionForFirstSystemLine.Action = () => {
-				table.Append ("SYSNAME\t");
-				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (aColumnIndex => {
+				table.AppendFormat ("{1}\n{0} SYSNAME {0}", ColumnSeparator, RowSeparator);
+				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
+					aColumnIndex => {
+
 					var item = resultLineForFirstSystem [aColumnIndex];
 					item.appendHeaderInto (table);
-					table.Append ("\t");
+					table.Append (ColumnSeparator);
 				}
 				);
-				table.Append ("\n");
+				table.AppendFormat ("\n{0}\n", RowSeparator);
 			};
 
 			timedDecoredItem.ComputationTime.perform (actionForFirstSystemLine);
@@ -208,20 +221,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
 					table, resultLineForFirstSystem, timedDecoredItem);
 
-				table.AppendFormat ("{0}\t", timedDecoredItem.Item);
+				table.AppendFormat ("{1}{0}{1}", timedDecoredItem.Item, ColumnSeparator);
 
 				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
 					aColumnPosition => {
 
 					SummaryTableItem item = resultLineForFirstSystem [aColumnPosition];
 					item.appendValueInto (table);
-					table.Append ("\t");
+					table.Append (ColumnSeparator);
 				}
 				);
 
 				table.Append ("\n");
 			}
 			);
+			table.Append (RowSeparator);
 
 			return table.ToString ();
 		}
