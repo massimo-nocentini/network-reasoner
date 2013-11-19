@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\OneStepMutationResults.cs" />
     <Compile Include="exactly-dimensioned-instance\NodeForNetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystemBuilder.cs" />
@@ -75,6 +74,9 @@
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator.cs" />
     <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalDelegates.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionCombinator.cs" />
+    <Compile Include="exactly-dimensioned-instance\NewtonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitor.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -105,5 +107,6 @@
     <Folder Include="exactly-dimensioned-instance\objects-with-dimension\" />
     <Folder Include="exactly-dimensioned-instance\system-variants\" />
     <Folder Include="exactly-dimensioned-instance\system-operations\" />
+    <Folder Include="exactly-dimensioned-instance\system-state-visitors\" />
   </ItemGroup>
 </Project>

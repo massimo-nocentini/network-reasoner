@@ -35,7 +35,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					AmbientParameters = ambientParameters
 				};
 
-				ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+				ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
 			
 				var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 

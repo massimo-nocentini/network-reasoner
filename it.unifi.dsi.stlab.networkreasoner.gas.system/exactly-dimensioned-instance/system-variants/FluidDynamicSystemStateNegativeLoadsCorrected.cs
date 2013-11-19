@@ -33,6 +33,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			return aVisitor.forNegativeLoadsCorrectedState (this);
 		}
+
+		public override void accept (FluidDynamicSystemStateVisitor aVisitor)
+		{
+			aVisitor.forNegativeLoadsCorrectedState (this);
+		}
 		#endregion
 	}
 }

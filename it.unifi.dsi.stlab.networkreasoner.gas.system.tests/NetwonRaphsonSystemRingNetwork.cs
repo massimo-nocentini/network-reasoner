@@ -403,7 +403,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		[Test()]
 		public void test_ring_network_using_complete_solving_system ()
 		{
-			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
 			
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 

@@ -34,6 +34,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			return aVisitor.forUnsolvedSystemState (this);
 		}
+
+		public override void accept (FluidDynamicSystemStateVisitor aVisitor)
+		{
+			aVisitor.forUnsolvedSystemState(this);
+		}
 		#endregion
 
 		public NodeForNetwonRaphsonSystem findNodeByIdentifier (

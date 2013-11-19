@@ -17,7 +17,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			return aVisitor.forMathematicallySolvedState (this);
 		}
+
+		public override void accept (FluidDynamicSystemStateVisitor aVisitor)
+		{
+			aVisitor.forMathematicallySolvedState (this);
+		}
 		#endregion
+
 
 	}
 }

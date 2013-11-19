@@ -150,7 +150,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		[Test()]
 		public void do_mutation_via_repetition ()
 		{
-			ILog log = LogManager.GetLogger (typeof(NetwonRaphsonSystem));
+			ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
 			
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
