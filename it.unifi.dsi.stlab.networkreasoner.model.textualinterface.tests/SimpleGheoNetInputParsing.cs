@@ -65,7 +65,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		public void read_simple_specification_for_gheonet ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
-				"examples/first-simple-specification.dat");
+				new FileInfo ("examples/first-simple-specification.dat"));
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerAllInOneFile ());

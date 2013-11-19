@@ -12,11 +12,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	{
 		Lazy<List<String>> SpecificationLines{ get; set; }
 
-		public TextualGheoNetInputParser (string filename)
+		public TextualGheoNetInputParser (FileInfo file)
 		{
 			this.SpecificationLines = new Lazy<List<string>> (
 				() => {
-				var lines = new List<String> (File.ReadLines (filename));
+				var lines = new List<String> (File.ReadLines (file.FullName));
 				var result = new List<String> ();
 				lines.ForEach (line => result.Add (line.Trim ()));
 				return result;

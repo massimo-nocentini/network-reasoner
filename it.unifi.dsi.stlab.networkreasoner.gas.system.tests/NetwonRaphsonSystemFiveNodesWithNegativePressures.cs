@@ -99,7 +99,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
-				"gheonet-textual-networks/five-nodes-network.dat");
+				new FileInfo ("gheonet-textual-networks/five-nodes-network.dat"));
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerAllInOneFile ()
@@ -149,11 +149,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets_with_splitted_specification ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
-				"gheonet-textual-networks/five-nodes-network.dat");
+				new FileInfo ("gheonet-textual-networks/five-nodes-network.dat"));
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerSplitted (
-					"gheonet-textual-networks/five-nodes-network-extension.dat")
+					new FileInfo ("gheonet-textual-networks/five-nodes-network-extension.dat"))
 			);
 
 			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem (
@@ -175,11 +175,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets_with_splitted_specification_small_instace ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
-				"gheonet-textual-networks/five-nodes-network.dat");
+				new FileInfo ("gheonet-textual-networks/five-nodes-network.dat"));
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerSplitted (
-					"gheonet-textual-networks/five-nodes-network-extension-small.dat")
+					new FileInfo ("gheonet-textual-networks/five-nodes-network-extension-small.dat"))
 			);
 
 			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem (

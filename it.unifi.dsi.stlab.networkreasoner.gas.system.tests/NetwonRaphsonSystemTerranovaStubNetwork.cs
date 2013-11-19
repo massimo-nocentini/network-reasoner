@@ -99,7 +99,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
-				"gheonet-textual-networks/terranova-stub-network.dat");
+				new FileInfo("gheonet-textual-networks/terranova-stub-network.dat"));
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerAllInOneFile ()

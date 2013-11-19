@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Collections.Generic;
+using System.IO;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 {
@@ -191,11 +192,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		public void read_simple_specification_for_gheonet ()
 		{
 			TextualGheoNetInputParser parser = new TextualGheoNetInputParser (
-				"examples/first-simple-specification.dat");
+				new System.IO.FileInfo ("examples/first-simple-specification.dat"));
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = 
 				parser.parse (new SpecificationAssemblerSplitted (
-					"examples/nodes-loads-pressures-for-splitted-specification.dat")
+					new FileInfo ("examples/nodes-loads-pressures-for-splitted-specification.dat"))
 			);
 
 			systemRunner.run (new CheckAllSystems ());			
