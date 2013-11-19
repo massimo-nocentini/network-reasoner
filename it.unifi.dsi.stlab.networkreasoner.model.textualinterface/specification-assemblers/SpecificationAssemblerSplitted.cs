@@ -11,6 +11,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	public class SpecificationAssemblerSplitted : SpecificationAssembler
 	{
 		Lazy<List<String>> LazyNodeDefinitionExtensions{ get; set; }
+		
+		public SpecificationAssemblerSplitted (
+			List<String> lines)
+		{
+			LazyNodeDefinitionExtensions = new Lazy<List<string>> (
+				() => {
+				var result = new List<String> ();
+				lines.RemoveAll (line => line.StartsWith ("|-") || string.IsNullOrEmpty (line));
+				lines.ForEach (line => result.Add (line.Trim ()));
+				return result;
+			}
+			);
+		}		
 
 		public SpecificationAssemblerSplitted (
 			FileInfo nodesDefinisionsFileInfo)
