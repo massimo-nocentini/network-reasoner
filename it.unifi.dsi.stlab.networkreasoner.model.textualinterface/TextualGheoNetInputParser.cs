@@ -53,7 +53,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return systemRunner;
 		}
 
-		public virtual List<string> fetchRegion (string regionIdentifier)
+		public virtual List<string> fetchRegion (string regionIdentifier, TableHeaderParser tableHeaderParser)
 		{
 			int startNodesRegionIndex = SpecificationLines.Value.FindIndex (
 				line => line.StartsWith (string.Format ("* {0}", regionIdentifier)));
@@ -65,12 +65,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			var region = SpecificationLines.Value.GetRange (
 				startNodesRegionIndex + 1, endNodesRegionIndex - startNodesRegionIndex - 1);
 
-			var headerHorizontalDivisorLineIndex = region.FindIndex (line => line.StartsWith ("|-"));
-
-			if (headerHorizontalDivisorLineIndex > -1) {
-				region = region.GetRange (headerHorizontalDivisorLineIndex + 1, 
-				                         region.Count - headerHorizontalDivisorLineIndex - 1);
-			}
+			region = tableHeaderParser.parse (region);
 
 			region.RemoveAll (aLine => string.IsNullOrEmpty (aLine.Replace ("\t", "")));
 
@@ -86,7 +81,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			var nodesSpecificationLines = new List<NodeSpecificationLine> ();
 
-			var rawNodesSpecificationLines = fetchRegion ("nodes");
+			var rawNodesSpecificationLines = fetchRegion ("nodes", new TableHeaderParserIgnoreHeader ());
 
 			rawNodesSpecificationLines.ForEach (nodeSpecification => {
 
@@ -163,7 +158,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			Dictionary<string, GasEdgeAbstract> parsedEdges = 
 				new Dictionary<string, GasEdgeAbstract> ();
 
-			var edgesSpecificationLines = fetchRegion ("edges");
+			var edgesSpecificationLines = fetchRegion ("edges", new TableHeaderParserIgnoreHeader ());
 
 			edgesSpecificationLines.ForEach (edgeSpecification => {
 
@@ -195,13 +190,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			AmbientParameters result = new AmbientParametersGas ();
 			
-			var ambientParametersSpecificationLines = fetchRegion ("ambient parameters");
+			var ambientParametersSpecificationLines = fetchRegion ("ambient parameters", 
+			                                                       new TableHeaderParserIgnoreHeader ());
 			string ambientParametersLine = ambientParametersSpecificationLines [0];
 			string[] splittedSpecification = splitOrgRow (ambientParametersLine);
 
 			// parametriCalcoloGas.pressioneAtmosferica
 			result.AirPressureInBar = parseDoubleCultureInvariant (
-				splittedSpecification [2]).Value / 1000; 
+				splittedSpecification [2]).Value * 1e-3; 
 
 			// parametriCalcoloGas.temperaturaAria
 			result.AirTemperatureInKelvin = parseDoubleCultureInvariant (

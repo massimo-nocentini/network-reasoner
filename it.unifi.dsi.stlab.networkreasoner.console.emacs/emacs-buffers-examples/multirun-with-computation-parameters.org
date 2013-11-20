@@ -49,11 +49,11 @@
   |  23 | 25 |  52.3 | 500.0 |
 
 * computation parameters
-  | param         |                                                       |
-  |---------------+-------------------------------------------------------|
-  | precision     | 1e-6                                                  |
-  | log conf file | log-conf-for-multirun-with-computation-parameters.xml |
-  | listener      | NetwonRaphsonSystemEventsListenerForLogging           |
+  | param         |                                                                                                                                                                                 |
+  |---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | precision     | 1e-6                                                                                                                                                                            |
+  | listener      | it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners.NetwonRaphsonSystemEventsListenerForLogging, it.unifi.dsi.stlab.networkreasoner.gas.system |
+  | log conf file | log-conf-for-multirun-with-computation-parameters.xml                                                                                                                           |
 
 
 * end

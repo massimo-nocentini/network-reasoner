@@ -25,7 +25,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			protected virtual String formatDouble (Double value)
 			{
-				return value.ToString ("E3");
+				return Math.Abs (value) >= 1e6 ? value.ToString ("E3") : value.ToString ("0.00");
 			}
 			
 			protected virtual string columnSeparator ()

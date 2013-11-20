@@ -32,7 +32,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		{
 			var airPressureInBar = AmbientParameters.AirPressureInBar * 
 				Math.Exp (-(AmbientParameters.GravitationalAcceleration * anAirPressureFormula.NodeHeight) / 
-				(AmbientParameters.Rconstant() * AmbientParameters.AirTemperatureInKelvin)
+				(AmbientParameters.Rconstant () * AmbientParameters.AirTemperatureInKelvin)
 			);
 
 			return airPressureInBar;
@@ -53,14 +53,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public virtual double visitCovariantLittleKFormula (
 			CovariantLittleKFormula covariantLittleKFormula)
 		{
-			return this.AmbientParameters.Rconstant() + 
+			return this.AmbientParameters.Rconstant () + 
 				this.weightedHeightsDifferenceFor (covariantLittleKFormula);
 		}
 
 		public virtual double visitControVariantLittleKFormula (
 			ControVariantLittleKFormula controVariantLittleKFormula)
 		{
-			return this.AmbientParameters.Rconstant() - 
+			return this.AmbientParameters.Rconstant () - 
 				this.weightedHeightsDifferenceFor (controVariantLittleKFormula);
 		}
 
@@ -69,7 +69,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			var f = aKvalueFormula.EdgeFvalue;
 
-			var A = this.AmbientParameters.Aconstant() / 
+			var A = this.AmbientParameters.Aconstant () / 
 				Math.Pow (aKvalueFormula.EdgeDiameterInMillimeters / 1000, 5);
 
 			var unknownForStartNode = aKvalueFormula.UnknownForEdgeStartNode;
@@ -178,6 +178,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var toInvert = -2 * Math.Log10 (augend + addend);
 
 			var Fvalue = Math.Pow (1 / toInvert, 2);
+			
+			if (Re < 2000) {
+				Fvalue = 64.0 / Re;	
+			}
 
 			return Fvalue;
 		}

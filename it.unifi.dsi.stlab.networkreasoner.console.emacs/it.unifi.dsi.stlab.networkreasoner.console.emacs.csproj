@@ -58,6 +58,18 @@
       <Project>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.gas.system</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
+      <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.csproj">
+      <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj">
+      <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
+      <Name>it.unifi.dsi.stlab.math.algebra</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="emacs-buffers-examples\" />

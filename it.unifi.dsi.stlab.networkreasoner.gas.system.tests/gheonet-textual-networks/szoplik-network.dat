@@ -81,4 +81,12 @@
 | N30 | 0 | 16.00 |  0.00 | 0 |
 | N31 | 0 |  7.00 |  0.00 | 0 |
 
+
+* computation parameters
+  | param         |      |
+  |---------------+------|
+  | precision     | 1e-6 |
+  | listener      |      |
+  | log conf file |      |
+
 * end

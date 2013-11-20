@@ -7,6 +7,12 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using log4net;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 using log4net.Config;
+using it.unifi.dsi.stlab.networkreasoner.model.gas;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using it.unifi.dsi.stlab.networkreasoner.gas.system;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 {
@@ -23,6 +29,64 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			new MainClass ().run (lines);
 		}
 
+		class RunnableSystemWithSummaryTableDecoration : 
+		RunnableSystemAbstractComputationalResultHandlerShortTableSummary
+		{
+			public NetwonRaphsonSystemEventsListener EventListener { get; set; }
+
+			public Double Precision { get; set; }
+
+			public override void compute (
+				string systemName, 
+				Dictionary<string, GasNodeAbstract> nodes, 
+				Dictionary<string, GasEdgeAbstract> edges, 
+				AmbientParameters ambientParameters)
+			{
+				var aGasNetwork = new GasNetwork{
+					Nodes = nodes,
+					Edges = edges,				
+					AmbientParameters = ambientParameters
+				};
+
+				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+				formulaVisitor.AmbientParameters = ambientParameters;
+
+				var translatorMaker = new DimensionalDelegates ();
+
+				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
+				initializationTransition.EventsListener = EventListener;
+				initializationTransition.Network = aGasNetwork;
+				initializationTransition.UnknownInitialization = new UnknownInitializationSimplyRandomized ();
+				initializationTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+
+				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
+				solveTransition.EventsListener = EventListener;
+				solveTransition.FormulaVisitor = formulaVisitor;
+				solveTransition.FromDimensionalToAdimensionalTranslator = 
+				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
+				"dimensional -> adimensional translation requested when it isn't required.");
+				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
+				new UntilConditionAdimensionalRatioPrecisionReached{
+					Precision = Precision
+				}};
+			
+				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
+				negativeLoadsCheckerTransition.EventsListener = EventListener;
+				negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
+
+				var system = new FluidDynamicSystemStateTransitionCombinator ();
+				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
+				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
+				) as FluidDynamicSystemStateNegativeLoadsCorrected;
+
+				var results = finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult;
+
+				this.onComputationFinished (systemName, results);
+			}
+		}
+
 		public void run (List<String> lines)
 		{
 			TextualGheoNetInputParser parser = 
@@ -30,17 +94,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = null;
 			var multirun_region_identifier = "multirun";
-//			if (lines.Exists (line => line.StartsWith ("* " + multirun_region_identifier))) {
-//
-//				var multirun_region = parser.fetchRegion (multirun_region_identifier);
-//
-//				systemRunner = parser.parse (new SpecificationAssemblerSplitted (multirun_region));
-//			} else {
-//				systemRunner = parser.parse (new SpecificationAssemblerAllInOneFile ());
-//			}
 
-			// now configure the runnable system
-			var computationParametersRegion = parser.fetchRegion ("computation parameters");
+			if (lines.Exists (line => line.StartsWith ("* " + multirun_region_identifier))) {
+
+				var multirun_region = parser.fetchRegion (multirun_region_identifier, 
+				                                          new TableHeaderParserKeepHeaderRow ());
+
+				systemRunner = parser.parse (new SpecificationAssemblerSplitted (multirun_region));
+			} else {
+				systemRunner = parser.parse (new SpecificationAssemblerAllInOneFile ());
+			}
+
+			var computationParametersRegion = parser.fetchRegion ("computation parameters", 
+			                                                      new TableHeaderParserIgnoreHeader ());
 			var precisionRow = parser.splitOrgRow (computationParametersRegion [0]);
 			double precision = Double.MinValue;
 			if (precisionRow.Length > 1) {
@@ -50,7 +116,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			var listenerRow = parser.splitOrgRow (computationParametersRegion [1]);
 			NetwonRaphsonSystemEventsListener listener = null;
 			if (listenerRow.Length > 1) {
-				listener = Activator.CreateInstance (Type.GetType (listenerRow [1])) 
+				listener = Activator.CreateInstance (Type.GetType (listenerRow [1]))
 					as NetwonRaphsonSystemEventsListener;
 			} else {
 				listener = new NetwonRaphsonSystemEventsListenerNullObject ();
@@ -67,7 +133,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				}
 			}
 
-			RunnableSystemAbstractComputationalResultHandlerShortTableSummary runnable_system = null;
+			RunnableSystemAbstractComputationalResultHandlerShortTableSummary runnable_system = 
+			new RunnableSystemWithSummaryTableDecoration{
+				Precision = precision,
+				EventListener = listener
+			};
+
 			systemRunner.run (runnable_system);
 
 			Console.WriteLine (runnable_system.buildTableSummary ());

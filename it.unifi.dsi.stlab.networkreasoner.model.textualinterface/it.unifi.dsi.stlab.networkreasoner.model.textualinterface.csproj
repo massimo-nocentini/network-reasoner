@@ -48,6 +48,9 @@
     <Compile Include="runnable-systems\RunnableSystem.cs" />
     <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandler.cs" />
     <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandlerShortTableSummary.cs" />
+    <Compile Include="header-parsing-handlers\TableHeaderParser.cs" />
+    <Compile Include="header-parsing-handlers\TableHeaderParserIgnoreHeader.cs" />
+    <Compile Include="header-parsing-handlers\TableHeaderParserKeepHeaderRow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -76,5 +79,6 @@
     <Folder Include="specification-assemblers\" />
     <Folder Include="system-runners\" />
     <Folder Include="runnable-systems\" />
+    <Folder Include="header-parsing-handlers\" />
   </ItemGroup>
 </Project>
