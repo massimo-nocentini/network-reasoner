@@ -53,7 +53,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return systemRunner;
 		}
 
-		protected virtual List<string> fetchRegion (string regionIdentifier)
+		public virtual List<string> fetchRegion (string regionIdentifier)
 		{
 			int startNodesRegionIndex = SpecificationLines.Value.FindIndex (
 				line => line.StartsWith (string.Format ("* {0}", regionIdentifier)));
@@ -151,7 +151,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return delayConstructedNodes;
 		}
 
-		internal virtual String[] splitOrgRow (String orgTableRow)
+		public virtual String[] splitOrgRow (String orgTableRow)
 		{
 			return orgTableRow.Replace (" ", string.Empty).Replace ("\t", string.Empty).
 				Split (new []{'|'}, StringSplitOptions.RemoveEmptyEntries);
@@ -227,7 +227,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			return result;
 		}
 
-		internal virtual Nullable<double> parseDoubleCultureInvariant (
+		public virtual Nullable<double> parseDoubleCultureInvariant (
 			String doubleAsString)
 		{
 			Nullable<Double> result = null;

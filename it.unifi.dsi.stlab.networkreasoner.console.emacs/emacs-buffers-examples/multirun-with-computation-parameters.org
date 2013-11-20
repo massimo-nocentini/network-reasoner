@@ -49,11 +49,11 @@
   |  23 | 25 |  52.3 | 500.0 |
 
 * computation parameters
-  | param     | value |
-  |-----------+-------|
-  | precision | 1e-6  |
-  | listener  | lis   |
-  | log conf  | conf  |
+  | param         |                                                       |
+  |---------------+-------------------------------------------------------|
+  | precision     | 1e-6                                                  |
+  | log conf file | log-conf-for-multirun-with-computation-parameters.xml |
+  | listener      | NetwonRaphsonSystemEventsListenerForLogging           |
 
 
 * end

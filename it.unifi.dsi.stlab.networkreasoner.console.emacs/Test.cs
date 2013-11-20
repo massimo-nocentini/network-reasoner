@@ -10,8 +10,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 		[Test()]
 		public void TestCase ()
 		{
-			MainClass.Main (new []{
-				File.ReadAllText ("emacs-buffers-examples/multirun-with-computation-parameters.org")}
+			new MainClass ().run (new System.Collections.Generic.List<string> (
+				File.ReadAllLines (
+				"emacs-buffers-examples/multirun-with-computation-parameters.org")
+			)
 			);
 		}
 	}

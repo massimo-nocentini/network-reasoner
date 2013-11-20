@@ -34,6 +34,14 @@
     <Reference Include="nunit.framework">
       <Package>mono-nunit</Package>
     </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="log4net">
+      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -46,6 +54,10 @@
       <Project>{B8312B0F-17B4-4685-B994-77495716FDCE}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.textualinterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system\it.unifi.dsi.stlab.networkreasoner.gas.system.csproj">
+      <Project>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="emacs-buffers-examples\" />
@@ -55,6 +67,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="nrei.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="emacs-buffers-examples\log-conf-for-multirun-with-computation-parameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
