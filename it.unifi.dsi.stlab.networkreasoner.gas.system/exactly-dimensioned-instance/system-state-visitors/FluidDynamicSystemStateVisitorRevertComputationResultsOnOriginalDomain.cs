@@ -17,6 +17,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			get;
 			set;
 		}
+		
+		public Dictionary<GasNodeAbstract, double> AlgebraicSumOfFlowsByNodes {
+			get;
+			set;
+		}
 
 		#region FluidDynamicSystemStateVisitor implementation
 		public void forBareSystemState (FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
@@ -35,9 +40,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			);
 		}
 
-		public void forMathematicallySolvedState (FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved)
+		public void forMathematicallySolvedState (
+			FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved)
 		{
 			PressuresByNodes = new Dictionary<GasNodeAbstract, double> ();
+			AlgebraicSumOfFlowsByNodes = new Dictionary<GasNodeAbstract, double> ();
 			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
 
 			var dimensionalUnknowns = fluidDynamicSystemStateMathematicallySolved.
@@ -49,23 +56,56 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 				PressuresByNodes.Add (originalByComputationNodesPair.Value, 
 				                      dimensionalUnknowns.valueAt (originalByComputationNodesPair.Key));
+			
+				AlgebraicSumOfFlowsByNodes.Add (originalByComputationNodesPair.Value, 0d);
 			}
 
 			foreach (var originalByComputationEdgesPair in
 			        fluidDynamicSystemStateMathematicallySolved.MutationResult.
 			         StartingUnsolvedState.OriginalEdgesByComputationEdges) {
-			
-				FlowsByEdges.Add (originalByComputationEdgesPair.Value,
-				                 fluidDynamicSystemStateMathematicallySolved.
-				                  MutationResult.Qvector.valueAt (
-					originalByComputationEdgesPair.Key)
-				);
+
+				var Qvalue = fluidDynamicSystemStateMathematicallySolved.
+					MutationResult.Qvector.valueAt (originalByComputationEdgesPair.Key);
+
+				FlowsByEdges.Add (originalByComputationEdgesPair.Value, Qvalue);
+
+				var startEndNodesFinder = new FindStartEndNodesOfAbstractEdge ();
+				originalByComputationEdgesPair.Value.accept (startEndNodesFinder);
+
+				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.EndNode] += Qvalue;
+				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.StartNode] -= Qvalue;
 			}
+		}
+
+		class FindStartEndNodesOfAbstractEdge : GasEdgeVisitor
+		{
+			public GasNodeAbstract StartNode{ get; private set; }
+
+			public GasNodeAbstract EndNode{ get; private set; }
+
+			#region GasEdgeVisitor implementation
+			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
+			{
+				gasEdgePhysical.Described.accept (this);
+			}
+
+			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
+			{
+				StartNode = gasEdgeTopological.StartNode;
+				EndNode = gasEdgeTopological.EndNode;
+			}
+
+			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
+			{
+				gasEdgeWithGadget.Equipped.accept (this);
+			}
+			#endregion
 		}
 
 		public void forNegativeLoadsCorrectedState (FluidDynamicSystemStateNegativeLoadsCorrected fluidDynamicSystemStateNegativeLoadsCorrected)
 		{
 			PressuresByNodes = new Dictionary<GasNodeAbstract, double> ();
+			AlgebraicSumOfFlowsByNodes = new Dictionary<GasNodeAbstract, double> ();
 			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
 
 			var dimensionalUnknowns = fluidDynamicSystemStateNegativeLoadsCorrected.FluidDynamicSystemStateMathematicallySolved.
@@ -80,6 +120,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					originalNodesBySubstitutedNodes [aNodePair.Value] : aNodePair.Value;
 
 				PressuresByNodes.Add (originalNode, dimensionalUnknowns.valueAt (aNodePair.Key));
+				AlgebraicSumOfFlowsByNodes.Add (originalNode, 0d);
 			}
 
 			var originalEdgesBySubstitutedNodes = fluidDynamicSystemStateNegativeLoadsCorrected.
@@ -91,11 +132,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				var originalEdge = originalEdgesBySubstitutedNodes.ContainsKey (edgePair.Value) ?
 					originalEdgesBySubstitutedNodes [edgePair.Value] : edgePair.Value; 
 
-				FlowsByEdges.Add (originalEdge,
-				                fluidDynamicSystemStateNegativeLoadsCorrected.
-				                FluidDynamicSystemStateMathematicallySolved.
-				                    MutationResult.Qvector.valueAt (edgePair.Key)
-				);
+				var Qvalue = fluidDynamicSystemStateNegativeLoadsCorrected.
+					FluidDynamicSystemStateMathematicallySolved.MutationResult.
+						Qvector.valueAt (edgePair.Key);
+
+				FlowsByEdges.Add (originalEdge, Qvalue);
+				
+				var startEndNodesFinder = new FindStartEndNodesOfAbstractEdge ();
+				originalEdge.accept (startEndNodesFinder);
+
+				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.EndNode] += Qvalue;
+				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.StartNode] -= Qvalue;
 			}
 		}
 		#endregion

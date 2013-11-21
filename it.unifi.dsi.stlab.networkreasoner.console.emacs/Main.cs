@@ -186,7 +186,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			systemRunner.run (runnable_system);
 			
 			Console.WriteLine (string.Format ("* steady state analysis\n{0}", 
-			                                  runnable_system.buildTableSummary ())
+			                                  runnable_system.buildSummaryContent ())
 			);
 
 			var dotRepresentationRow = parser.splitOrgRow (computationParametersRegion [3]);

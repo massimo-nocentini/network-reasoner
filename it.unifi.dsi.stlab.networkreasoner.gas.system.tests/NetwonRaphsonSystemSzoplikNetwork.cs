@@ -110,7 +110,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			
 			File.WriteAllText ("gheonet-textual-networks/szoplik-network-output.dat", 
-			                  fiveNodesNetworkRunnableSystem.buildTableSummary ());
+			                  fiveNodesNetworkRunnableSystem.buildSummaryContent ());
 			
 		}
 

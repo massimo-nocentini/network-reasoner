@@ -23,7 +23,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			AmbientParameters ambientParameters,
 			NetwonRaphsonSystemEventsListener eventListener,
 			double precision,
-			out Dictionary<GasNodeAbstract, double> pressuresByNodes, 
+			out Dictionary<GasNodeAbstract, double> pressuresByNodes,
+			out Dictionary<GasNodeAbstract, double> algebraicSumOfFlowsByNodes,
 			out Dictionary<GasEdgeAbstract, double> flowsByEdges)
 		{
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
@@ -50,19 +51,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					Precision = precision
 				}};
 			
-			var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
+			var negativeLoadsCheckerTransition = 
+				new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
 			negativeLoadsCheckerTransition.EventsListener = eventListener;
 			negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
 
 			var system = new FluidDynamicSystemStateTransitionCombinator ();
 			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition}
+				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
 			);
 
-			var originalDomainReverterVisitor = new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
+			var originalDomainReverterVisitor = 
+				new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
 			finalState.accept (originalDomainReverterVisitor);
 
 			pressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
+			algebraicSumOfFlowsByNodes = originalDomainReverterVisitor.AlgebraicSumOfFlowsByNodes;
 			flowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
 		}
 

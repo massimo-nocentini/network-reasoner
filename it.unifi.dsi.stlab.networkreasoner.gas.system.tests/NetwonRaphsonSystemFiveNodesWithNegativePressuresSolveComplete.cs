@@ -120,7 +120,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			systemRunner.run (fiveNodesNetworkRunnableSystem);
 
 			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output.dat", 
-			                  fiveNodesNetworkRunnableSystem.buildTableSummary ());
+			                  fiveNodesNetworkRunnableSystem.buildSummaryContent ());
 			
 		}
 

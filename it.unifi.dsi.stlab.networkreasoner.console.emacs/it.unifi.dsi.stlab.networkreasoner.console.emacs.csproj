@@ -78,9 +78,6 @@
     <None Include="emacs-buffers-examples\multirun-with-computation-parameters.org">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="nrei.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="emacs-buffers-examples\log-conf-for-multirun-with-computation-parameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

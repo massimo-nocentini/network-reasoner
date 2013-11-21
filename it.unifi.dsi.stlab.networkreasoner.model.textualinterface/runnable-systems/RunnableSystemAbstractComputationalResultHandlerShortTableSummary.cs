@@ -136,7 +136,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		}
 
-		public virtual String buildTableSummary ()
+		public virtual String buildSummaryContent ()
 		{
 			StringBuilder table = new StringBuilder ();
 
