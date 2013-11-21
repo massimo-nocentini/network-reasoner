@@ -6,7 +6,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
 	public interface SummaryTableBuildingStrategy
 	{
-		void collectUsingInto (Dictionary<string, Dictionary<int,  SummaryTableItem>> summaryTableItems, StringBuilder table);
+		void collectNodesTableUsingInto (
+			Dictionary<string, Dictionary<int,  SummaryTableItem>> summaryTableNodes, 
+			StringBuilder table);
+
+		void collectEdgesTableUsingInto (
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableEdges, 
+			StringBuilder table);
+
 	}
 }
 

@@ -15,18 +15,49 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 
 		#region SummaryTableBuildingStrategy implementation
-		public void collectUsingInto (
-			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableItems, 
+		public void collectNodesTableUsingInto (
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableNodes, 
 			System.Text.StringBuilder table)
 		{
-			summaryTableItems.Keys.ToList ().DecoreWithTimeComputation ().ForEach (
+			Action headerAction = () => table.AppendFormat (
+				"{1}\n{0} NODE ID {0} PRESSURE {0} ALGEB FLOWS SUM {0}\n{1}\n", 
+				ColumnSeparator, 
+				RowSeparator);
+
+			collectTableItemsInto (headerAction,
+			                      summaryTableNodes,
+			                      table);
+		}
+
+		public void collectEdgesTableUsingInto (
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableEdges, 
+			StringBuilder table)
+		{
+			Action headerAction = () => table.AppendFormat (
+				"{1}\n{0} EDGE ID {0} FLOW {0}\n{1}\n", 
+				ColumnSeparator, 
+				RowSeparator);
+
+			collectTableItemsInto (headerAction,
+			                      summaryTableEdges,
+			                      table);
+		}
+
+		#endregion
+
+		protected virtual void collectTableItemsInto (
+			Action headerAction,
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableNodes, 
+			System.Text.StringBuilder table)
+		{
+			summaryTableNodes.Keys.ToList ().DecoreWithTimeComputation ().ForEach (
 				timedDecoredItem => {
 
 				Dictionary<int, SummaryTableItem> resultLineForFirstSystem = 
-					summaryTableItems [timedDecoredItem.Item];
+					summaryTableNodes [timedDecoredItem.Item];
 
 				appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
-					table, timedDecoredItem);
+					headerAction, table, timedDecoredItem);
 
 				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
 					aRowPosition => {
@@ -41,22 +72,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			);
 			table.Append (RowSeparator);
 		}
-		#endregion
 
 		protected virtual void appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
+			Action action,
 			StringBuilder table, 
 			ListExtensionMethods.ListItemDecoratedWithTimeComputation<string> timedDecoredItem)
 		{
 			ActionTimeComputation actionForFirstSystemLine = 
-				new ActionTimeComputationOnFirstTime ();
-
-			actionForFirstSystemLine.Action = () => table.AppendFormat (
-				"{1}\n{0} NODE ID {0} PRESSURE {0} ALGEB FLOWS SUM {0}\n{1}\n", 
-				ColumnSeparator, 
-				RowSeparator);
+			new ActionTimeComputationOnFirstTime {Action = action};
 
 			timedDecoredItem.ComputationTime.perform (actionForFirstSystemLine);
-		}
+		}		
+
+		
+
+
 
 	}
 }

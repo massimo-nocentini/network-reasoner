@@ -15,14 +15,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 
 		#region SummaryTableBuildingStrategy implementation
-		public void collectUsingInto (
-			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableItems, 
+		public void collectNodesTableUsingInto (
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableNodes, 
 			System.Text.StringBuilder table)
 		{
-			summaryTableItems.Keys.ToList ().DecoreWithTimeComputation ().ForEach (
+			summaryTableNodes.Keys.ToList ().DecoreWithTimeComputation ().ForEach (
 				timedDecoredItem => {
 
-				var resultLineForFirstSystem = summaryTableItems [timedDecoredItem.Item];
+				var resultLineForFirstSystem = summaryTableNodes [timedDecoredItem.Item];
 
 				appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
 					table, resultLineForFirstSystem, timedDecoredItem);
@@ -43,6 +43,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			);
 			table.Append (RowSeparator);
 		}
+
+		public void collectEdgesTableUsingInto (
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableEdges, 
+			StringBuilder table)
+		{
+			collectNodesTableUsingInto (summaryTableEdges, table);
+		}
+
 		#endregion
 
 		protected virtual void appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
@@ -56,9 +64,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			actionForFirstSystemLine.Action = () => {
 				table.AppendFormat ("{1}\n{0} SYSNAME {0}", ColumnSeparator, RowSeparator);
 				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
-					aColumnIndex => {
+					aColumnPosition => {
 
-					var item = resultLineForFirstSystem [aColumnIndex];
+					var item = resultLineForFirstSystem [aColumnPosition];
 					item.appendHeaderInto (table);
 					table.Append (ColumnSeparator);
 				}

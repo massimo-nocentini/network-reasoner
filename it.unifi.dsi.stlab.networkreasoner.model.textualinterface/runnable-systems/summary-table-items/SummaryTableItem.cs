@@ -11,7 +11,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		public String Identifier{ get; set; }
 
-		public int ColumnPosition{ get; set; }
+		public int Position{ get; set; }
 
 		protected virtual String formatDouble (Double value)
 		{

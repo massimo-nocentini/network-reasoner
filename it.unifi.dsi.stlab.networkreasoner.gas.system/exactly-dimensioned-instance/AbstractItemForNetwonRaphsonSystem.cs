@@ -4,6 +4,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public abstract class AbstractItemForNetwonRaphsonSystem
 	{
+		public string Identifier {
+			get;
+			set;
+		}
+
 	}
 }
 

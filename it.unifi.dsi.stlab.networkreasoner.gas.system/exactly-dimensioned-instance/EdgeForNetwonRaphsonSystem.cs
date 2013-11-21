@@ -283,8 +283,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public EdgeState SwitchState{ get; set; }
 
-		public string Identifier { get; set; }
-
 		public double Length { get; set; }
 
 		public double DiameterInMillimeters { get; set; }
