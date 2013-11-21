@@ -185,7 +185,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		}
 
-		public void validate (GasNetwork gasNetwork)
+		public StringBuilder generateContent (GasNetwork gasNetwork)
 		{
 			List<EdgeForDotRepresentationValidator> edges;
 			List<NodeForDotRepresentationValidator> vertices;
@@ -200,6 +200,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			BuildRepresentationForVertices (vertices, dotRepresentation);
 			BuildRepresentationForEdges (edges, dotRepresentation);
 			dotRepresentation.AppendLine ("}");
+
+			return dotRepresentation;
+		}
+
+		public void validate (GasNetwork gasNetwork)
+		{
+			StringBuilder dotRepresentation = generateContent (gasNetwork);
 
 			this.CreateFileForDotRepresentation (dotRepresentation.ToString ());
 

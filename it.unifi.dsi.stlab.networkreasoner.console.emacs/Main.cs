@@ -13,6 +13,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 using it.unifi.dsi.stlab.math.algebra;
+using System.Text;
 
 namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 {
@@ -87,6 +88,49 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			}
 		}
 
+		class DotRepresentationsRunnableSystem : RunnableSystem
+		{
+			Dictionary<string, StringBuilder> DotRepresentationsBySystems{ get; set; }
+
+			public DotRepresentationsRunnableSystem ()
+			{
+				DotRepresentationsBySystems = new Dictionary<string, StringBuilder> ();
+			}
+
+			#region RunnableSystem implementation
+			public void compute (
+				string systemName, 
+				Dictionary<string, GasNodeAbstract> nodes, 
+				Dictionary<string, GasEdgeAbstract> edges, 
+				AmbientParameters ambientParameters)
+			{
+				var aGasNetwork = new GasNetwork{
+					Nodes = nodes,
+					Edges = edges,				
+					AmbientParameters = ambientParameters
+				};
+
+				var dotRepresentationValidator = new DotRepresentationValidator ();
+				var dotContent = dotRepresentationValidator.generateContent (aGasNetwork);
+
+				DotRepresentationsBySystems.Add (systemName, dotContent);
+			}
+			#endregion
+
+			public String buildDotRepresentations ()
+			{
+				StringBuilder result = new StringBuilder ();
+
+				foreach (var pair in DotRepresentationsBySystems) {
+					result.AppendFormat ("** dot representation for system {0}\n\t", pair.Key);
+					result.AppendFormat ("{0}\n", pair.Value.ToString ());
+				}
+
+				return result.ToString ();
+			}
+
+		}
+
 		public void run (List<String> lines)
 		{
 			TextualGheoNetInputParser parser = 
@@ -140,8 +184,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			};
 
 			systemRunner.run (runnable_system);
+			
+			Console.WriteLine (string.Format ("* steady state analysis\n{0}", 
+			                                  runnable_system.buildTableSummary ())
+			);
 
-			Console.WriteLine (runnable_system.buildTableSummary ());
+			var dotRepresentationRow = parser.splitOrgRow (computationParametersRegion [3]);
+			if (dotRepresentationRow.Length > 1) {
+				var dotRepresentationsRunnableSystem = new DotRepresentationsRunnableSystem ();
+				systemRunner.run (dotRepresentationsRunnableSystem);
+
+				Console.WriteLine (string.Format ("\n\n* Dot representations\n{0}",
+				                                  dotRepresentationsRunnableSystem.buildDotRepresentations ())
+				);
+			}
+
 		}
 	}
 }

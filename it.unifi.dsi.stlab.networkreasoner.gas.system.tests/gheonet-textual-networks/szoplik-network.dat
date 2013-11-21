@@ -88,5 +88,6 @@
   | precision     | 1e-6 |
   | listener      |      |
   | log conf file |      |
-
+  | dot preview   | yes  |
+  
 * end
