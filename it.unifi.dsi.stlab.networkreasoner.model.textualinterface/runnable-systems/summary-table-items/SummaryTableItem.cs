@@ -9,6 +9,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		public abstract void appendHeaderInto (StringBuilder table);
 
+		public abstract void appendIdentifierForSingleRunAnalysisInto (StringBuilder table);
+
 		public String Identifier{ get; set; }
 
 		public int Position{ get; set; }

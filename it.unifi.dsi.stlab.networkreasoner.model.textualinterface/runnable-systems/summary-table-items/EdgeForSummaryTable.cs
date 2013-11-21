@@ -7,6 +7,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	{
 		public Double Qvalue{ get; set; }
 
+		public String IdentifierAsLinkNotation{ get; set; }
+
 		// TODO: compute here the velocity
 
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.SummaryTableItem
@@ -17,9 +19,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		public override void appendHeaderInto (StringBuilder table)
 		{
-			table.AppendFormat ("Q_{0}", Identifier);
+			table.AppendFormat ("Q_{0} ({1})", Identifier, IdentifierAsLinkNotation);
 		}
-			#endregion
+
+		public override void appendIdentifierForSingleRunAnalysisInto (StringBuilder table)
+		{
+			string columnSeparator = "|";
+			table.AppendFormat ("{1} {0} {2}", 
+			                    columnSeparator, 
+			                    Identifier, 
+			                    IdentifierAsLinkNotation);
+		}
+		#endregion
 	}
 
 }

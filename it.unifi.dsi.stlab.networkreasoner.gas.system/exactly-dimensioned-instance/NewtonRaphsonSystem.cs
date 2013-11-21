@@ -56,7 +56,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 			var system = new FluidDynamicSystemStateTransitionCombinator ();
 			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
+				initializationTransition, solveTransition}
 			);
 
 			var originalDomainReverterVisitor = new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();

@@ -102,6 +102,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				EdgeForSummaryTable summaryEdge = new EdgeForSummaryTable{
 					Identifier = anEdge.Identifier,
+					IdentifierAsLinkNotation = anEdge.identifierUsingLinkNotation(),
 					Qvalue = Qvalue,
 					Position = edgePosition
 				};

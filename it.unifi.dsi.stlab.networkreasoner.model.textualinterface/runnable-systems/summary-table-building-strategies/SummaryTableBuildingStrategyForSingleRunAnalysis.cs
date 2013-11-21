@@ -34,7 +34,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			StringBuilder table)
 		{
 			Action headerAction = () => table.AppendFormat (
-				"{1}\n{0} EDGE ID {0} FLOW {0}\n{1}\n", 
+				"{1}\n{0} EDGE ID {0} LINK {0} FLOW {0}\n{1}\n", 
 				ColumnSeparator, 
 				RowSeparator);
 
@@ -63,7 +63,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					aRowPosition => {
 
 					SummaryTableItem item = resultLineForFirstSystem [aRowPosition];
-					table.AppendFormat ("{0} {1} {0}", ColumnSeparator, item.Identifier);
+					table.AppendFormat ("{0} ", ColumnSeparator);
+					item.appendIdentifierForSingleRunAnalysisInto (table);
+					table.AppendFormat (" {0}", ColumnSeparator);
 					item.appendValueInto (table);
 					table.AppendFormat ("{0}\n", ColumnSeparator);
 				}

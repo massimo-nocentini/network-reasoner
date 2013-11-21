@@ -297,10 +297,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		private Double? ControVariantLittleK{ get; set; }
 
-//		public string identifier ()
-//		{
-//			return StartNode.Identifier + " -> " + EndNode.Identifier;
-//		}
+		public string identifierUsingLinkNotation ()
+		{
+			return StartNode.Identifier + " -> " + EndNode.Identifier;
+		}
 
 		public double coVariantLittleK (
 			GasFormulaVisitor aFormulaVisitor)

@@ -23,7 +23,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			table.AppendFormat ("P_{0} {1} SUMQ_{0}", Identifier, columnSeparator ());
 		}
 
-			#endregion
+		public override void appendIdentifierForSingleRunAnalysisInto (StringBuilder table)
+		{
+			table.Append (Identifier);
+		}
+		#endregion
 	}
 }
 
