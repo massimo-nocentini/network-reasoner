@@ -13,79 +13,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	public abstract class RunnableSystemAbstractComputationalResultHandlerShortTableSummary :
 		RunnableSystemAbstractComputationalResultHandler
 	{
-		internal abstract class SummaryTableItem
-		{
-			public abstract void appendValueInto (StringBuilder table);
-
-			public abstract void appendHeaderInto (StringBuilder table);
-
-			public String Identifier{ get; set; }
-
-			public int ColumnPosition{ get; set; }
-
-			protected virtual String formatDouble (Double value)
-			{
-				return Math.Abs (value) >= 1e6 ? value.ToString ("E3") : value.ToString ("0.00");
-			}
-			
-			protected virtual string columnSeparator ()
-			{
-				// using this column separator we aim to create an emacs-readable table
-				return "|";
-			}
-		}
-
-		class NodeForSummaryTable :SummaryTableItem
-		{
-			public Double QvalueSum{ get; set; }
-
-			public Double DimensionalPressure{ get; set; }	
-
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.SummaryTableItem
-			public override void appendValueInto (StringBuilder table)
-			{
-				table.AppendFormat ("{0} {2} {1}",
-				                    formatDouble (DimensionalPressure),
-				                    formatDouble (QvalueSum),
-				                    columnSeparator ());
-			}
-
-			public override void appendHeaderInto (StringBuilder table)
-			{
-				table.AppendFormat ("P_{0} {1} SUMQ_{0}", Identifier, columnSeparator ());
-			}
-
-			#endregion
-		}
-
-		class EdgeForSummaryTable : SummaryTableItem
-		{
-			public Double Qvalue{ get; set; }
-
-			// TODO: compute here the velocity
-
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.SummaryTableItem
-			public override void appendValueInto (StringBuilder table)
-			{
-				table.Append (formatDouble (Qvalue));
-			}
-
-			public override void appendHeaderInto (StringBuilder table)
-			{
-				table.AppendFormat ("Q_{0}", Identifier);
-			}
-			#endregion
-		}
-
-
 		Dictionary<String, Dictionary<int, SummaryTableItem>> SummaryTableItems{ get; set; }
 
 		TimeOfComputationHandling ComputationHandlingTime{ get; set; }
 
 		Dictionary<string, int> NodesOrEdgesColumnIndexesByNodeOrEdgeObject { get; set; }
-		
-		string ColumnSeparator = "|";
-		string RowSeparator = "|-";
 
 		public RunnableSystemAbstractComputationalResultHandlerShortTableSummary ()
 		{
@@ -101,7 +33,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					[tableItemIdentifier];
 		}
 
-		void buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (
+		protected virtual void buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (
 			OneStepMutationResults results)
 		{
 			var columnPositionsForTableSummaryItemsAction = 
@@ -185,60 +117,34 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		}
 
-		internal virtual void appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
-			StringBuilder table, 
-			Dictionary<int, SummaryTableItem> resultLineForFirstSystem, 
-			ListExtensionMethods.ListItemDecoratedWithTimeComputation<string> timedDecoredItem)
-		{
-			ActionTimeComputation actionForFirstSystemLine = 
-				new ActionTimeComputationOnFirstTime ();
-
-			actionForFirstSystemLine.Action = () => {
-				table.AppendFormat ("{1}\n{0} SYSNAME {0}", ColumnSeparator, RowSeparator);
-				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
-					aColumnIndex => {
-
-					var item = resultLineForFirstSystem [aColumnIndex];
-					item.appendHeaderInto (table);
-					table.Append (ColumnSeparator);
-				}
-				);
-				table.AppendFormat ("\n{0}\n", RowSeparator);
-			};
-
-			timedDecoredItem.ComputationTime.perform (actionForFirstSystemLine);
-		}
-
 		public virtual String buildTableSummary ()
 		{
 			StringBuilder table = new StringBuilder ();
 
-			SummaryTableItems.Keys.ToList ().DecoreWithTimeComputation ().ForEach (
-				timedDecoredItem => {
+			SummaryTableBuildingStrategy strategyDependentOnRunAnalysis = 
+				buildStrategy (SummaryTableItems);
 
-				var resultLineForFirstSystem = SummaryTableItems [timedDecoredItem.Item];
-
-				appendHeadersIntoTableOnlyOnFirstTimeThisMethodIsCalled (
-					table, resultLineForFirstSystem, timedDecoredItem);
-
-				table.AppendFormat ("{1}{0}{1}", timedDecoredItem.Item, ColumnSeparator);
-
-				resultLineForFirstSystem.Count.rangeFromZero ().ForEach (
-					aColumnPosition => {
-
-					SummaryTableItem item = resultLineForFirstSystem [aColumnPosition];
-					item.appendValueInto (table);
-					table.Append (ColumnSeparator);
-				}
-				);
-
-				table.Append ("\n");
-			}
-			);
-			table.Append (RowSeparator);
+			strategyDependentOnRunAnalysis.collectUsingInto (SummaryTableItems, table);
 
 			return table.ToString ();
 		}
+
+		// here we consume a dictionary that is the same as the private field
+		// since that field is private hence not accessible in a subclass.
+		protected virtual SummaryTableBuildingStrategy buildStrategy (
+			Dictionary<string, Dictionary<int, SummaryTableItem>> summaryTableItems)
+		{
+			SummaryTableBuildingStrategy strategy = null;
+
+			if (summaryTableItems.Count == 1) { 
+				strategy = new SummaryTableBuildingStrategyForSingleRunAnalysis ();
+			} else {
+				strategy = new SummaryTableBuildingStrategyForMultiRunAnalysis ();
+			}
+
+			return strategy;
+		}
+
 	}
 }
 

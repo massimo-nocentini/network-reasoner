@@ -51,6 +51,12 @@
     <Compile Include="header-parsing-handlers\TableHeaderParser.cs" />
     <Compile Include="header-parsing-handlers\TableHeaderParserIgnoreHeader.cs" />
     <Compile Include="header-parsing-handlers\TableHeaderParserKeepHeaderRow.cs" />
+    <Compile Include="runnable-systems\summary-table-building-strategies\SummaryTableBuildingStrategy.cs" />
+    <Compile Include="runnable-systems\summary-table-building-strategies\SummaryTableBuildingStrategyForSingleRunAnalysis.cs" />
+    <Compile Include="runnable-systems\summary-table-building-strategies\SummaryTableBuildingStrategyForMultiRunAnalysis.cs" />
+    <Compile Include="runnable-systems\summary-table-items\SummaryTableItem.cs" />
+    <Compile Include="runnable-systems\summary-table-items\NodeForSummaryTable.cs" />
+    <Compile Include="runnable-systems\summary-table-items\EdgeForSummaryTable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -80,5 +86,7 @@
     <Folder Include="system-runners\" />
     <Folder Include="runnable-systems\" />
     <Folder Include="header-parsing-handlers\" />
+    <Folder Include="runnable-systems\summary-table-building-strategies\" />
+    <Folder Include="runnable-systems\summary-table-items\" />
   </ItemGroup>
 </Project>

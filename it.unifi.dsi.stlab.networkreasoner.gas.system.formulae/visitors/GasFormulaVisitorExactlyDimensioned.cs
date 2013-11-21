@@ -82,7 +82,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			var length = aKvalueFormula.EdgeLength;
 
-			var K = 3600 / Math.Sqrt (f * A * length * weightedHeightsDifference);
+			var K = .9 * 3600 / Math.Sqrt (f * A * length * weightedHeightsDifference);
 
 			return K;
 		}
