@@ -71,7 +71,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			
 				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
 				negativeLoadsCheckerTransition.EventsListener = eventListener;
-				negativeLoadsCheckerTransition.FormulaVisitor = formulaVisitor;
 
 				var system = new FluidDynamicSystemStateTransitionCombinator ();
 				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{

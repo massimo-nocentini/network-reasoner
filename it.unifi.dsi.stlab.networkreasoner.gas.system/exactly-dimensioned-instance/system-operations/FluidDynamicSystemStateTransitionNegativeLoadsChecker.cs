@@ -12,20 +12,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 	public class FluidDynamicSystemStateTransitionNegativeLoadsChecker
 		: FluidDynamicSystemStateTransition
 	{
-		public GasFormulaVisitor FormulaVisitor{ get; set; }
-
-//			internal Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> 
-//			FromDimensionalToAdimensionalTranslator{ get; set; }
-
-//			public NegativeLoadsCheckerTransitionBuilder useAdimensionalTranslator (
-//				Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> 
-//				fromDimensionalToAdimensionalTranslator
-//			)
-//			{
-//				this.FromDimensionalToAdimensionalTranslator = fromDimensionalToAdimensionalTranslator;
-//				return this;
-//			}
-//
 
 		#region FluidDynamicSystemStateTransition implementation
 		public FluidDynamicSystemStateAbstract forBareSystemState (
@@ -74,8 +60,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			var previousMutationResults = fluidDynamicSystemStateMathematicallySolved.MutationResult;
 
 			var relativeUnknownsDimensionalWrapper = this.makeUnknownsDimensional (
-				previousMutationResults.Unknowns, 
-				previousMutationResults.StartingUnsolvedState);
+				previousMutationResults);
+
+			relativeUnknownsDimensionalWrapper = previousMutationResults.makeUnknownsDimensional ();
 
 			var relativeUnknowns = relativeUnknownsDimensionalWrapper.WrappedObject;
 
@@ -167,16 +154,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		#endregion
 
 		protected virtual DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional (
-			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> adimensionalWrapper,
-			FluidDynamicSystemStateUnsolved FluidDynamicSystemStateUnsolved)
+			OneStepMutationResults mutationResult)
 		{
-			var translator = new DimensionalDelegates ().makeAdimensionalToDimensionalTranslator (
-				FluidDynamicSystemStateUnsolved.Nodes,
-				FormulaVisitor);
-
-			var dimensionalUnknowns = adimensionalWrapper.makeDimensional (translator);
-
-			return dimensionalUnknowns;
+			return mutationResult.makeUnknownsDimensional ();
 		}
 	}
 }

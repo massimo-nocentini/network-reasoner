@@ -13,14 +13,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		protected override DimensionalObjectWrapper<
 			Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional (
-				DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> adimensionalWrapper, 
-				FluidDynamicSystemStateUnsolved fluidDynamicSystemStateUnsolved)
+				OneStepMutationResults mutationResult)
 		{
-			var dimensionalUnknowns = base.makeUnknownsDimensional (
-				adimensionalWrapper, fluidDynamicSystemStateUnsolved);
+			var dimensionalUnknowns = base.makeUnknownsDimensional (mutationResult);
 			
 			EventsListener.onUnknownWithDimensionReverted (
-				fluidDynamicSystemStateUnsolved.NodesEnumeration, 
+				mutationResult.StartingUnsolvedState.NodesEnumeration, 
 				dimensionalUnknowns.WrappedObject);
 
 			return dimensionalUnknowns;
