@@ -33,6 +33,9 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Core" />
+    <Reference Include="log4net">
+      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -46,17 +49,13 @@
     <Compile Include="NodeType.cs" />
     <Compile Include="system-runners\SystemRunnerFromTextualGheoNetInputMultipleSystems.cs" />
     <Compile Include="runnable-systems\RunnableSystem.cs" />
-    <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandler.cs" />
-    <Compile Include="runnable-systems\RunnableSystemAbstractComputationalResultHandlerShortTableSummary.cs" />
     <Compile Include="header-parsing-handlers\TableHeaderParser.cs" />
     <Compile Include="header-parsing-handlers\TableHeaderParserIgnoreHeader.cs" />
     <Compile Include="header-parsing-handlers\TableHeaderParserKeepHeaderRow.cs" />
-    <Compile Include="runnable-systems\summary-table-building-strategies\SummaryTableBuildingStrategy.cs" />
-    <Compile Include="runnable-systems\summary-table-building-strategies\SummaryTableBuildingStrategyForSingleRunAnalysis.cs" />
-    <Compile Include="runnable-systems\summary-table-building-strategies\SummaryTableBuildingStrategyForMultiRunAnalysis.cs" />
-    <Compile Include="runnable-systems\summary-table-items\SummaryTableItem.cs" />
-    <Compile Include="runnable-systems\summary-table-items\NodeForSummaryTable.cs" />
-    <Compile Include="runnable-systems\summary-table-items\EdgeForSummaryTable.cs" />
+    <Compile Include="runnable-systems\RunnableSystemCompute.cs" />
+    <Compile Include="runnable-systems\RunnableSystemWithDecoration.cs" />
+    <Compile Include="runnable-systems\RunnableSystemWithDecorationComputeCompletedHandler.cs" />
+    <Compile Include="runnable-systems\RunnableSystemWithDecorationApplySystemStateVisitor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -80,13 +79,15 @@
       <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
       <Name>it.unifi.dsi.stlab.utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.csproj">
+      <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="specification-assemblers\" />
     <Folder Include="system-runners\" />
     <Folder Include="runnable-systems\" />
     <Folder Include="header-parsing-handlers\" />
-    <Folder Include="runnable-systems\summary-table-building-strategies\" />
-    <Folder Include="runnable-systems\summary-table-items\" />
   </ItemGroup>
 </Project>

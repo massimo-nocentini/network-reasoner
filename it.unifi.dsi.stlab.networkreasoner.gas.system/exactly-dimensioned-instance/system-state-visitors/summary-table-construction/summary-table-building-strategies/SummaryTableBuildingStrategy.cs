@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_table
 {
 	public interface SummaryTableBuildingStrategy
 	{

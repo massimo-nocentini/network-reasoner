@@ -5,7 +5,7 @@ using it.unifi.dsi.stlab.extensionmethods;
 using System.Text;
 using it.unifi.dsi.stlab.utilities.times_of_computation;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_table
 {
 	public class SummaryTableBuildingStrategyForSingleRunAnalysis:
 		SummaryTableBuildingStrategy

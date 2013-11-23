@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_table
 {
 	public abstract class SummaryTableItem
 	{

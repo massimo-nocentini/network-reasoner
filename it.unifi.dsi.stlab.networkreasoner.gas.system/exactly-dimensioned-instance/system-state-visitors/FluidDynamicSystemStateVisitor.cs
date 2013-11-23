@@ -12,5 +12,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		void forNegativeLoadsCorrectedState (FluidDynamicSystemStateNegativeLoadsCorrected fluidDynamicSystemStateNegativeLoadsCorrected);
 	}
+
+	public interface FluidDynamicSystemStateVisitorWithSystemName :	FluidDynamicSystemStateVisitor
+	{
+		string SystemName{ get; set; }
+	}
 }
 

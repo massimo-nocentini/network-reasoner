@@ -1,18 +1,40 @@
 using System;
-using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 using System.Collections.Generic;
-using it.unifi.dsi.stlab.networkreasoner.model.gas;
-using System.Text;
-using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.utilities.times_of_computation;
-using System.Linq;
-using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
+using System.Text;
 
-namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_table
 {
-	public abstract class RunnableSystemAbstractComputationalResultHandlerShortTableSummary :
-		RunnableSystemAbstractComputationalResultHandler
+	public class FluidDynamicSystemStateVisitorBuildSummaryTable : 
+		FluidDynamicSystemStateVisitorWithSystemName
 	{
+
+		#region FluidDynamicSystemStateVisitorWithSystemName implementation
+
+		public string SystemName{ get; set; }
+
+		public void forBareSystemState (FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
+		{
+			throw new System.NotImplementedException ();
+		}
+
+		public void forUnsolvedSystemState (FluidDynamicSystemStateUnsolved fluidDynamicSystemStateUnsolved)
+		{
+			throw new System.NotImplementedException ();
+		}
+
+		public void forMathematicallySolvedState (FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved)
+		{
+			onComputationFinished (SystemName, fluidDynamicSystemStateMathematicallySolved.MutationResult);
+		}
+
+		public void forNegativeLoadsCorrectedState (FluidDynamicSystemStateNegativeLoadsCorrected fluidDynamicSystemStateNegativeLoadsCorrected)
+		{
+			onComputationFinished (SystemName, fluidDynamicSystemStateNegativeLoadsCorrected.FluidDynamicSystemStateMathematicallySolved.MutationResult);
+		}
+		#endregion
+
 		Dictionary<String, Dictionary<int, SummaryTableItem>> SummaryTableNodes{ get; set; }
 
 		Dictionary<String, Dictionary<int, SummaryTableItem>> SummaryTableEdges{ get; set; }
@@ -23,7 +45,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		Dictionary<string, int> EdgesPositionsByItemIdentifiers { get; set; }
 
-		public RunnableSystemAbstractComputationalResultHandlerShortTableSummary ()
+		public FluidDynamicSystemStateVisitorBuildSummaryTable ()
 		{
 			SummaryTableEdges = new Dictionary<string, Dictionary<int, SummaryTableItem>> ();
 			SummaryTableNodes = new Dictionary<string, Dictionary<int, SummaryTableItem>> ();
@@ -73,7 +95,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			);
 		}
 
-		protected override void onComputationFinished (
+		protected virtual void onComputationFinished (
 			string systemName, OneStepMutationResults results)
 		{
 			buildColumnPositionsDictionaryOnlyOnFirstTimeThisMethodIsCalled (results);
@@ -109,8 +131,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				summaryTableEdgesForCurrentSystem.Add (edgePosition, summaryEdge);
 
-				sumOfQsByNodes [anEdge.StartNode] += Qvalue;
-				sumOfQsByNodes [anEdge.EndNode] -= Qvalue;
+				sumOfQsByNodes [anEdge.StartNode] -= Qvalue;
+				sumOfQsByNodes [anEdge.EndNode] += Qvalue;
 			}
 			);
 

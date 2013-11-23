@@ -10,6 +10,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.model.textualinterface;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -400,51 +401,50 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		}
 
+		class ComplexNetworkRunnableSystem : RunnableSystemCompute
+		{
+			protected override List<FluidDynamicSystemStateTransition> buildTransitionsSequence (
+				FluidDynamicSystemStateTransitionInitialization initializationTransition, 
+				FluidDynamicSystemStateTransitionNewtonRaphsonSolve solveTransition, 
+				FluidDynamicSystemStateTransitionNegativeLoadsChecker negativeLoadsCheckerTransition)
+			{
+				return new List<FluidDynamicSystemStateTransition>{
+					initializationTransition, solveTransition};
+			}
+		}
+
 		[Test()]
 		public void test_ring_network_using_complete_solving_system ()
 		{
-			ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
-			
-			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
-
-			XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/for-ring-network.xml")
-			);
-
-			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = valid_initial_ambient_parameters ()
+			RunnableSystem runnableSystem = new ComplexNetworkRunnableSystem {
+				LogConfigFileInfo = new FileInfo (
+					"log4net-configurations/for-ring-network.xml"),
+				Precision = 75e-6,
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
 			};
 
-			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary{
-				Log = log};
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeCompletedHandler = checkAssertions
+			};
 
-			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-			initializationTransition.EventsListener = eventListener;
-			initializationTransition.Network = this.aGasNetwork;
-			initializationTransition.UnknownInitialization = 
-				new UnknownInitializationSimplyRandomized ();
-			initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
+			runnableSystem.compute ("ring network system",
+			                       this.aGasNetwork.Nodes,
+			                       this.aGasNetwork.Edges,
+			                       this.valid_initial_ambient_parameters ());
 
-			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
-			solveTransition.EventsListener = eventListener;
-			solveTransition.FormulaVisitor = formulaVisitor;
-			solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-			solveTransition.UntilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached{
-					Precision = 75e-6
-				}};
+		}
 
-			var system = new FluidDynamicSystemStateTransitionCombinator ();
-			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition}
-			) as FluidDynamicSystemStateMathematicallySolved;
+		void checkAssertions (String systemName, FluidDynamicSystemStateAbstract aSystemState)
+		{
+			Assert.That (aSystemState, Is.InstanceOf (
+				typeof(FluidDynamicSystemStateMathematicallySolved))
+			);
 
-			var results = finalState.MutationResult;
+			OneStepMutationResults results = 
+				(aSystemState as FluidDynamicSystemStateMathematicallySolved).MutationResult;
 
+			
 			var dimensionalUnknowns = results.makeUnknownsDimensional ().WrappedObject;
 
 			var node1 = results.StartingUnsolvedState.findNodeByIdentifier ("N1");

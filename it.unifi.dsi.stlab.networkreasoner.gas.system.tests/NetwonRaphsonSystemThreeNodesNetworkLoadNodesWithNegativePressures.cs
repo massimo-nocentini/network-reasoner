@@ -11,6 +11,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
+using it.unifi.dsi.stlab.networkreasoner.model.textualinterface;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -150,49 +151,34 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		[Test()]
 		public void do_mutation_via_repetition_checking_pressure_correctness_after_main_computation ()
 		{
-			ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
-			
-			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
+			RunnableSystem runnableSystem = new RunnableSystemCompute {
+				LogConfigFileInfo = new FileInfo (
+					"log4net-configurations/for-three-nodes-network.xml"),
+				Precision = 1e-4,
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
+			};
 
-			XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/for-three-nodes-network.xml")
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeCompletedHandler = checkAssertions
+			};
+
+			runnableSystem.compute ("three network with negative loads system",
+			                       this.aGasNetwork.Nodes,
+			                       this.aGasNetwork.Edges,
+			                       this.valid_initial_ambient_parameters ());
+
+		}
+
+		void checkAssertions (String systemName, FluidDynamicSystemStateAbstract aSystemState)
+		{
+			Assert.That (aSystemState, Is.InstanceOf (
+				typeof(FluidDynamicSystemStateNegativeLoadsCorrected))
 			);
 
-			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
-			formulaVisitor.AmbientParameters = valid_initial_ambient_parameters();
-
-			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
-			eventListener.Log = log;
-
-			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-			initializationTransition.EventsListener = eventListener;
-			initializationTransition.Network = aGasNetwork;
-			initializationTransition.UnknownInitialization = 
-					new UnknownInitializationSimplyRandomized ();
-			initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-
-			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
-			solveTransition.EventsListener = eventListener;
-			solveTransition.FormulaVisitor = formulaVisitor;
-			solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-			solveTransition.UntilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached{
-					Precision = 1e-4
-				}};
-			
-			var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
-			negativeLoadsCheckerTransition.EventsListener = eventListener;
-
-			var system = new FluidDynamicSystemStateTransitionCombinator ();
-			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
-			) as FluidDynamicSystemStateNegativeLoadsCorrected;
-
-			var results = finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult;
+			OneStepMutationResults results = 
+				(aSystemState as FluidDynamicSystemStateNegativeLoadsCorrected).
+					FluidDynamicSystemStateMathematicallySolved.MutationResult;
 
 			var dimensionalUnknowns = results.makeUnknownsDimensional ().WrappedObject;
 
@@ -207,7 +193,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			var edgeCB = results.StartingUnsolvedState.findEdgeByIdentifier ("edgeCB");
 			Assert.That (results.Qvector.valueAt (edgeAB), Is.EqualTo (32.34).Within (1e-5));
 			Assert.That (results.Qvector.valueAt (edgeCB), Is.EqualTo (32.34).Within (1e-5));
-
 		}
 	}
 }

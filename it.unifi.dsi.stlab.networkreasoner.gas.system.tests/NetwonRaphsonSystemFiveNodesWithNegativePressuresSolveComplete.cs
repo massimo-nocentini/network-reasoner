@@ -13,96 +13,13 @@ using it.unifi.dsi.stlab.utilities.object_with_substitution;
 using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 using it.unifi.dsi.stlab.math.algebra;
+using System.Linq;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
 	[TestFixture()]
 	public class NetwonRaphsonSystemFiveNodesWithNegativePressuresSolveComplete
 	{
-		class FiveNodesNetworkRunnableSystem : RunnableSystemAbstractComputationalResultHandlerShortTableSummary
-		{
-			#region RunnableSystem implementation
-			public override void compute (
-				String systemName,
-				Dictionary<string, GasNodeAbstract> nodes, 
-				Dictionary<string, GasEdgeAbstract> edges, 
-				AmbientParameters ambientParameters)
-			{
-				
-				var aGasNetwork = new GasNetwork{
-					Nodes = nodes,
-					Edges = edges,				
-					AmbientParameters = ambientParameters
-				};
-
-				ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
-			
-				var translatorMaker = new dimensional_objects.DimensionalDelegates ();
-
-				XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml")
-				);
-
-				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
-				formulaVisitor.AmbientParameters = ambientParameters;
-
-				var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
-				eventListener.Log = log;
-
-				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-				initializationTransition.EventsListener = eventListener;
-				initializationTransition.Network = aGasNetwork;
-				initializationTransition.UnknownInitialization = 
-					new UnknownInitializationSimplyRandomized ();
-				initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-
-				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
-				solveTransition.EventsListener = eventListener;
-				solveTransition.FormulaVisitor = formulaVisitor;
-				solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached{
-					Precision = 1e-4
-				}};
-			
-				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
-				negativeLoadsCheckerTransition.EventsListener = eventListener;
-
-				var system = new FluidDynamicSystemStateTransitionCombinator ();
-				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
-				) as FluidDynamicSystemStateNegativeLoadsCorrected;
-
-				var originalDomainReverterVisitor = new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
-				finalState.accept (originalDomainReverterVisitor);
-
-				Dictionary<GasNodeAbstract, double> pressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
-				Dictionary<GasEdgeAbstract, double> flowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
-
-				nodes.ForEach ((nodeKey, originalNode) => {
-					Assert.That (pressuresByNodes.ContainsKey (originalNode), Is.True);
-				}
-				);
-
-				edges.ForEach ((edgeKey, originalEdge) => {
-					Assert.That (flowsByEdges.ContainsKey (originalEdge), Is.True);
-				}
-				);
-
-				this.onComputationFinished (systemName, 
-				                            finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult);
-
-			}
-			#endregion
-
-
-		
-		}
-
 
 		[Test()]
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets_with_splitted_specification ()
@@ -115,13 +32,59 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					new FileInfo ("gheonet-textual-networks/five-nodes-network-extension.dat"))
 			);
 
-			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem ();
-			systemRunner.run (fiveNodesNetworkRunnableSystem);
-
-			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output.dat", 
-			                  fiveNodesNetworkRunnableSystem.buildSummaryContent ());
+			RunnableSystem runnableSystem = new RunnableSystemCompute {
+				LogConfigFileInfo = new FileInfo (
+					"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"),
+				Precision = 1e-4,
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
+			};
 			
+			var originalDomainReverterVisitor = 
+				new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
+
+			runnableSystem = new RunnableSystemWithDecorationApplySystemStateVisitor{
+				DecoredRunnableSystem = runnableSystem,
+				SystemStateVisitor = originalDomainReverterVisitor 
+			};
+
+			Dictionary<String, GasNodeAbstract> nodes;
+			Dictionary<String, GasEdgeAbstract> edges;
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeStartedHandler = (systemName, originalNodes, originalEdges, ambientParameters) => {
+					nodes = originalNodes;
+					edges = originalEdges;
+				}
+			};
+
+			systemRunner.run (runnableSystem);
+
+			Dictionary<GasNodeAbstract, double> pressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
+			Dictionary<GasEdgeAbstract, double> flowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
+
+			nodes.ForEach ((nodeKey, originalNode) => {
+				Assert.That (pressuresByNodes.ContainsKey (originalNode), Is.True);
+			}
+			);
+
+			edges.ForEach ((edgeKey, originalEdge) => {
+				Assert.That (flowsByEdges.ContainsKey (originalEdge), Is.True);
+			}
+			);
 		}
+//
+//		void checkIfOriginalObjectsAreStillPresent (
+//			String systemName, FluidDynamicSystemStateAbstract aSystemState)
+//		{
+//			Assert.That (aSystemState, Is.InstanceOf (
+//				typeof(FluidDynamicSystemStateNegativeLoadsCorrected))
+//			);
+//
+//			var negativeLoadsCorrectedState = aSystemState as FluidDynamicSystemStateNegativeLoadsCorrected;
+//
+//
+//
+//		}
 
 	}
 }

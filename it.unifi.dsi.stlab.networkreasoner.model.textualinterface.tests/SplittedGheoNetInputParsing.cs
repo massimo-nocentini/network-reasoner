@@ -3,6 +3,7 @@ using NUnit.Framework;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Collections.Generic;
 using System.IO;
+using it.unifi.dsi.stlab.networkreasoner.gas.system;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 {
@@ -13,7 +14,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		class CheckParsingForS04System : RunnableSystem
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				System.Collections.Generic.Dictionary<string, GasNodeAbstract> nodes, 
 				System.Collections.Generic.Dictionary<string, GasEdgeAbstract> edges, 
@@ -29,6 +30,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (30, (N1.Gadget as GasNodeGadgetSupply).SetupPressure);
 				Assert.AreEqual (0, (N2.Gadget as GasNodeGadgetLoad).Load);
 				Assert.AreEqual (0, (N3.Gadget as GasNodeGadgetLoad).Load);
+
+				return null;
 			}
 			#endregion
 		}
@@ -36,7 +39,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		class CheckParsingForS05System : RunnableSystem
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				System.Collections.Generic.Dictionary<string, GasNodeAbstract> nodes, 
 				System.Collections.Generic.Dictionary<string, GasEdgeAbstract> edges, 
@@ -52,6 +55,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (30, (N1.Gadget as GasNodeGadgetSupply).SetupPressure);
 				Assert.AreEqual (0, (N2.Gadget as GasNodeGadgetLoad).Load);
 				Assert.AreEqual (0, (N3.Gadget as GasNodeGadgetLoad).Load);
+
+				return null;
 			}
 			#endregion
 		}
@@ -59,7 +64,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		class CheckParsingForS06System : RunnableSystem
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				System.Collections.Generic.Dictionary<string, GasNodeAbstract> nodes, 
 				System.Collections.Generic.Dictionary<string, GasEdgeAbstract> edges, 
@@ -75,6 +80,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (30, (N1.Gadget as GasNodeGadgetSupply).SetupPressure);
 				Assert.AreEqual (0, (N2.Gadget as GasNodeGadgetLoad).Load);
 				Assert.AreEqual (0, (N3.Gadget as GasNodeGadgetLoad).Load);
+
+				return null;
 			}
 			#endregion
 		}
@@ -82,7 +89,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		class CheckParsingForS07System : RunnableSystem
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				System.Collections.Generic.Dictionary<string, GasNodeAbstract> nodes, 
 				System.Collections.Generic.Dictionary<string, GasEdgeAbstract> edges, 
@@ -98,6 +105,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (50, (N1.Gadget as GasNodeGadgetSupply).SetupPressure);
 				Assert.AreEqual (15, (N2.Gadget as GasNodeGadgetLoad).Load);
 				Assert.AreEqual (0, (N3.Gadget as GasNodeGadgetLoad).Load);
+
+				return null;
 			}
 			#endregion
 		}
@@ -105,7 +114,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		class CheckParsingForS08System : RunnableSystem
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				System.Collections.Generic.Dictionary<string, GasNodeAbstract> nodes, 
 				System.Collections.Generic.Dictionary<string, GasEdgeAbstract> edges, 
@@ -121,6 +130,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (50, (N1.Gadget as GasNodeGadgetSupply).SetupPressure);
 				Assert.AreEqual (30, (N2.Gadget as GasNodeGadgetLoad).Load);
 				Assert.AreEqual (0, (N3.Gadget as GasNodeGadgetLoad).Load);
+
+				return null;
 			}
 			#endregion
 		}
@@ -141,7 +152,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 			}
 
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				System.Collections.Generic.Dictionary<string, GasNodeAbstract> nodes, 
 				System.Collections.Generic.Dictionary<string, GasEdgeAbstract> edges, 
@@ -184,6 +195,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (288.15, ambientParameters.RefTemperatureInKelvin);
 				Assert.That (ambientParameters.ViscosityInPascalTimesSecond, 
 				             Is.EqualTo (1.08e-5).Within (.0001));
+
+				return null;
 			}
 			#endregion
 		}

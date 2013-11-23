@@ -14,6 +14,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 using it.unifi.dsi.stlab.math.algebra;
 using System.Text;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_table;
 
 namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 {
@@ -30,60 +31,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			new MainClass ().run (lines);
 		}
 
-		class RunnableSystemWithSummaryTableDecoration : 
-		RunnableSystemAbstractComputationalResultHandlerShortTableSummary
+		class RunnableSystemWithGivenLog : RunnableSystemCompute
 		{
-			public NetwonRaphsonSystemEventsListener EventListener { get; set; }
+			internal NetwonRaphsonSystemEventsListener EventListener { get; set; }
 
-			public Double Precision { get; set; }
-
-			public override void compute (
-				string systemName, 
-				Dictionary<string, GasNodeAbstract> nodes, 
-				Dictionary<string, GasEdgeAbstract> edges, 
-				AmbientParameters ambientParameters)
+			protected override NetwonRaphsonSystemEventsListener buildEventListener ()
 			{
-				var aGasNetwork = new GasNetwork{
-					Nodes = nodes,
-					Edges = edges,				
-					AmbientParameters = ambientParameters
-				};
-
-				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
-				formulaVisitor.AmbientParameters = ambientParameters;
-
-				var translatorMaker = new DimensionalDelegates ();
-
-				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-				initializationTransition.EventsListener = EventListener;
-				initializationTransition.Network = aGasNetwork;
-				initializationTransition.UnknownInitialization = new UnknownInitializationSimplyRandomized ();
-				initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-
-				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
-				solveTransition.EventsListener = EventListener;
-				solveTransition.FormulaVisitor = formulaVisitor;
-				solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached{
-					Precision = Precision
-				}};
-			
-				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
-				negativeLoadsCheckerTransition.EventsListener = EventListener;
-
-				var system = new FluidDynamicSystemStateTransitionCombinator ();
-				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
-				) as FluidDynamicSystemStateNegativeLoadsCorrected;
-
-				var results = finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult;
-
-				this.onComputationFinished (systemName, results);
+				return EventListener;
 			}
 		}
 
@@ -97,7 +51,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			}
 
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				Dictionary<string, GasNodeAbstract> nodes, 
 				Dictionary<string, GasEdgeAbstract> edges, 
@@ -113,6 +67,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				var dotContent = dotRepresentationValidator.generateContent (aGasNetwork);
 
 				DotRepresentationsBySystems.Add (systemName, dotContent);
+
+				return null;
 			}
 			#endregion
 
@@ -176,16 +132,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				}
 			}
 
-			RunnableSystemAbstractComputationalResultHandlerShortTableSummary runnable_system = 
-			new RunnableSystemWithSummaryTableDecoration{
+			RunnableSystem runnable_system = new RunnableSystemWithGivenLog{
+				EventListener = listener,
 				Precision = precision,
-				EventListener = listener
+				UnknownInitialization = new UnknownInitializationSimplyRandomized()
+			};
+
+			var summaryTableVisitor = new FluidDynamicSystemStateVisitorBuildSummaryTable ();
+			runnable_system = new RunnableSystemWithDecorationApplySystemStateVisitor{
+				DecoredRunnableSystem = runnable_system,
+				SystemStateVisitor = summaryTableVisitor
 			};
 
 			systemRunner.run (runnable_system);
 			
 			Console.WriteLine (string.Format ("* steady state analysis\n{0}", 
-			                                  runnable_system.buildSummaryContent ())
+			                                  summaryTableVisitor.buildSummaryContent ())
 			);
 
 			var dotRepresentationRow = parser.splitOrgRow (computationParametersRegion [3]);

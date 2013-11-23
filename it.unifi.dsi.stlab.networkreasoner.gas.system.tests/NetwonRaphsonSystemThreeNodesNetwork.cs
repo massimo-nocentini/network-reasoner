@@ -11,6 +11,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.model.textualinterface;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -147,52 +148,59 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		}
 
+		class ComplexNetworkRunnableSystem : RunnableSystemCompute
+		{
+			protected override List<FluidDynamicSystemStateTransition> buildTransitionsSequence (
+				FluidDynamicSystemStateTransitionInitialization initializationTransition, 
+				FluidDynamicSystemStateTransitionNewtonRaphsonSolve solveTransition, 
+				FluidDynamicSystemStateTransitionNegativeLoadsChecker negativeLoadsCheckerTransition)
+			{
+				return new List<FluidDynamicSystemStateTransition>{
+					initializationTransition, solveTransition};
+			}
+
+			protected override List<UntilConditionAbstract> buildUntilConditions ()
+			{
+				return new List<UntilConditionAbstract>{
+					new UntilConditionMaxIterationReached{				
+						MaxNumberOfInterations = 12
+					}
+				};
+			}
+		}
+
+
 		[Test()]
 		public void do_some_mutation_steps ()
 		{
-			ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
-			
-			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
-
-			XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/for-three-nodes-network.xml")
-			);
-
-			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = valid_initial_ambient_parameters ()
+			RunnableSystem runnableSystem = new ComplexNetworkRunnableSystem {
+				LogConfigFileInfo = new FileInfo ("log4net-configurations/for-three-nodes-network.xml"),
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
 			};
 
-			var eventListener = new NetwonRaphsonSystemEventsListenerForLogging{
-				Log = log};
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeCompletedHandler = checkAssertions
+			};
 
-			var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-			initializationTransition.EventsListener = eventListener;
-			initializationTransition.Network = this.aGasNetwork;
-			initializationTransition.UnknownInitialization = 
-				new UnknownInitializationSimplyRandomized ();
-			initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-
-			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
-			solveTransition.EventsListener = eventListener;
-			solveTransition.FormulaVisitor = formulaVisitor;
-			solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-			solveTransition.UntilConditions = new List<UntilConditionAbstract> ();
-			solveTransition.UntilConditions.Add (new UntilConditionMaxIterationReached{
-				MaxNumberOfInterations = 12
-			}
+			runnableSystem.compute ("three nodes network system",
+			                       this.aGasNetwork.Nodes,
+			                       this.aGasNetwork.Edges,
+			                       this.valid_initial_ambient_parameters ());
+	
+		}
+		
+		void checkAssertions (String systemName, FluidDynamicSystemStateAbstract aSystemState)
+		{
+			Assert.That (aSystemState, Is.InstanceOf (
+				typeof(FluidDynamicSystemStateMathematicallySolved))
 			);
 
-			var system = new FluidDynamicSystemStateTransitionCombinator ();
-			var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition}
-			) as FluidDynamicSystemStateMathematicallySolved;
+			OneStepMutationResults results = 
+				(aSystemState as FluidDynamicSystemStateMathematicallySolved).MutationResult;
 
-			var results = finalState.MutationResult;
-			var dimensionalUnknowns = finalState.MutationResult.makeUnknownsDimensional ();
+			
+			var dimensionalUnknowns = results.makeUnknownsDimensional ();
 
 			var nodeA = results.StartingUnsolvedState.findNodeByIdentifier ("nA");
 			var nodeB = results.StartingUnsolvedState.findNodeByIdentifier ("nB");

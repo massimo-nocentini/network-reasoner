@@ -6,7 +6,7 @@ using it.unifi.dsi.stlab.extensionmethods;
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
 	public class FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain
-		: FluidDynamicSystemStateVisitor
+		: FluidDynamicSystemStateVisitorWithSystemName
 	{
 		public Dictionary<GasEdgeAbstract, double> FlowsByEdges {
 			get;
@@ -23,7 +23,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			set;
 		}
 
-		#region FluidDynamicSystemStateVisitor implementation
+		#region FluidDynamicSystemStateVisitorWithSystemName implementation
+
+		public string SystemName{ get; set; }
+
 		public void forBareSystemState (FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
 		{
 			throw new Exception ("It is no possible to map computation result on " +

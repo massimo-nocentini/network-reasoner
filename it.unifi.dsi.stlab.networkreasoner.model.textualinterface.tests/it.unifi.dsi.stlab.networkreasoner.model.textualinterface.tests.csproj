@@ -60,5 +60,9 @@
       <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
       <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system\it.unifi.dsi.stlab.networkreasoner.gas.system.csproj">
+      <Project>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

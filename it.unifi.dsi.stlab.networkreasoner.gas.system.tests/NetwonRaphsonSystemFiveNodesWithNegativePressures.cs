@@ -12,87 +12,13 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_table;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
 	[TestFixture()]
 	public class NetwonRaphsonSystemFiveNodesWithNegativePressures
 	{
-		class FiveNodesNetworkRunnableSystem : RunnableSystemAbstractComputationalResultHandlerShortTableSummary
-		{
-			Action<string, OneStepMutationResults> ActionWithAsserts{ get; set; }
-
-			public FiveNodesNetworkRunnableSystem (Action<string, OneStepMutationResults> asserts)
-			{
-				this.ActionWithAsserts = asserts;
-			}
-
-			#region RunnableSystem implementation
-			public override void compute (
-				String systemName,
-				Dictionary<string, GasNodeAbstract> nodes, 
-				Dictionary<string, GasEdgeAbstract> edges, 
-				AmbientParameters ambientParameters)
-			{
-				
-				var aGasNetwork = new GasNetwork{
-					Nodes = nodes,
-					Edges = edges,				
-					AmbientParameters = ambientParameters
-				};
-
-				ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
-			
-				var translatorMaker = new dimensional_objects.DimensionalDelegates ();
-
-				XmlConfigurator.Configure (new FileInfo (
-				"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml")
-				);
-
-				var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
-				formulaVisitor.AmbientParameters = ambientParameters;
-
-				var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
-				eventListener.Log = log;
-
-				var initializationTransition = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-				initializationTransition.EventsListener = eventListener;
-				initializationTransition.Network = aGasNetwork;
-				initializationTransition.UnknownInitialization = 
-				new UnknownInitializationSimplyRandomized ();
-				initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-
-				var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
-				solveTransition.EventsListener = eventListener;
-				solveTransition.FormulaVisitor = formulaVisitor;
-				solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
-				solveTransition.UntilConditions = new List<UntilConditionAbstract> {
-				new UntilConditionAdimensionalRatioPrecisionReached{
-					Precision = 1e-8
-				}};
-			
-				var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
-				negativeLoadsCheckerTransition.EventsListener = eventListener;
-
-				var system = new FluidDynamicSystemStateTransitionCombinator ();
-				var finalState = system.applySequenceOnBareState (new List<FluidDynamicSystemStateTransition>{
-				initializationTransition, solveTransition, negativeLoadsCheckerTransition}
-				) as FluidDynamicSystemStateNegativeLoadsCorrected;
-
-				var results = finalState.FluidDynamicSystemStateMathematicallySolved.MutationResult;
-
-				this.onComputationFinished (systemName, results);
-
-				// here we perform the necessary tests using the plugged behaviour
-				this.ActionWithAsserts.Invoke (systemName, results);
-			}
-			#endregion
-		}
-
 
 		[Test()]
 		public void simple_network_with_potential_negative_pressure_for_nodes_with_load_gadgets ()
@@ -104,17 +30,32 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				parser.parse (new SpecificationAssemblerAllInOneFile ()
 			);
 
-			systemRunner.run (new FiveNodesNetworkRunnableSystem (
-					assertsForSpecificationAllInOneFile)
-			);
+			RunnableSystem runnableSystem = new RunnableSystemCompute {
+				LogConfigFileInfo = new FileInfo (
+					"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"),
+				Precision = 1e-8,
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
+			};
+
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeCompletedHandler = assertsForSpecificationAllInOneFile
+			};
+
+			systemRunner.run (runnableSystem);
 		}
 
 		#region assertions for the single system relative to all-in-one file specification
 
 		// this method contains assertions for the test above.
 		void assertsForSpecificationAllInOneFile (
-			string systemName, OneStepMutationResults results)
+			string systemName, FluidDynamicSystemStateAbstract aSystemState)
 		{
+			Assert.That (aSystemState, Is.InstanceOf (typeof(FluidDynamicSystemStateNegativeLoadsCorrected)));
+
+			OneStepMutationResults results = (aSystemState as FluidDynamicSystemStateNegativeLoadsCorrected).
+				FluidDynamicSystemStateMathematicallySolved.MutationResult;
+
 			Vector<NodeForNetwonRaphsonSystem> relativeUnknowns = 
 				results.makeUnknownsDimensional ().WrappedObject;
 
@@ -154,18 +95,33 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				parser.parse (new SpecificationAssemblerSplitted (
 					new FileInfo ("gheonet-textual-networks/five-nodes-network-extension.dat"))
 			);
+			
+			RunnableSystem runnableSystem = new RunnableSystemCompute {
+				LogConfigFileInfo = new FileInfo (
+					"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"),
+				Precision = 1e-8,
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
+			};
 
-			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem (
-				noAssertionsForGivenSystem);
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeCompletedHandler = noAssertionsForGivenSystem
+			};
 
-			systemRunner.run (fiveNodesNetworkRunnableSystem);
+			var summaryTableVisitor = new FluidDynamicSystemStateVisitorBuildSummaryTable ();
+			runnableSystem = new RunnableSystemWithDecorationApplySystemStateVisitor{
+				DecoredRunnableSystem = runnableSystem,
+				SystemStateVisitor = summaryTableVisitor
+			};
+
+			systemRunner.run (runnableSystem);
 
 			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output.dat", 
-			                  fiveNodesNetworkRunnableSystem.buildSummaryContent ());
+			                  summaryTableVisitor.buildSummaryContent ());
 			
 		}
 
-		void noAssertionsForGivenSystem (string systemName, OneStepMutationResults results)
+		void noAssertionsForGivenSystem (string systemName, FluidDynamicSystemStateAbstract aSystemState)
 		{
 			// simply do no assertion at all for the given system and its results.
 		}
@@ -181,13 +137,29 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 					new FileInfo ("gheonet-textual-networks/five-nodes-network-extension-small.dat"))
 			);
 
-			var fiveNodesNetworkRunnableSystem = new FiveNodesNetworkRunnableSystem (
-				assertsForSpecificationInSplittedFiles);
+			
+			RunnableSystem runnableSystem = new RunnableSystemCompute {
+				LogConfigFileInfo = new FileInfo (
+					"log4net-configurations/for-five-nodes-network-with-negative-pressures.xml"),
+				Precision = 1e-8,
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
+			};
 
-			systemRunner.run (fiveNodesNetworkRunnableSystem);
+			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
+				DecoredRunnableSystem = runnableSystem,
+				OnComputeCompletedHandler = assertsForSpecificationInSplittedFiles
+			};
+
+			var summaryTableVisitor = new FluidDynamicSystemStateVisitorBuildSummaryTable ();
+			runnableSystem = new RunnableSystemWithDecorationApplySystemStateVisitor{
+				DecoredRunnableSystem = runnableSystem,
+				SystemStateVisitor = summaryTableVisitor
+			};
+
+			systemRunner.run (runnableSystem);
 
 			File.WriteAllText ("gheonet-textual-networks/five-nodes-network-output-small.dat", 
-			                  fiveNodesNetworkRunnableSystem.buildSummaryContent ());
+			                  summaryTableVisitor.buildSummaryContent ());
 			
 		}
 
@@ -196,8 +168,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		// this method contains assertions for the test above. We need to provide
 		// tests for 5 systems, hence we procede by cases, creating the
 		// submethods below.
-		void assertsForSpecificationInSplittedFiles (string systemName, OneStepMutationResults results)
+		void assertsForSpecificationInSplittedFiles (
+			string systemName, FluidDynamicSystemStateAbstract aSystemState)
 		{
+			Assert.That (aSystemState, Is.InstanceOf (typeof(FluidDynamicSystemStateNegativeLoadsCorrected)));
+
+			OneStepMutationResults results = (aSystemState as FluidDynamicSystemStateNegativeLoadsCorrected).
+				FluidDynamicSystemStateMathematicallySolved.MutationResult;
+
 			Dictionary<String, Action<OneStepMutationResults>> assertionsBySystems = 
 				new Dictionary<string, Action<OneStepMutationResults>> ();
 

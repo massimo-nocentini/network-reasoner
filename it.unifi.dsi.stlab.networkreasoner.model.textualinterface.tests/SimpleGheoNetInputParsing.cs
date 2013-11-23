@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.IO;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
+using it.unifi.dsi.stlab.networkreasoner.gas.system;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 {
@@ -12,7 +13,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 		class CheckParsing : RunnableSystem
 		{
 			#region RunnableSystem implementation
-			public void compute (
+			public FluidDynamicSystemStateAbstract compute (
 				String systemName,
 				Dictionary<string, GasNodeAbstract> nodes, 
 				Dictionary<string, GasEdgeAbstract> edges, 
@@ -57,6 +58,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface.tests
 				Assert.AreEqual (288.15, ambientParameters.RefTemperatureInKelvin);
 				Assert.That (ambientParameters.ViscosityInPascalTimesSecond, 
 				             Is.EqualTo (1.08e-5).Within (1e-5));
+
+				return null;
 			}
 			#endregion
 		}

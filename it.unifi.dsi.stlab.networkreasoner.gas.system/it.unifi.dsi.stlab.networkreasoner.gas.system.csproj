@@ -77,6 +77,13 @@
     <Compile Include="exactly-dimensioned-instance\NewtonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitor.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\FluidDynamicSystemStateVisitorBuildSummaryTable.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-items\SummaryTableItem.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-items\NodeForSummaryTable.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-items\EdgeForSummaryTable.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategy.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategyForSingleRunAnalysis.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategyForMultiRunAnalysis.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -108,5 +115,6 @@
     <Folder Include="exactly-dimensioned-instance\system-variants\" />
     <Folder Include="exactly-dimensioned-instance\system-operations\" />
     <Folder Include="exactly-dimensioned-instance\system-state-visitors\" />
+    <Folder Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\" />
   </ItemGroup>
 </Project>
