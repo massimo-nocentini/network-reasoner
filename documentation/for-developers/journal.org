@@ -1,0 +1,26 @@
+
+* todos
+
+** with Fabio
+   
+*** TODO make the precision until condition check symmetric    
+
+** refactorings
+
+*** [0%] parsing of computation parameters
+    - [ ] fetch parameters by name instead by position
+    - [ ] use Mono.Options to parse the parameters in command line
+      style, maybe we've to download the library
+    - [ ] introduce a parameter for the connectivity validator
+
+** enhancements
+
+*** TODO calcolare la portata massima in ogni ramo
+
+*** TODO ogni ramo rispetti la portata massima
+    controllare che dopo la soluzione la portata in ogni ramo
+    rispetti la portata massima di cui il TODO sopra.
+
+*** TODO controllo portate uscenti in nodi con supply gadget
+    controllare che la somma sia nell'intervallo espresso da minQ e
+    maxQ del gadget.
