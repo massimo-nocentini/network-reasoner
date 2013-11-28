@@ -75,7 +75,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			new OneStepMutationResults{
 				IterationNumber = 0,
 				Unknowns = fluidDynamicSystemStateUnsolved.InitialUnknownVector,
-				Fvector = fluidDynamicSystemStateUnsolved.InitialFvector
+				Fvector = fluidDynamicSystemStateUnsolved.InitialFvector,
+				ComputationStartTimestamp = DateTime.UtcNow
 			};
 
 			MutateComputationDriver mutateComputationDriver = 
@@ -109,6 +110,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				);
 			}
 
+			currentOneStepMutationResults.ComputationEndTimestamp = DateTime.UtcNow;
 			mathematicallySolvedState.MutationResult = currentOneStepMutationResults;
 			mathematicallySolvedState.SolvedBy = this;
 
@@ -277,7 +279,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			Vector<EdgeForNetwonRaphsonSystem> QvectorAtCurrentStep, 
 			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> JacobianMatrixAtCurrentStep, 
 			Vector<EdgeForNetwonRaphsonSystem> FvectorAtCurrentStep, 
-			int? iterationNumber,
+			int iterationNumber,
 			FluidDynamicSystemStateUnsolved fluidDynamicSystemStateUnsolved)
 		{
 			var result = new OneStepMutationResults ();
@@ -287,9 +289,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			result.Qvector = QvectorAtCurrentStep;
 			result.Jacobian = JacobianMatrixAtCurrentStep;
 			result.Fvector = FvectorAtCurrentStep;
-			if (iterationNumber.HasValue) {
-				result.IterationNumber = iterationNumber.Value;
-			}
+			result.IterationNumber = iterationNumber;
 			result.StartingUnsolvedState = fluidDynamicSystemStateUnsolved;
 			result.UsedFormulae = FormulaVisitor;
 

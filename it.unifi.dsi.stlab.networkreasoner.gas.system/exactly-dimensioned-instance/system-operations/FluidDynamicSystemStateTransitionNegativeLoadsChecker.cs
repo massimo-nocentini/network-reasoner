@@ -42,9 +42,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 			FluidDynamicSystemStateNegativeLoadsCorrected correctedState;
 
+			var previousMutationResults = fluidDynamicSystemStateMathematicallySolved.MutationResult;
+			var startTimestampOfPreviousResults = previousMutationResults.ComputationStartTimestamp;
+			var iterationNumberOfPreviousResults = previousMutationResults.IterationNumber;
+
 			recursion (fluidDynamicSystemStateMathematicallySolved,
 			           nodesSubstitions,
 			           edgesSubstitions,
+			           startTimestampOfPreviousResults,
+			           iterationNumberOfPreviousResults,
 			           out correctedState);
 
 			return correctedState;
@@ -55,14 +61,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved,
 			List<ObjectWithSubstitutionInSameType<GasNodeAbstract>> nodesSubstitutions,
 			List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> edgesSubstitutions,
+			DateTime? fixedStartTimestampOfPreviousResults,
+			int cumulativeIterationNumberSum,
 			out FluidDynamicSystemStateNegativeLoadsCorrected correctedState)
 		{
 			var previousMutationResults = fluidDynamicSystemStateMathematicallySolved.MutationResult;
 
 			var relativeUnknownsDimensionalWrapper = this.makeUnknownsDimensional (
 				previousMutationResults);
-
-			relativeUnknownsDimensionalWrapper = previousMutationResults.makeUnknownsDimensional ();
 
 			var relativeUnknowns = relativeUnknownsDimensionalWrapper.WrappedObject;
 
@@ -124,11 +130,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				var newMathematicallySolvedSystemState = newUnsolvedSystemState.doStateTransition (
 					newtonRaphsonSolverTransition);
 
-				recursion (newMathematicallySolvedSystemState as FluidDynamicSystemStateMathematicallySolved,
-				          nodesSubstitutions,
-				          edgesSubstitutions,
-				          out correctedState);
+				var newMathematicallySolvedSystemStateTypeSpecialized = newMathematicallySolvedSystemState 
+					as FluidDynamicSystemStateMathematicallySolved;
+
+				recursion (newMathematicallySolvedSystemStateTypeSpecialized,
+				           nodesSubstitutions,
+				           edgesSubstitutions,
+				           fixedStartTimestampOfPreviousResults,
+				           cumulativeIterationNumberSum + newMathematicallySolvedSystemStateTypeSpecialized.MutationResult.IterationNumber,
+				           out correctedState);
 			} else {
+
+				// modifying directly this object we put thing all together, if we wish to take
+				// these informations apart, we can add properties to the final state of this transition.
+				fluidDynamicSystemStateMathematicallySolved.MutationResult.ComputationStartTimestamp = 
+					fixedStartTimestampOfPreviousResults;
+				fluidDynamicSystemStateMathematicallySolved.MutationResult.IterationNumber = 
+					cumulativeIterationNumberSum;
+
 				correctedState = new FluidDynamicSystemStateNegativeLoadsCorrected ();
 				correctedState.FluidDynamicSystemStateMathematicallySolved = 
 					fluidDynamicSystemStateMathematicallySolved;

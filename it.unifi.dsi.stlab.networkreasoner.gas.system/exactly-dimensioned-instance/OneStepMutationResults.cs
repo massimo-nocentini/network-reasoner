@@ -53,6 +53,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
+		public DateTime? ComputationStartTimestamp{ get; set; }
+
+		public DateTime? ComputationEndTimestamp{ get; set; }
+
 		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional ()
 		{
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();

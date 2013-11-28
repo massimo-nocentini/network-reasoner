@@ -3,7 +3,9 @@
 
 ** with Fabio
    
-*** TODO make the precision until condition check symmetric    
+*** TODO make the precision until condition check symmetric
+
+*** TODO add the gas speed formula
 
 ** refactorings
 
@@ -24,3 +26,6 @@
 *** TODO controllo portate uscenti in nodi con supply gadget
     controllare che la somma sia nell'intervallo espresso da minQ e
     maxQ del gadget.
+
+*** DONE add timestamp and fix iteration number among transitions
+    <2013-11-28 gio>

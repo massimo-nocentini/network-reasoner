@@ -31,7 +31,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			new MainClass ().run (lines);
 		}
 
-		class RunnableSystemWithGivenLog : RunnableSystemCompute
+		class RunnableSystemWithGivenEventListener : RunnableSystemCompute
 		{
 			internal NetwonRaphsonSystemEventsListener EventListener { get; set; }
 
@@ -86,23 +86,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 
 		}
 
+		protected virtual void buildSystemRunner (
+			TextualGheoNetInputParser parser, 
+			out SystemRunnerFromTextualGheoNetInput systemRunner)
+		{
+			var multirun_region_identifier = "multirun";
+
+			if (parser.existsLineSuchThat (line => line.StartsWith ("* " + multirun_region_identifier))) {
+				var multirun_region = parser.fetchRegion (
+					multirun_region_identifier, new TableHeaderParserKeepHeaderRow ());
+
+				systemRunner = parser.parse (new SpecificationAssemblerSplitted (multirun_region));
+			} else {
+				systemRunner = parser.parse (new SpecificationAssemblerAllInOneFile ());
+			}
+		}
+
 		public void run (List<String> lines)
 		{
 			TextualGheoNetInputParser parser = 
 				new TextualGheoNetInputParser (lines);
 
 			SystemRunnerFromTextualGheoNetInput systemRunner = null;
-			var multirun_region_identifier = "multirun";
 
-			if (lines.Exists (line => line.StartsWith ("* " + multirun_region_identifier))) {
-
-				var multirun_region = parser.fetchRegion (multirun_region_identifier, 
-				                                          new TableHeaderParserKeepHeaderRow ());
-
-				systemRunner = parser.parse (new SpecificationAssemblerSplitted (multirun_region));
-			} else {
-				systemRunner = parser.parse (new SpecificationAssemblerAllInOneFile ());
-			}
+			buildSystemRunner (parser, out systemRunner);
 
 			var computationParametersRegion = parser.fetchRegion ("computation parameters", 
 			                                                      new TableHeaderParserIgnoreHeader ());
@@ -132,7 +139,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				}
 			}
 
-			RunnableSystem runnable_system = new RunnableSystemWithGivenLog{
+			RunnableSystem runnable_system = new RunnableSystemWithGivenEventListener{
 				EventListener = listener,
 				Precision = precision,
 				UnknownInitialization = new UnknownInitializationSimplyRandomized()

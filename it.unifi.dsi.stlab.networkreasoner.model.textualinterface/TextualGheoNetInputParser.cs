@@ -237,6 +237,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 			return result;
 		}
+
+		public virtual bool existsLineSuchThat (Predicate<String> predicate)
+		{
+			return SpecificationLines.Value.Exists (predicate);
+		}
 	}
 }
 
