@@ -18,14 +18,39 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class NewtonRaphsonSystem
 	{
-		public virtual void solve (
+		public class ComputationResults
+		{
+			public TimeSpan? ElapsedTime {
+				get;
+				set;
+			}
+
+			public Dictionary<GasNodeAbstract, double> RelativePressuresByNodes {
+				get;
+				set;
+			}
+
+			public Dictionary<GasNodeAbstract, double> AlgebraicSumOfFlowsByNodes {
+				get;
+				set;
+			}
+
+			public Dictionary<GasEdgeAbstract, double> FlowsByEdges {
+				get;
+				set;
+			}
+
+			public Dictionary<GasEdgeAbstract, double> VelocitiesByEdges {
+				get;
+				set;
+			}
+		}
+
+		public virtual ComputationResults solve (
 			GasNetwork aGasNetwork,
 			AmbientParameters ambientParameters,
 			NetwonRaphsonSystemEventsListener eventListener,
-			double precision,
-			out Dictionary<GasNodeAbstract, double> pressuresByNodes,
-			out Dictionary<GasNodeAbstract, double> algebraicSumOfFlowsByNodes,
-			out Dictionary<GasEdgeAbstract, double> flowsByEdges)
+			double precision)
 		{
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
@@ -64,9 +89,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
 			finalState.accept (originalDomainReverterVisitor);
 
-			pressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
-			algebraicSumOfFlowsByNodes = originalDomainReverterVisitor.AlgebraicSumOfFlowsByNodes;
-			flowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
+			ComputationResults results = new ComputationResults ();
+
+			results.RelativePressuresByNodes = originalDomainReverterVisitor.PressuresByNodes;
+			results.AlgebraicSumOfFlowsByNodes = originalDomainReverterVisitor.AlgebraicSumOfFlowsByNodes;
+			results.FlowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
+			results.VelocitiesByEdges = originalDomainReverterVisitor.VelocitiesByEdges;
+			results.ElapsedTime = originalDomainReverterVisitor.ElapsedTime;
+
+			return results;
 		}
 
 

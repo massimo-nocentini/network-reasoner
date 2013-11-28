@@ -55,8 +55,6 @@
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLoggingSummary.cs" />
     <Compile Include="exactly-dimensioned-instance\AbstractItemForNetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapper.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithDimension.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithoutDimension.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitialization.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationMinMaxSetupPressure.cs" />
@@ -84,6 +82,9 @@
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategy.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategyForSingleRunAnalysis.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategyForMultiRunAnalysis.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithRelativeValues.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithAbsoluteValues.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithAdimensionalValues.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

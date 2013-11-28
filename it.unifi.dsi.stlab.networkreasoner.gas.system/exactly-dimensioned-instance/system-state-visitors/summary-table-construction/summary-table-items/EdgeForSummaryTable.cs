@@ -5,16 +5,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_t
 {
 	class EdgeForSummaryTable : SummaryTableItem
 	{
-		public Double Qvalue{ get; set; }
+		public Double? Qvalue{ get; set; }
+		
+		public Double? VelocityValue{ get; set; }
 
 		public String IdentifierAsLinkNotation{ get; set; }
 
-		// TODO: compute here the velocity
-
-			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.SummaryTableItem
+		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.textualinterface.RunnableSystemAbstractComputationalResultHandlerShortTableSummary.SummaryTableItem
 		public override void appendValueInto (StringBuilder table)
 		{
-			table.Append (formatDouble (Qvalue));
+			table.AppendFormat ("{1} {0} {2}", 
+			                    columnSeparator (), 
+			                    Qvalue.HasValue ? formatDouble (Qvalue.Value) : string.Empty, 
+			                    VelocityValue.HasValue ? formatDouble (VelocityValue.Value) : string.Empty);
 		}
 
 		public override void appendHeaderInto (StringBuilder table)

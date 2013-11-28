@@ -48,7 +48,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Action<string, string> continuation, 
 				EdgeForNetwonRaphsonSystem anEdge);
 
-
+			void putVelocityValueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> velocityVector, 
+				Vector<NodeForNetwonRaphsonSystem> pressures, 
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				GasFormulaVisitor formulaVisitor,
+				EdgeForNetwonRaphsonSystem anEdge);
 		}
 
 		public	class EdgeStateOn:EdgeState
@@ -209,9 +214,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				continuation.Invoke (edgeRepresentation, aVector.valueAt (anEdge).ToString ());
 			}
 
+			public void putVelocityValueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> velocityVector, 
+				Vector<NodeForNetwonRaphsonSystem> pressures, 
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				GasFormulaVisitor formulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				VelocityValueFormula formula = new VelocityValueFormula ();
+				formula.AbsolutePressureOfEndNode = pressures.valueAt(anEdge.EndNode);
+				formula.AbsolutePressureOfStartNode = pressures.valueAt(anEdge.StartNode);
+				formula.Diameter = anEdge.DiameterInMillimeters;
+				formula.Qvalue = Qvector.valueAt(anEdge);
+
+				double velocityValue = formula.accept (formulaVisitor);
+
+				velocityVector.atPut (anEdge, velocityValue);
+			}
 			#endregion
-
-
 		}
 
 		public	class EdgeStateOff:EdgeState
@@ -278,6 +298,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				continuation.Invoke (edgeRepresentation, "don't care because switched off");
 			}
 
+			public void putVelocityValueIntoUsingFor (
+				Vector<EdgeForNetwonRaphsonSystem> velocityVector, 
+				Vector<NodeForNetwonRaphsonSystem> pressures, 
+				Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+				GasFormulaVisitor formulaVisitor, 
+				EdgeForNetwonRaphsonSystem anEdge)
+			{
+				// here we don't need to do anything since the edge is switched off.
+			}
 			#endregion
 		}
 
@@ -402,7 +431,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			                      this.EndNode.Identifier);
 		}
 
-
+		public void putVelocityValueIntoUsing (
+			Vector<EdgeForNetwonRaphsonSystem> velocityVector, 
+			Vector<NodeForNetwonRaphsonSystem> pressures, 
+			Vector<EdgeForNetwonRaphsonSystem> Qvector, 
+			GasFormulaVisitor formulaVisitor)
+		{
+			this.SwitchState.putVelocityValueIntoUsingFor (
+				velocityVector, pressures, Qvector, formulaVisitor, this);
+		}
+	
 
 	}
 }

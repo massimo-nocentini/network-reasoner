@@ -229,12 +229,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			this.Role.fixMatrixIfYouHaveSupplyGadgetFor (this, aMatrix);
 		}
 
-		public double dimensionalPressureOf (
+		public double relativeDimensionalPressureOf (
 			double absolutePressure,
 			GasFormulaVisitor aFormulaVisitor)
 		{
-			var formula = new RelativePressureFromAbsolutePressureFormulaForNodes ();
+			var formula = new RelativePressureFromAdimensionalPressureFormulaForNodes ();
 			formula.NodeHeight = this.Height;
+			formula.AbsolutePressure = absolutePressure;
+
+			return formula.accept (aFormulaVisitor);
+		}
+
+		public double absoluteDimensionalPressureOf (
+			double absolutePressure,
+			GasFormulaVisitor aFormulaVisitor)
+		{
+			var formula = new AbsolutePressureFromAdimensionalPressureFormulaForNodes ();
 			formula.AbsolutePressure = absolutePressure;
 
 			return formula.accept (aFormulaVisitor);

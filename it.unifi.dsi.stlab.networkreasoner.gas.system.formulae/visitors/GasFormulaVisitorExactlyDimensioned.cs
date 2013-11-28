@@ -38,8 +38,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return airPressureInBar;
 		}
 
-		public virtual double visitRelativePressureFromAbsolutePressureFormulaForNodes (
-			RelativePressureFromAbsolutePressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
+		public virtual double visitRelativePressureFromAdimensionalPressureFormulaForNodes (
+			RelativePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
 		{
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
 				aRelativePressureFromAbsolutePressureFormula);
@@ -47,7 +47,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var result = Math.Sqrt (aRelativePressureFromAbsolutePressureFormula.AbsolutePressure) *
 				AmbientParameters.RefPressureInBar;
 
-			return (result - AirPressureInBar) * 1000;
+			return (result - AirPressureInBar) * 1e3;
+		}
+
+		public virtual double visitAbsolutePressureFromAdimensionalPressureFormulaForNodes (
+			AbsolutePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
+		{
+			var result = Math.Sqrt (aRelativePressureFromAbsolutePressureFormula.AbsolutePressure) *
+				AmbientParameters.RefPressureInBar;
+
+			return result;
 		}
 
 		public virtual double visitCovariantLittleKFormula (
@@ -185,6 +194,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			return Fvalue;
 		}
+
+		public double visitVelocityValueFormula (VelocityValueFormula velocityValueFormula)
+		{
+			double Qvalue = velocityValueFormula.Qvalue;
+			double diameter = velocityValueFormula.Diameter;
+			double absolutePressureOfStartNode = velocityValueFormula.AbsolutePressureOfStartNode;
+			double absolutePressureOfEndNode = velocityValueFormula.AbsolutePressureOfEndNode;
+			
+			var minPressure = Math.Min (absolutePressureOfStartNode, absolutePressureOfEndNode);
+
+			var numerator = (Qvalue / 3600d) * AmbientParameters.RefPressureInBar / minPressure;
+			var denominator = Math.PI * Math.Pow (diameter * 1e-3, 2) / 4d; 
+
+			return numerator / denominator;
+		}
+
 		#endregion
 
 		#region Utility methods, most of them allow behavior factorization.
@@ -222,8 +247,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			controVariant = holder.EdgeKvalue * 
 				holder.EdgeControVariantLittleK;
 		}
-
 		#endregion
+
 
 	}
 }

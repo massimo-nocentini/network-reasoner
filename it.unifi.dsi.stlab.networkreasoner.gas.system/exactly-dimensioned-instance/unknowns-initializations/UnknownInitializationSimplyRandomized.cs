@@ -11,7 +11,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			var initialValue = (rand.NextDouble () * .1) + 1;
 		
-			return new DimensionalObjectWrapperWithoutDimension<double>{
+			return new DimensionalObjectWrapperWithAdimensionalValues<double>{
 				WrappedObject = initialValue
 			};
 		}

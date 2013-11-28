@@ -35,13 +35,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = 1e-10
 			};
 
-			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = previousUnknowns
 			};
 
 			
-			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = currentUnknowns
 			};
@@ -83,13 +83,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
-			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = previousUnknowns
 			};
 
 			
-			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = currentUnknowns
 			};
@@ -131,13 +131,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
-			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = previousUnknowns
 			};
 
 			
-			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = currentUnknowns
 			};
@@ -178,13 +178,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
-			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = previousUnknowns
 			};
 
 			
-			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = currentUnknowns
 			};
@@ -225,13 +225,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				Precision = precision
 			};
 
-			var previousUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var previousUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = previousUnknowns
 			};
 
 			
-			var currentUnknownsWrapper = new DimensionalObjectWrapperWithoutDimension<
+			var currentUnknownsWrapper = new DimensionalObjectWrapperWithAdimensionalValues<
 			Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = currentUnknowns
 			};

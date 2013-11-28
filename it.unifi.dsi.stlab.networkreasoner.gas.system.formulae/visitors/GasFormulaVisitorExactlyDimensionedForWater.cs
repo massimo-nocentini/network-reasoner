@@ -21,8 +21,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return result;
 		}
 
-		public override double visitRelativePressureFromAbsolutePressureFormulaForNodes (
-			RelativePressureFromAbsolutePressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
+		public override double visitRelativePressureFromAdimensionalPressureFormulaForNodes (
+			RelativePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
 		{
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
 				aRelativePressureFromAbsolutePressureFormula);

@@ -110,6 +110,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				);
 			}
 
+			currentOneStepMutationResults.VelocityVector = computeVelocityVector(
+				currentOneStepMutationResults.Unknowns, 
+				currentOneStepMutationResults.Qvector, 
+				fluidDynamicSystemStateUnsolved.Nodes,
+				fluidDynamicSystemStateUnsolved.Edges);
+
 			currentOneStepMutationResults.ComputationEndTimestamp = DateTime.UtcNow;
 			mathematicallySolvedState.MutationResult = currentOneStepMutationResults;
 			mathematicallySolvedState.SolvedBy = this;
@@ -363,7 +369,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
 
-			return new DimensionalObjectWrapperWithoutDimension<Vector<NodeForNetwonRaphsonSystem>>{
+			return new DimensionalObjectWrapperWithAdimensionalValues<Vector<NodeForNetwonRaphsonSystem>>{
 				WrappedObject = unknownVectorAtCurrentStep
 			};
 		}
@@ -396,6 +402,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			);
 
 			return newFvector;
+		}
+
+		protected virtual Vector<EdgeForNetwonRaphsonSystem> computeVelocityVector (
+			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> pressuresWrapper, 
+			Vector<EdgeForNetwonRaphsonSystem> Qvector,
+			List<NodeForNetwonRaphsonSystem> nodes,
+			List<EdgeForNetwonRaphsonSystem> edges)
+		{
+			Vector<EdgeForNetwonRaphsonSystem> velocityVector = 
+				new Vector<EdgeForNetwonRaphsonSystem> ();
+
+			var absolutePressuresTranslator = new DimensionalDelegates().makeAdimensionalToAbsoluteTranslator(
+				nodes, FormulaVisitor);
+
+			var absolutePressures = pressuresWrapper.makeAbsolute(absolutePressuresTranslator).WrappedObject;
+
+			edges.ForEach (anEdge => anEdge.putVelocityValueIntoUsing (
+				velocityVector, absolutePressures, Qvector, FormulaVisitor)
+			);
+
+			return velocityVector;
 		}
 
 		public FluidDynamicSystemStateTransition clone ()

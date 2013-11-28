@@ -123,7 +123,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 			);
 
-			return new DimensionalObjectWrapperWithoutDimension<double>{
+			return new DimensionalObjectWrapperWithAdimensionalValues<double>{
 				WrappedObject = initialValue
 			};
 		}

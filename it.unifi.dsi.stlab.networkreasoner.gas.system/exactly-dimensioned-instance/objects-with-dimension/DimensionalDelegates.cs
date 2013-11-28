@@ -8,29 +8,54 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects
 {
 	public class DimensionalDelegates
 	{
-		public virtual Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> makeAdimensionalToDimensionalTranslator (
+		public virtual Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> 
+			makeAdimensionalToRelativeTranslator (
 			List<NodeForNetwonRaphsonSystem> nodes, GasFormulaVisitor formulae)
 		{			
 			return (Vector<NodeForNetwonRaphsonSystem> adimensionalUnknowns) => {
 
-				var dimensionalUnknowns = new Vector<NodeForNetwonRaphsonSystem> ();
+				var relativeDimensionalUnknowns = new Vector<NodeForNetwonRaphsonSystem> ();
 
 				nodes.ForEach (aNode => {
 
 					double adimensionalPressure = adimensionalUnknowns.valueAt (aNode);
 
-					double dimensionalPressure = aNode.dimensionalPressureOf (
+					double dimensionalPressure = aNode.relativeDimensionalPressureOf (
 						adimensionalPressure, formulae);
 
-					dimensionalUnknowns.atPut (aNode, dimensionalPressure);
+					relativeDimensionalUnknowns.atPut (aNode, dimensionalPressure);
 				}
 				);
 
-				return dimensionalUnknowns;
+				return relativeDimensionalUnknowns;
 			};
 			
 		}
-		
+
+		public virtual Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> 
+			makeAdimensionalToAbsoluteTranslator (
+			List<NodeForNetwonRaphsonSystem> nodes, GasFormulaVisitor formulae)
+		{			
+			return (Vector<NodeForNetwonRaphsonSystem> adimensionalUnknowns) => {
+
+				var absoluteDimensionalPressures = new Vector<NodeForNetwonRaphsonSystem> ();
+
+				nodes.ForEach (aNode => {
+
+					double adimensionalPressure = adimensionalUnknowns.valueAt (aNode);
+
+					double dimensionalPressure = aNode.absoluteDimensionalPressureOf (
+						adimensionalPressure, formulae);
+
+					absoluteDimensionalPressures.atPut (aNode, dimensionalPressure);
+				}
+				);
+
+				return absoluteDimensionalPressures;
+			};
+			
+		}
+
 		public virtual Func<T, T> throwExceptionIfThisTranslatorIsCalled<T> (
 			string exceptionMessage)
 		{

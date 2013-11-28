@@ -43,7 +43,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			var originalNodesMapping = new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
 
-			unsolvedState.InitialUnknownVector = new DimensionalObjectWrapperWithoutDimension<
+			unsolvedState.InitialUnknownVector = new DimensionalObjectWrapperWithAdimensionalValues<
 				Vector<NodeForNetwonRaphsonSystem>> {
 				WrappedObject = new Vector<NodeForNetwonRaphsonSystem> ()
 			};

@@ -89,6 +89,12 @@ namespace it.unifi.dsi.stlab.math.algebra
 				orderedEnumerable.Count, orderedEnumerable);
 		}
 
+		protected virtual Func<IndexType, double, double, double> doAddition ()
+		{
+			return (key, valueInLeftVector, valueInRightVector) => 
+				valueInLeftVector + valueInRightVector;
+		}
+
 		protected virtual Func<IndexType, double, double, double> doRatio ()
 		{
 			return (key, valueInLeftVector, valueInRightVector) => 
@@ -105,6 +111,12 @@ namespace it.unifi.dsi.stlab.math.algebra
 			Vector<IndexType> anotherVector)
 		{
 			return inBijectionWithDo (anotherVector, doRatio ());
+		}
+
+		public Vector<IndexType> plus (
+			Vector<IndexType> anotherVector)
+		{
+			return inBijectionWithDo (anotherVector, doAddition ());
 		}
 
 		public Vector<IndexType> minus (

@@ -53,18 +53,29 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			set;
 		}
 
-		public DateTime? ComputationStartTimestamp{ get; set; }
+		public DateTime? ComputationStartTimestamp { 
+			get; 
+			set; 
+		}
 
-		public DateTime? ComputationEndTimestamp{ get; set; }
+		public DateTime? ComputationEndTimestamp { 
+			get; 
+			set; 
+		}
+
+		public Vector<EdgeForNetwonRaphsonSystem> VelocityVector {
+			get;
+			set;
+		}
 
 		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional ()
 		{
 			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
 
-			var translator = translatorMaker.makeAdimensionalToDimensionalTranslator (
+			var translator = translatorMaker.makeAdimensionalToRelativeTranslator (
 				StartingUnsolvedState.Nodes, UsedFormulae);
 
-			return Unknowns.makeDimensional (translator);
+			return Unknowns.makeRelative (translator);
 		}
 	}
 }

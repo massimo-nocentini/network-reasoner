@@ -34,7 +34,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_t
 			StringBuilder table)
 		{
 			Action headerAction = () => table.AppendFormat (
-				"{1}\n{0} EDGE ID {0} LINK {0} FLOW {0}\n{1}\n", 
+				"{1}\n{0} EDGE ID {0} LINK {0} FLOW {0} VELOCITY {0}\n{1}\n", 
 				ColumnSeparator, 
 				RowSeparator);
 

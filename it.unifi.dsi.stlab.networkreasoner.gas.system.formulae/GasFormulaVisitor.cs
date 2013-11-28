@@ -11,10 +11,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		double visitAirPressureFormulaForNodes (
 			AirPressureFormulaForNodes anAirPressureFormula);
 
-		double visitRelativePressureFromAbsolutePressureFormulaForNodes (
-			RelativePressureFromAbsolutePressureFormulaForNodes 
-			aRelativePressureFromAbsolutePressureFormula
-		);
+		double visitRelativePressureFromAdimensionalPressureFormulaForNodes (
+			RelativePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAdimensionalPressureFormula);
 
 		double visitCovariantLittleKFormula (
 			CovariantLittleKFormula covariantLittleKFormula);
@@ -38,6 +36,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 		double visitFvalueFormula (FvalueFormula FvalueFormula);
 
+		double visitVelocityValueFormula (VelocityValueFormula velocityValueFormula);
+
+		double visitAbsolutePressureFromAdimensionalPressureFormulaForNodes (
+			AbsolutePressureFromAdimensionalPressureFormulaForNodes anAbsolutePressureFromAdimensionalPressureFormula);
 
 	}
 }

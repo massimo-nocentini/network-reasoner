@@ -117,7 +117,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_t
 			results.StartingUnsolvedState.Edges.ForEach (
 					anEdge => {
 
-				var Qvalue = results.Qvector.valueAt (anEdge);
+				double? Qvalue = null;
+				if (results.Qvector.containsKey (anEdge)) {
+					Qvalue = results.Qvector.valueAt (anEdge);
+					
+					sumOfQsByNodes [anEdge.StartNode] -= Qvalue.Value;
+					sumOfQsByNodes [anEdge.EndNode] += Qvalue.Value;
+				}
+
+				double? VelocityValue = null; 
+				if (results.VelocityVector.containsKey (anEdge)) {
+					VelocityValue = results.VelocityVector.valueAt (anEdge);
+				}
 
 				var edgePosition = positionOfItemIn (anEdge.Identifier, 
 				                                       EdgesPositionsByItemIdentifiers);
@@ -126,13 +137,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_t
 					Identifier = anEdge.Identifier,
 					IdentifierAsLinkNotation = anEdge.identifierUsingLinkNotation(),
 					Qvalue = Qvalue,
+					VelocityValue = VelocityValue,
 					Position = edgePosition
 				};
 
 				summaryTableEdgesForCurrentSystem.Add (edgePosition, summaryEdge);
 
-				sumOfQsByNodes [anEdge.StartNode] -= Qvalue;
-				sumOfQsByNodes [anEdge.EndNode] += Qvalue;
 			}
 			);
 

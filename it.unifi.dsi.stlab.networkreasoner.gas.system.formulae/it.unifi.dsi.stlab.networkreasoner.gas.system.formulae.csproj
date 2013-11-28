@@ -39,7 +39,6 @@
     <Compile Include="GasFormulaVisitor.cs" />
     <Compile Include="variants\CoefficientFormulaForNodeWithSupplyGadget.cs" />
     <Compile Include="visitors\GasFormulaVisitorExactlyDimensioned.cs" />
-    <Compile Include="variants\RelativePressureFromAbsolutePressureFormulaForNodes.cs" />
     <Compile Include="variants\AirPressureFormulaForNodes.cs" />
     <Compile Include="variants\CovariantLittleKFormula.cs" />
     <Compile Include="variants\ControVariantLittleKFormula.cs" />
@@ -53,6 +52,9 @@
     <Compile Include="variants\QvalueFormula.cs" />
     <Compile Include="variants\FvalueFormula.cs" />
     <Compile Include="visitors\GasFormulaVisitorExactlyDimensionedForWater.cs" />
+    <Compile Include="variants\VelocityValueFormula.cs" />
+    <Compile Include="variants\RelativePressureFromAdimensionalPressureFormulaForNodes.cs" />
+    <Compile Include="variants\AbsolutePressureFromAdimensionalPressureFormulaForNodes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
