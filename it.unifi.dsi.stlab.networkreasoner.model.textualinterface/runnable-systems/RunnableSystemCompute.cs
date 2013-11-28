@@ -36,14 +36,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				Dictionary<string, GasNodeAbstract> nodes, 
 				Dictionary<string, GasEdgeAbstract> edges, 
 				AmbientParameters ambientParameters)
-		{
-				
+		{				
 			var aGasNetwork = new GasNetwork{
 					Nodes = nodes,
 					Edges = edges,				
 					AmbientParameters = ambientParameters
 				};
-
 
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
 			formulaVisitor.AmbientParameters = ambientParameters;
@@ -95,7 +93,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		protected virtual NetwonRaphsonSystemEventsListener buildEventListener ()
 		{		
-			ILog log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));
+			ILog log = LogManager.GetLogger (typeof(Object));
 			XmlConfigurator.Configure (LogConfigFileInfo);
 
 			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();

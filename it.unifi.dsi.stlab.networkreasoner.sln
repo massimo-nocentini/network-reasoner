@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.recursio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.console.emacs", "it.unifi.dsi.stlab.networkreasoner.console.emacs\it.unifi.dsi.stlab.networkreasoner.console.emacs.csproj", "{20843D45-015B-44D8-A78C-3499E774E482}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.gas.system.terranova", "it.unifi.dsi.stlab.networkreasoner.gas.system.terranova\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.csproj", "{F03D530B-161A-4597-8B59-C80BCFF18235}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{F0322E36-73B8-40F2-86CF-AECB32A69B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0322E36-73B8-40F2-86CF-AECB32A69B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0322E36-73B8-40F2-86CF-AECB32A69B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F03D530B-161A-4597-8B59-C80BCFF18235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F03D530B-161A-4597-8B59-C80BCFF18235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F03D530B-161A-4597-8B59-C80BCFF18235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F03D530B-161A-4597-8B59-C80BCFF18235}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj

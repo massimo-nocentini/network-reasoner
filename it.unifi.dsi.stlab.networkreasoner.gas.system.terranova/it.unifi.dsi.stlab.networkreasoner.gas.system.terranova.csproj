@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F03D530B-161A-4597-8B59-C80BCFF18235}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.gas.system.terranova</RootNamespace>
+    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.gas.system.terranova</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ComputationEntryPoint.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system\it.unifi.dsi.stlab.networkreasoner.gas.system.csproj">
+      <Project>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
+      <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.textualinterface\it.unifi.dsi.stlab.networkreasoner.model.textualinterface.csproj">
+      <Project>{B8312B0F-17B4-4685-B994-77495716FDCE}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.textualinterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae\it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.csproj">
+      <Project>{345B08E4-A31F-4B3D-A7AE-52DAD2AC7C1A}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system.formulae</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

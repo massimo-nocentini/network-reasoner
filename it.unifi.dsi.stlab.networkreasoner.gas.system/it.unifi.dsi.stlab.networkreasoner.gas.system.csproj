@@ -70,7 +70,6 @@
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsChecker.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionCombinator.cs" />
-    <Compile Include="exactly-dimensioned-instance\NewtonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitor.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\FluidDynamicSystemStateVisitorBuildSummaryTable.cs" />

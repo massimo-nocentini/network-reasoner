@@ -56,6 +56,7 @@
     <Compile Include="runnable-systems\RunnableSystemWithDecoration.cs" />
     <Compile Include="runnable-systems\RunnableSystemWithDecorationComputeCompletedHandler.cs" />
     <Compile Include="runnable-systems\RunnableSystemWithDecorationApplySystemStateVisitor.cs" />
+    <Compile Include="runnable-systems\RunnableSystemComputeGivenEventListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

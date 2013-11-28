@@ -22,7 +22,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.state_visitors.summary_t
 
 		public override void appendHeaderInto (StringBuilder table)
 		{
-			table.AppendFormat ("Q_{0} ({1})", Identifier, IdentifierAsLinkNotation);
+			table.AppendFormat ("Q_{0} ({1}) {2} V_{0}", 
+			                    Identifier, 
+			                    IdentifierAsLinkNotation,
+			                    columnSeparator());
 		}
 
 		public override void appendIdentifierForSingleRunAnalysisInto (StringBuilder table)

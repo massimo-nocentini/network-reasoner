@@ -31,15 +31,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			new MainClass ().run (lines);
 		}
 
-		class RunnableSystemWithGivenEventListener : RunnableSystemCompute
-		{
-			internal NetwonRaphsonSystemEventsListener EventListener { get; set; }
-
-			protected override NetwonRaphsonSystemEventsListener buildEventListener ()
-			{
-				return EventListener;
-			}
-		}
 
 		class DotRepresentationsRunnableSystem : RunnableSystem
 		{
@@ -131,7 +122,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			var logRow = parser.splitOrgRow (computationParametersRegion [2]);
 			ILog log = null;
 			if (logRow.Length > 1) {
-				log = LogManager.GetLogger (typeof(NewtonRaphsonSystem));			
+				log = LogManager.GetLogger (typeof(object));			
 				XmlConfigurator.Configure (new FileInfo (logRow [1]));
 
 				if (listener is NetwonRaphsonSystemEventsListenerForLogging) {
@@ -139,7 +130,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				}
 			}
 
-			RunnableSystem runnable_system = new RunnableSystemWithGivenEventListener{
+			RunnableSystem runnable_system = new RunnableSystemComputeGivenEventListener{
 				EventListener = listener,
 				Precision = precision,
 				UnknownInitialization = new UnknownInitializationSimplyRandomized()
