@@ -85,7 +85,7 @@
 * computation parameters
   | param         |      |
   |---------------+------|
-  | precision     | 1e-6 |
+  | precision     | 1e-8 |
   | listener      |      |
   | log conf file |      |
   | dot preview   | yes  |

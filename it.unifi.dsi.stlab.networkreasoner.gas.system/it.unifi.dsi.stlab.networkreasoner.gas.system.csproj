@@ -54,7 +54,6 @@
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerNullObject.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLoggingSummary.cs" />
     <Compile Include="exactly-dimensioned-instance\AbstractItemForNetwonRaphsonSystem.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapper.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitialization.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationMinMaxSetupPressure.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsChecker.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalDelegates.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionCombinator.cs" />
     <Compile Include="exactly-dimensioned-instance\NewtonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\FluidDynamicSystemStateVisitor.cs" />
@@ -82,9 +80,16 @@
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategy.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategyForSingleRunAnalysis.cs" />
     <Compile Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\summary-table-building-strategies\SummaryTableBuildingStrategyForMultiRunAnalysis.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithRelativeValues.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithAbsoluteValues.cs" />
-    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapperWithAdimensionalValues.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\DimensionalObjectWrapper.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\wrappers\DimensionalObjectWrapperWithAbsoluteValues.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\wrappers\DimensionalObjectWrapperWithAdimensionalValues.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\wrappers\DimensionalObjectWrapperWithRelativeValues.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\EmptyDimension.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\AdimensionalInitialPressure.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\AdimensionalPressures.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\AbsolutePressures.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\RelativePressures.cs" />
+    <Compile Include="exactly-dimensioned-instance\objects-with-dimension\TargetDimension.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -117,5 +122,7 @@
     <Folder Include="exactly-dimensioned-instance\system-operations\" />
     <Folder Include="exactly-dimensioned-instance\system-state-visitors\" />
     <Folder Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\" />
+    <Folder Include="exactly-dimensioned-instance\objects-with-dimension\wrappers\" />
+    <Folder Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\" />
   </ItemGroup>
 </Project>

@@ -52,8 +52,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			NetwonRaphsonSystemEventsListener eventListener,
 			double precision)
 		{
-			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
-
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
 			formulaVisitor.AmbientParameters = ambientParameters;
 
@@ -61,16 +59,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			initializationTransition.EventsListener = eventListener;
 			initializationTransition.Network = aGasNetwork;
 			initializationTransition.UnknownInitialization = new UnknownInitializationSimplyRandomized ();
-			initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
 
 			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
 			solveTransition.EventsListener = eventListener;
 			solveTransition.FormulaVisitor = formulaVisitor;
-			solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
+
 			solveTransition.UntilConditions = new List<UntilConditionAbstract> {
 				new UntilConditionAdimensionalRatioPrecisionReached{
 					Precision = precision

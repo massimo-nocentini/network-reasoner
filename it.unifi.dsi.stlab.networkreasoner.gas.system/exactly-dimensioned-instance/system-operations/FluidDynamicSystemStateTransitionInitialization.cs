@@ -16,7 +16,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		
 		public GasNetwork Network { get; set; }
 		
-		public Func<double, double> FromDimensionalToAdimensionalTranslator{ get; set; }
+		//public Func<double, double> FromDimensionalToAdimensionalTranslator{ get; set; }
 	
 		#region FluidDynamicSystemStateOperation implementation
 		public virtual FluidDynamicSystemStateAbstract forBareSystemState (
@@ -97,8 +97,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 				var value = UnknownInitialization.initialValueFor (aVertex, rand);
 
-				initialUnknowns.Add (aVertex, value.makeAdimensional (
-					FromDimensionalToAdimensionalTranslator).WrappedObject
+				initialUnknowns.Add (aVertex, 
+				                     value.translateTo (new AdimensionalInitialPressure ()).WrappedObject
 				);
 			}
 			)
@@ -157,7 +157,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		public virtual FluidDynamicSystemStateTransition clone ()
 		{
 			var clone = new FluidDynamicSystemStateTransitionInitialization ();
-			clone.FromDimensionalToAdimensionalTranslator = FromDimensionalToAdimensionalTranslator;
 			clone.Network = Network;
 			clone.UnknownInitialization = UnknownInitialization;
 			return clone;

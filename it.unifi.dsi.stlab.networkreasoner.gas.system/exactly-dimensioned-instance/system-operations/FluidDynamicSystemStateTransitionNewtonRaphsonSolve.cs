@@ -12,7 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 	{
 		public List<UntilConditionAbstract> UntilConditions{ get; set; }
 			
-		public Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> FromDimensionalToAdimensionalTranslator{ get; set; }
+		//public Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> FromDimensionalToAdimensionalTranslator{ get; set; }
 
 		public GasFormulaVisitor FormulaVisitor{ get; set; }
 
@@ -110,7 +110,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				);
 			}
 
-			currentOneStepMutationResults.VelocityVector = computeVelocityVector(
+			currentOneStepMutationResults.VelocityVector = computeVelocityVector (
 				currentOneStepMutationResults.Unknowns, 
 				currentOneStepMutationResults.Qvector, 
 				fluidDynamicSystemStateUnsolved.Nodes,
@@ -227,8 +227,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			// we perform the adimensional translation just to ensure that we're 
 			// working with adimensional objects, since the translator raise an exception
 			// if it is called.
-			return unknownVectorAtPreviousStep.makeAdimensional (
-				FromDimensionalToAdimensionalTranslator);
+			return unknownVectorAtPreviousStep.translateTo (
+				new AdimensionalPressures ());
 		}
 
 		protected virtual DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> 
@@ -413,10 +413,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			Vector<EdgeForNetwonRaphsonSystem> velocityVector = 
 				new Vector<EdgeForNetwonRaphsonSystem> ();
 
-			var absolutePressuresTranslator = new DimensionalDelegates().makeAdimensionalToAbsoluteTranslator(
-				nodes, FormulaVisitor);
-
-			var absolutePressures = pressuresWrapper.makeAbsolute(absolutePressuresTranslator).WrappedObject;
+			var absolutePressures = pressuresWrapper.translateTo (new AbsolutePressures{
+				Nodes = nodes,
+				Formulae = FormulaVisitor
+			}
+			).WrappedObject;
 
 			edges.ForEach (anEdge => anEdge.putVelocityValueIntoUsing (
 				velocityVector, absolutePressures, Qvector, FormulaVisitor)

@@ -70,12 +70,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional ()
 		{
-			var translatorMaker = new dimensional_objects.DimensionalDelegates ();
-
-			var translator = translatorMaker.makeAdimensionalToRelativeTranslator (
-				StartingUnsolvedState.Nodes, UsedFormulae);
-
-			return Unknowns.makeRelative (translator);
+			return Unknowns.translateTo (new RelativePressures{
+				Nodes = StartingUnsolvedState.Nodes,
+				Formulae = UsedFormulae
+			}
+			);
 		}
 	}
 }

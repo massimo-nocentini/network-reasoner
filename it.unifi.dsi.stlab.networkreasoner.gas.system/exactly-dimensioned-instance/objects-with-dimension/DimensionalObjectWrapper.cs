@@ -1,4 +1,8 @@
 using System;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using System.Collections.Generic;
+using it.unifi.dsi.stlab.math.algebra;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects
 {
@@ -6,14 +10,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects
 	{
 		public T WrappedObject { get; set; }
 
-		public abstract DimensionalObjectWrapper<T> makeRelative (
-			Func<T, T> translator);
-		
-		public abstract DimensionalObjectWrapper<T> makeAbsolute (
-			Func<T, T> translator);
-
-		public abstract DimensionalObjectWrapper<T> makeAdimensional (
-			Func<T, T> translator);
+		public abstract DimensionalObjectWrapper<T> translateTo (TargetDimension<T> dimension);
 	}
 }
 

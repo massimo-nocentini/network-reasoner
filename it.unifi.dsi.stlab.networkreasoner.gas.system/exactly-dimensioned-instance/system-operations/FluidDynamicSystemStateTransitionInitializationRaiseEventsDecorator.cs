@@ -32,7 +32,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			var baseClone = base.clone () as FluidDynamicSystemStateTransitionInitialization;
 			var clone = new FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator ();
-			clone.FromDimensionalToAdimensionalTranslator = baseClone.FromDimensionalToAdimensionalTranslator;
 			clone.Network = baseClone.Network;
 			clone.UnknownInitialization = baseClone.UnknownInitialization;
 			clone.EventsListener = this.EventsListener;

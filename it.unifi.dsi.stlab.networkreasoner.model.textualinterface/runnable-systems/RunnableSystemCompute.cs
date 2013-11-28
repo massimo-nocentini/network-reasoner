@@ -44,7 +44,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					AmbientParameters = ambientParameters
 				};
 
-			var translatorMaker = new DimensionalDelegates ();
 
 			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
 			formulaVisitor.AmbientParameters = ambientParameters;
@@ -55,16 +54,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			initializationTransition.EventsListener = eventListener;
 			initializationTransition.Network = aGasNetwork;
 			initializationTransition.UnknownInitialization = UnknownInitialization;
-			initializationTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<double> (
-				"dimensional -> adimensional translation requested when it isn't required.");
 
 			var solveTransition = new FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator ();
 			solveTransition.EventsListener = eventListener;
 			solveTransition.FormulaVisitor = formulaVisitor;
-			solveTransition.FromDimensionalToAdimensionalTranslator = 
-				translatorMaker.throwExceptionIfThisTranslatorIsCalled<Vector<NodeForNetwonRaphsonSystem>> (
-				"dimensional -> adimensional translation requested when it isn't required.");
 			solveTransition.UntilConditions = buildUntilConditions (); 
 			
 			var negativeLoadsCheckerTransition = new FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator ();
