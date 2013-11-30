@@ -47,8 +47,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				SystemStateVisitor = originalDomainReverterVisitor 
 			};
 
-			Dictionary<String, GasNodeAbstract> nodes;
-			Dictionary<String, GasEdgeAbstract> edges;
+			Dictionary<String, GasNodeAbstract> nodes = null;
+			Dictionary<String, GasEdgeAbstract> edges = null;
 			runnableSystem = new RunnableSystemWithDecorationComputeCompletedHandler{
 				DecoredRunnableSystem = runnableSystem,
 				OnComputeStartedHandler = (systemName, originalNodes, originalEdges, ambientParameters) => {
