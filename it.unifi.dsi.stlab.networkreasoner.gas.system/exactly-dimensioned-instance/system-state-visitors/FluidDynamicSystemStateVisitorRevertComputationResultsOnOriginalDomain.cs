@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
@@ -22,19 +23,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			get;
 			set;
 		}
-		
+
 		public Dictionary<GasNodeAbstract, double> AlgebraicSumOfFlowsByNodes {
 			get;
 			set;
 		}
-		
+
 		public TimeSpan? ElapsedTime {
 			get;
 			set;
 		}
-
 		#region FluidDynamicSystemStateVisitorWithSystemName implementation
-
 		public string SystemName{ get; set; }
 
 		public void forBareSystemState (FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
@@ -62,12 +61,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			VelocitiesByEdges = new Dictionary<GasEdgeAbstract, double> ();
 
 			var mutationResults = fluidDynamicSystemStateMathematicallySolved.MutationResult;
-			ElapsedTime = null;
-			if (mutationResults.ComputationStartTimestamp.HasValue &&
-				mutationResults.ComputationEndTimestamp.HasValue) {
-				ElapsedTime = mutationResults.ComputationEndTimestamp.Value.Subtract (
-					mutationResults.ComputationStartTimestamp.Value);
-			}
+			ElapsedTime = computeElapsedTimeFrom (mutationResults);
 
 			var dimensionalUnknowns = fluidDynamicSystemStateMathematicallySolved.
 				MutationResult.makeUnknownsDimensional ().WrappedObject;
@@ -108,7 +102,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			public GasNodeAbstract StartNode{ get; private set; }
 
 			public GasNodeAbstract EndNode{ get; private set; }
-
 			#region GasEdgeVisitor implementation
 			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
 			{
@@ -128,11 +121,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			#endregion
 		}
 
+		protected virtual TimeSpan? computeElapsedTimeFrom (OneStepMutationResults mutationResults)
+		{
+			TimeSpan? timeSpan = null;
+			if (mutationResults.ComputationStartTimestamp.HasValue &&
+				mutationResults.ComputationEndTimestamp.HasValue) {
+				timeSpan = mutationResults.ComputationEndTimestamp.Value.Subtract (
+					mutationResults.ComputationStartTimestamp.Value);
+			}
+
+			return timeSpan;
+		}
+
 		public void forNegativeLoadsCorrectedState (FluidDynamicSystemStateNegativeLoadsCorrected fluidDynamicSystemStateNegativeLoadsCorrected)
 		{
 			PressuresByNodes = new Dictionary<GasNodeAbstract, double> ();
 			AlgebraicSumOfFlowsByNodes = new Dictionary<GasNodeAbstract, double> ();
 			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
+			VelocitiesByEdges = new Dictionary<GasEdgeAbstract, double> ();
+
+			ElapsedTime = computeElapsedTimeFrom (fluidDynamicSystemStateNegativeLoadsCorrected.
+			                                      FluidDynamicSystemStateMathematicallySolved.MutationResult);
 
 			var dimensionalUnknowns = fluidDynamicSystemStateNegativeLoadsCorrected.FluidDynamicSystemStateMathematicallySolved.
 				MutationResult.makeUnknownsDimensional ().WrappedObject;
@@ -162,7 +171,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					FluidDynamicSystemStateMathematicallySolved.MutationResult.
 						Qvector.valueAt (edgePair.Key);
 
+				var velocityValue = fluidDynamicSystemStateNegativeLoadsCorrected.
+					FluidDynamicSystemStateMathematicallySolved.MutationResult.
+						VelocityVector.valueAt (edgePair.Key);
+
 				FlowsByEdges.Add (originalEdge, Qvalue);
+				VelocitiesByEdges.Add (originalEdge, velocityValue);
 				
 				var startEndNodesFinder = new FindStartEndNodesOfAbstractEdge ();
 				originalEdge.accept (startEndNodesFinder);
@@ -172,8 +186,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			}
 		}
 		#endregion
-
-
 	}
 }
 

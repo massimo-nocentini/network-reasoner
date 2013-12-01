@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.gas.system.terranova", "it.unifi.dsi.stlab.networkreasoner.gas.system.terranova\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.csproj", "{F03D530B-161A-4597-8B59-C80BCFF18235}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.tests", "it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.tests\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.tests.csproj", "{A8D52E57-EBCC-402D-8B6D-62B4E22B038C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B71E0F0-28C7-456B-870D-4D0C45F59846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8D52E57-EBCC-402D-8B6D-62B4E22B038C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8D52E57-EBCC-402D-8B6D-62B4E22B038C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8D52E57-EBCC-402D-8B6D-62B4E22B038C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8D52E57-EBCC-402D-8B6D-62B4E22B038C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8312B0F-17B4-4685-B994-77495716FDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8312B0F-17B4-4685-B994-77495716FDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8312B0F-17B4-4685-B994-77495716FDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
