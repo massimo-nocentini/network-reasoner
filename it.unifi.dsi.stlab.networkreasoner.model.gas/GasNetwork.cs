@@ -128,7 +128,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				set;
 			}
 
-			double MaxSpeed {
+			double? MaxSpeed {
 				get;
 				set;
 			}

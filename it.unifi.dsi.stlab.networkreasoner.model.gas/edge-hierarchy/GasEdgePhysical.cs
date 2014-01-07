@@ -12,7 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public double Diameter{ get; set; }
 
-		public double MaxSpeed{ get; set; }
+		public double? MaxSpeed{ get; set; }
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.model.gas.GasEdgeAbstract
 		public override void accept (GasEdgeVisitor aVisitor)
