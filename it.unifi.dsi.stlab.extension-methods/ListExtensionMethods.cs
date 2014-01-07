@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using it.unifi.dsi.stlab.utilities.times_of_computation;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
 
-namespace it.unifi.dsi.stlab.extensionmethods
+namespace it.unifi.dsi.stlab.extension_methods
 {
 	public static class ListExtensionMethods
 	{

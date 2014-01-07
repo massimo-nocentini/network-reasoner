@@ -30,9 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="log4net">
-      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -50,9 +47,7 @@
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionMaxIterationReached.cs" />
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionAdimensionalRatioPrecisionReached.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListener.cs" />
-    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLogging.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerNullObject.cs" />
-    <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerForLoggingSummary.cs" />
     <Compile Include="exactly-dimensioned-instance\AbstractItemForNetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitialization.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />

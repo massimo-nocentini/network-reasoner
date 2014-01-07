@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{19F7F487-F948-4BCE-AE70-CE28D685552E}</ProjectGuid>
+    <ProjectGuid>{2C63B311-E92E-4670-9DFA-359F0107E02B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>it.unifi.dsi.stlab.math.algebra</RootNamespace>
-    <AssemblyName>it.unifi.dsi.stlab.math.algebra</AssemblyName>
+    <RootNamespace>it.unifi.dsi.stlab.networkreasoner.gas.system.listeners</RootNamespace>
+    <AssemblyName>it.unifi.dsi.stlab.networkreasoner.gas.system.listeners</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +21,7 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -30,44 +30,43 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="log4net">
+      <HintPath>..\third-party-libraries\log4net\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>..\third-party-libraries\MathNet.Numerics\Net40\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Vector.cs" />
-    <Compile Include="Matrix.cs" />
-    <Compile Include="condition-checkers\ConditionChecker.cs" />
-    <Compile Include="condition-checkers\ConditionCheckerEnabled.cs" />
-    <Compile Include="condition-checkers\ConditionViolationExceptions.cs" />
-    <Compile Include="condition-checkers\ConditionCheckerDisabled.cs" />
-    <Compile Include="constaints\AlgebraConstraint.cs" />
-    <Compile Include="constaints\EnsureBijectionOnVectors.cs" />
-    <Compile Include="constaints\EnsureVectorIsCoveredByKeySet.cs" />
-    <Compile Include="constaints\VectorShouldCovertColumnsSpaceForMatrixRightProduct.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NetwonRaphsonSystemEventsListenerForLogging.cs" />
+    <Compile Include="NetwonRaphsonSystemEventsListenerForLoggingSummary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system\it.unifi.dsi.stlab.networkreasoner.gas.system.csproj">
+      <Project>{8BBA75A5-3698-4A00-8B81-E4F2BA3FECB5}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.gas.system</Name>
+    </ProjectReference>
     <ProjectReference Include="..\it.unifi.dsi.stlab.extension-methods\it.unifi.dsi.stlab.extension-methods.csproj">
       <Project>{1A93011C-4839-42D1-B6BB-6A96283291D5}</Project>
       <Name>it.unifi.dsi.stlab.extension-methods</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.math.algebra\it.unifi.dsi.stlab.math.algebra.csproj">
+      <Project>{19F7F487-F948-4BCE-AE70-CE28D685552E}</Project>
+      <Name>it.unifi.dsi.stlab.math.algebra</Name>
     </ProjectReference>
     <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
       <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
       <Name>it.unifi.dsi.stlab.utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.gas\it.unifi.dsi.stlab.networkreasoner.model.gas.csproj">
+      <Project>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</Project>
+      <Name>it.unifi.dsi.stlab.networkreasoner.model.gas</Name>
+    </ProjectReference>
     <ProjectReference Include="..\it.unifi.dsi.stlab.extension-methods.for-math-library\it.unifi.dsi.stlab.extension-methods.for-math-library.csproj">
       <Project>{8EF0F22C-AD25-4E2F-9BF2-49106FA83275}</Project>
       <Name>it.unifi.dsi.stlab.extension-methods.for-math-library</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="condition-checkers\" />
-    <Folder Include="constaints\" />
   </ItemGroup>
 </Project>

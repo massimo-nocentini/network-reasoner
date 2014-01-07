@@ -2,7 +2,7 @@ using System;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 
-namespace it.unifi.dsi.stlab.extensionmethods
+namespace it.unifi.dsi.stlab.extension_methods.for_rdf_library
 {
 	public static class ILiteralNodeExtensionMethods
 	{

@@ -4,9 +4,10 @@ using VDS.RDF;
 using System.IO;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
-using it.unifi.dsi.stlab.extensionmethods;
 using it.unifi.dsi.stlab.exceptions;
 using System.Reflection;
+using it.unifi.dsi.stlab.extension_methods.for_rdf_library;
+using it.unifi.dsi.stlab.extension_methods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface
 {

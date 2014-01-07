@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
-using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.extension_methods;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system

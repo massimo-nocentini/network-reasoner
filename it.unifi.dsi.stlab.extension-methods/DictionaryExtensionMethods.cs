@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace it.unifi.dsi.stlab.extensionmethods
+namespace it.unifi.dsi.stlab.extension_methods
 {
 	public static class DictionaryExtensionMethods
 	{

@@ -1,11 +1,14 @@
 using System;
 using log4net;
 using System.Collections.Generic;
-using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.extension_methods;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.utilities.value_holders;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
+using it.unifi.dsi.stlab.extension_methods.for_math_library;
 
-namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners
+namespace it.unifi.dsi.stlab.networkreasoner.gas.system.listeners
 {
 	public class NetwonRaphsonSystemEventsListenerForLogging :
 		NetwonRaphsonSystemEventsListener

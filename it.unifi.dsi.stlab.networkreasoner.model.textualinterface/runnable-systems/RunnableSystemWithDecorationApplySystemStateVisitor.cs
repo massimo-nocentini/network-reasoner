@@ -8,7 +8,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	public class RunnableSystemWithDecorationApplySystemStateVisitor : 
 		RunnableSystemWithDecoration
 	{
-		public FluidDynamicSystemStateVisitorWithSystemName SystemStateVisitor { get; set; }
+		public FluidDynamicSystemStateVisitorWithSystemName 
+			SystemStateVisitor { get; set; }
 
 		#region RunnableSystem implementation
 		public override FluidDynamicSystemStateAbstract compute (

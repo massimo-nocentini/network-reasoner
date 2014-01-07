@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1A93011C-4839-42D1-B6BB-6A96283291D5}</ProjectGuid>
+    <ProjectGuid>{8EF0F22C-AD25-4E2F-9BF2-49106FA83275}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>it.unifi.dsi.stlab.extension_methods</RootNamespace>
-    <AssemblyName>it.unifi.dsi.stlab.extension-methods</AssemblyName>
+    <RootNamespace>it.unifi.dsi.stlab.extensionmethods.formathlibrary</RootNamespace>
+    <AssemblyName>it.unifi.dsi.stlab.extension-methods.for-math-library</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +21,7 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -30,22 +30,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\third-party-libraries\MathNet.Numerics\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="IEnumerableExtensionMethods.cs" />
-    <Compile Include="ICollectionExtensionMethods.cs" />
-    <Compile Include="ListExtensionMethods.cs" />
-    <Compile Include="DictionaryExtensionMethods.cs" />
-    <Compile Include="IntegerExtensionMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MatrixExtensionMethods.cs" />
+    <Compile Include="VectorExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.utilities\it.unifi.dsi.stlab.utilities.csproj">
-      <Project>{6EB38DD0-7330-48CF-9350-F94F6638569E}</Project>
-      <Name>it.unifi.dsi.stlab.utilities</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

@@ -1,9 +1,8 @@
 using System;
 using MathNet.Numerics.LinearAlgebra.Double;
-using log4net;
 using System.Globalization;
 
-namespace it.unifi.dsi.stlab.extensionmethods
+namespace it.unifi.dsi.stlab.extension_methods.for_math_library
 {
 	public static class VectorExtensionMethods
 	{

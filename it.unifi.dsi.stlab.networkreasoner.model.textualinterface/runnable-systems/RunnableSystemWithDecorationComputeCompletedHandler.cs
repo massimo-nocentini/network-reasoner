@@ -8,7 +8,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 	public class RunnableSystemWithDecorationComputeCompletedHandler
 		: RunnableSystemWithDecoration
 	{
-		public Action<String, FluidDynamicSystemStateAbstract> OnComputeCompletedHandler{ get; set; }
+		public Action<String, FluidDynamicSystemStateAbstract> 
+			OnComputeCompletedHandler{ get; set; }
 
 		public Action<String, 
 			Dictionary<string, GasNodeAbstract>, 

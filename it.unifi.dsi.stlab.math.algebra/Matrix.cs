@@ -5,8 +5,9 @@ using MathNet.Numerics.LinearAlgebra.Double.Solvers.StopCriterium;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers;
 using MathNet.Numerics.LinearAlgebra.Double.Solvers.Iterative;
 using System.Linq;
-using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.extension_methods;
 using it.unifi.dsi.stlab.utilities.value_holders;
+using it.unifi.dsi.stlab.extension_methods.for_math_library;
 
 namespace it.unifi.dsi.stlab.math.algebra
 {

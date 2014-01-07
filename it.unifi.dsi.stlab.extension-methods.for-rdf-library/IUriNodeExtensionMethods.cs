@@ -1,7 +1,7 @@
 using System;
 using VDS.RDF;
 
-namespace it.unifi.dsi.stlab.extensionmethods
+namespace it.unifi.dsi.stlab.extension_methods.for_rdf_library
 {
 	public static class IUriNodeExtensionMethods
 	{

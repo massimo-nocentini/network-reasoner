@@ -6,7 +6,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.unknowns_initializations;
 using System.Linq;
-using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.extension_methods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {

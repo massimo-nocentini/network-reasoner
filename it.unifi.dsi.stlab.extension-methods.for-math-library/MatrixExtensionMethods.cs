@@ -1,9 +1,8 @@
 using System;
-using log4net;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Globalization;
 
-namespace it.unifi.dsi.stlab.extensionmethods
+namespace it.unifi.dsi.stlab.extension_methods.for_math_library
 {
 	public static class MatrixExtensionMethods
 	{

@@ -2,7 +2,7 @@ using System;
 using it.unifi.dsi.stlab.networkreasoner.model.rdfinterface;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
-using it.unifi.dsi.stlab.extensionmethods;
+using it.unifi.dsi.stlab.extension_methods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {

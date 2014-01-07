@@ -3,8 +3,6 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using System.IO;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
-using log4net;
-using log4net.Config;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners;
@@ -93,13 +91,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		protected virtual NetwonRaphsonSystemEventsListener buildEventListener ()
 		{		
-			ILog log = LogManager.GetLogger (typeof(Object));
-			XmlConfigurator.Configure (LogConfigFileInfo);
-
-			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
-			eventListener.Log = log;
-
-			return eventListener;
+			return new NetwonRaphsonSystemEventsListenerNullObject ();
+//
+//			ILog log = LogManager.GetLogger (typeof(Object));
+//			XmlConfigurator.Configure (LogConfigFileInfo);
+//
+//			var eventListener = new NetwonRaphsonSystemEventsListenerForLoggingSummary ();
+//			eventListener.Log = log;
+//
+//			return eventListener;
 		}
 	}
 }
