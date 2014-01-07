@@ -368,7 +368,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.tests
 
 			var parserResultReceiver = loader.GetParserResultReceiverFrom (objectsByUri, g);
 
-			Assert.IsInstanceOf (typeof(GasNetwork.GasParserResultReceiver), 
+			Assert.IsInstanceOf (typeof(GasParserResultReceiver), 
 			                     parserResultReceiver);
 
 			var gasNetwork = mainNetwork as GasNetwork;

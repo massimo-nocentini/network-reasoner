@@ -60,6 +60,8 @@
     <Compile Include="parameters\AmbientParametersGas.cs" />
     <Compile Include="parameters\AmbientParametersWater.cs" />
     <Compile Include="handlers-for-network-iteration\NetworkIteratorHandler.cs" />
+    <Compile Include="general-parsing-result-receiver\ParserResultReceiver.cs" />
+    <Compile Include="general-parsing-result-receiver\GasParserResultReceiver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,12 +72,9 @@
     <Folder Include="parameters\" />
     <Folder Include="edge-hierarchy\" />
     <Folder Include="handlers-for-network-iteration\" />
+    <Folder Include="general-parsing-result-receiver\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj">
-      <Project>{035646F1-2131-4366-A526-A2E2F3A00A3D}</Project>
-      <Name>it.unifi.dsi.stlab.networkreasoner.model.rdfinterface</Name>
-    </ProjectReference>
     <ProjectReference Include="..\it.unifi.dsi.stlab.exceptions\it.unifi.dsi.stlab.exceptions.csproj">
       <Project>{14D86C4D-1649-4987-A74F-3044C20AD2E5}</Project>
       <Name>it.unifi.dsi.stlab.exceptions</Name>
