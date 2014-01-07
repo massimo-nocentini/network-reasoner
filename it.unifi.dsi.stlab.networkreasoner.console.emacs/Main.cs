@@ -32,7 +32,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			new MainClass ().run (lines);
 		}
 
-
 		class DotRepresentationsRunnableSystem : RunnableSystem
 		{
 			Dictionary<string, StringBuilder> DotRepresentationsBySystems{ get; set; }
@@ -41,7 +40,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			{
 				DotRepresentationsBySystems = new Dictionary<string, StringBuilder> ();
 			}
-
 			#region RunnableSystem implementation
 			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
@@ -49,7 +47,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				Dictionary<string, GasEdgeAbstract> edges, 
 				AmbientParameters ambientParameters)
 			{
-				var aGasNetwork = new GasNetwork{
+				var aGasNetwork = new GasNetwork {
 					Nodes = nodes,
 					Edges = edges,				
 					AmbientParameters = ambientParameters
@@ -63,7 +61,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				return null;
 			}
 			#endregion
-
 			public String buildDotRepresentations ()
 			{
 				StringBuilder result = new StringBuilder ();
@@ -75,7 +72,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 
 				return result.ToString ();
 			}
-
 		}
 
 		protected virtual void buildSystemRunner (
@@ -116,7 +112,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			if (listenerRow.Length > 1) {
 				listener = Activator.CreateInstance (Type.GetType (listenerRow [1]))
 					as NetwonRaphsonSystemEventsListener;
-			} else {
+			} 
+
+			if (listenerRow.Length < 2 || listener == null) {
 				listener = new NetwonRaphsonSystemEventsListenerNullObject ();
 			}
 
@@ -131,14 +129,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				}
 			}
 
-			RunnableSystem runnable_system = new RunnableSystemComputeGivenEventListener{
+			RunnableSystem runnable_system = new RunnableSystemComputeGivenEventListener {
 				EventListener = listener,
 				Precision = precision,
 				UnknownInitialization = new UnknownInitializationSimplyRandomized()
 			};
 
 			var summaryTableVisitor = new FluidDynamicSystemStateVisitorBuildSummaryTable ();
-			runnable_system = new RunnableSystemWithDecorationApplySystemStateVisitor{
+			runnable_system = new RunnableSystemWithDecorationApplySystemStateVisitor {
 				DecoredRunnableSystem = runnable_system,
 				SystemStateVisitor = summaryTableVisitor
 			};

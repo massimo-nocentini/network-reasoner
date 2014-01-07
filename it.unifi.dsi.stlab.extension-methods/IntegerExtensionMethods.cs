@@ -27,6 +27,12 @@ namespace it.unifi.dsi.stlab.extension_methods
 
 			return range;
 		}
+
+		public static bool belongToInterval (
+			this double witness, double min, double max)
+		{
+			return witness >= min && witness <= max;
+		}
 	}
 }
 

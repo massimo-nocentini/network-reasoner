@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.extension_methods;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
+using System.Text;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
@@ -25,6 +26,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		}
 
 		public Dictionary<GasNodeAbstract, double> AlgebraicSumOfFlowsByNodes {
+			get;
+			set;
+		}
+
+		public Dictionary<GasNodeAbstract, StringBuilder> AnomaliesByNodes {
+			get;
+			set;
+		}
+
+		public Dictionary<GasEdgeAbstract, StringBuilder> AnomaliesByEdges {
 			get;
 			set;
 		}
@@ -52,6 +63,101 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			);
 		}
 
+		class EdgeAnomalyFinder : GasEdgeVisitor, GasEdgeGadgetVisitor
+		{
+			public Action<String> ReportAnomaly {
+				get;
+				set;
+			}
+
+			public double Velocity {
+				get;
+				set;
+			}
+
+			public double Flow {
+				get;
+				set;
+			}
+			#region GasEdgeVisitor implementation
+			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
+			{
+				if (this.Velocity.belongToInterval (
+					double.NegativeInfinity, gasEdgePhysical.MaxSpeed) == false) {
+					ReportAnomaly.Invoke (
+						string.Format (
+							"Edge speed {0} greater than the max {1} allowed.", 
+							this.Flow,
+							gasEdgePhysical.MaxSpeed));
+				}
+				gasEdgePhysical.Described.accept (this);
+			}
+
+			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
+			{
+				// nothing to check
+			}
+
+			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
+			{
+				gasEdgeWithGadget.Gadget.accept (this);
+				gasEdgeWithGadget.Equipped.accept (this);
+			}
+			#endregion
+			#region GasEdgeGadgetVisitor implementation
+			public void forSwitchOffGadget (GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
+			{
+				// nothing to check
+			}
+			#endregion
+		}
+
+		class NodeAnomalyFinder : GasNodeVisitor, GasNodeGadgetVisitor
+		{
+			public Action<String> ReportAnomaly {
+				get;
+				set;
+			}
+
+			public double NodeAlgebraicSumOfFlows {
+				get;
+				set;
+			}
+
+			public double NodePressure {
+				get;
+				set;
+			}
+			#region GasNodeVisitor implementation
+			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
+			{
+				// nothing to check
+			}
+
+			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+			{
+				gasNodeWithGadget.Gadget.accept (this);
+				gasNodeWithGadget.Equipped.accept (this);
+			}
+			#endregion
+			#region GasNodeGadgetVisitor implementation
+			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
+			{
+				// nothing to check
+			}
+
+			public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
+			{
+				if (this.NodeAlgebraicSumOfFlows.belongToInterval (
+					aSupplyGadget.MinQ, aSupplyGadget.MaxQ) == false) {
+					ReportAnomaly.Invoke (
+						string.Format ("Sum of flow {0} not in allowed interval.", 
+					                this.NodeAlgebraicSumOfFlows));
+				}
+			}
+			#endregion
+		}
+
 		public void forMathematicallySolvedState (
 			FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved)
 		{
@@ -59,6 +165,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			AlgebraicSumOfFlowsByNodes = new Dictionary<GasNodeAbstract, double> ();
 			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
 			VelocitiesByEdges = new Dictionary<GasEdgeAbstract, double> ();
+			AnomaliesByNodes = new Dictionary<GasNodeAbstract, StringBuilder> ();
+			AnomaliesByEdges = new Dictionary<GasEdgeAbstract, StringBuilder> ();
 
 			var mutationResults = fluidDynamicSystemStateMathematicallySolved.MutationResult;
 			ElapsedTime = computeElapsedTimeFrom (mutationResults);
@@ -94,6 +202,49 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.EndNode] += Qvalue;
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.StartNode] -= Qvalue;
+				
+				var originalEdge = originalByComputationEdgesPair.Value;
+				var anomalyFinder = new EdgeAnomalyFinder ();
+				anomalyFinder.Flow = Qvalue;
+				anomalyFinder.Velocity = VelocityValue;
+				anomalyFinder.ReportAnomaly = anAnomaly => {
+
+					if (AnomaliesByEdges.ContainsKey (
+						originalEdge) == false) {
+						AnomaliesByEdges.Add (originalEdge, new StringBuilder ());
+					}
+
+					AnomaliesByEdges [originalEdge].AppendFormat (
+						"Node {0}: {1}.",
+						originalByComputationEdgesPair.Key.Identifier,
+						anAnomaly);
+				};
+
+				originalEdge.accept (anomalyFinder);
+			}
+
+			foreach (var originalByComputationNodesPair in 
+			         fluidDynamicSystemStateMathematicallySolved.MutationResult.
+			         StartingUnsolvedState.OriginalNodesByComputationNodes) {
+
+				var anomalyFinder = new NodeAnomalyFinder ();
+				var originalNode = originalByComputationNodesPair.Value;
+				anomalyFinder.NodePressure = PressuresByNodes [originalNode];
+				anomalyFinder.NodeAlgebraicSumOfFlows = 
+					AlgebraicSumOfFlowsByNodes [originalNode];
+				anomalyFinder.ReportAnomaly = anAnomaly => {
+
+					if (AnomaliesByNodes.ContainsKey (originalNode) == false) {
+						AnomaliesByNodes.Add (originalNode, new StringBuilder ());
+					}
+
+					AnomaliesByNodes [originalNode].AppendFormat (
+						"Node {0}: {1}.",
+						originalByComputationNodesPair.Key.Identifier,
+						anAnomaly);
+				};
+
+				originalNode.accept (anomalyFinder);
 			}
 		}
 

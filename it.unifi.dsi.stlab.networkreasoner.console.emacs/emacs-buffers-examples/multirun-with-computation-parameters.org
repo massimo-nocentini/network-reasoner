@@ -49,12 +49,12 @@
  |  23 | 25 |  52.3 | 500.0 |
 
 * computation parameters
-  | param         |                                                                                                                                                                                 |
-  |---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | precision     | 1e-6                                                                                                                                                                            |
-  | listener      | it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.listeners.NetwonRaphsonSystemEventsListenerForLogging, it.unifi.dsi.stlab.networkreasoner.gas.system |
-  | log conf file | log-conf-for-multirun-with-computation-parameters.xml                                                                                                                           |
-  | dot preview   | yes                                                                                                                                                                             |
+  | param         |                                                                                                                                                              |
+  |---------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | precision     | 1e-6                                                                                                                                                         |
+  | listener      | it.unifi.dsi.stlab.networkreasoner.gas.system.listeners.NetwonRaphsonSystemEventsListenerForLogging, it.unifi.dsi.stlab.networkreasoner.gas.system.listeners |
+  | log conf file | log-conf-for-multirun-with-computation-parameters.xml                                                                                                        |
+  | dot preview   | yes                                                                                                                                                          |
 
 
 * end
