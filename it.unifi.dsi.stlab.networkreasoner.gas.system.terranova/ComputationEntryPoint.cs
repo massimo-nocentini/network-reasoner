@@ -39,6 +39,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 				get;
 				set;
 			}
+
+			public Dictionary<GasNodeAbstract, System.Text.StringBuilder> AnomaliesByNodes {
+				get;
+				set;
+			}
+
+			public Dictionary<GasEdgeAbstract, System.Text.StringBuilder> AnomaliesByEdges {
+				get;
+				set;
+			}
 		}
 
 		public virtual ComputationResults solve (
@@ -73,6 +83,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 			results.FlowsByEdges = originalDomainReverterVisitor.FlowsByEdges;
 			results.VelocitiesByEdges = originalDomainReverterVisitor.VelocitiesByEdges;
 			results.ElapsedTime = originalDomainReverterVisitor.ElapsedTime;
+			results.AnomaliesByNodes = originalDomainReverterVisitor.AnomaliesByNodes;
+			results.AnomaliesByEdges = originalDomainReverterVisitor.AnomaliesByEdges;
 
 			return results;
 		}

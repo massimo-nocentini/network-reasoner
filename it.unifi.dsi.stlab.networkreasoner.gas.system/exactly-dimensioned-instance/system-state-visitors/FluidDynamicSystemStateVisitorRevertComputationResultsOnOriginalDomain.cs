@@ -86,9 +86,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					double.NegativeInfinity, gasEdgePhysical.MaxSpeed) == false) {
 					ReportAnomaly.Invoke (
 						string.Format (
-							"Edge speed {0} greater than the max {1} allowed.", 
-							this.Flow,
-							gasEdgePhysical.MaxSpeed));
+						"Edge speed {0} greater than the max {1} allowed.", 
+						this.Flow,
+						gasEdgePhysical.MaxSpeed));
 				}
 				gasEdgePhysical.Described.accept (this);
 			}
@@ -158,6 +158,48 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			#endregion
 		}
 
+		void findEdgeAnomalies (
+			string edgeIdentifier, 
+			double Qvalue, 
+			double VelocityValue,
+			GasEdgeAbstract originalEdge)
+		{
+			var anomalyFinder = new EdgeAnomalyFinder ();
+			anomalyFinder.Flow = Qvalue;
+			anomalyFinder.Velocity = VelocityValue;
+			anomalyFinder.ReportAnomaly = anAnomaly => {
+				if (AnomaliesByEdges.ContainsKey (originalEdge) == false) {
+					AnomaliesByEdges.Add (originalEdge, new StringBuilder ());
+				}
+				AnomaliesByEdges [originalEdge].AppendFormat (
+					"Node {0}: {1}.", 
+					edgeIdentifier, 
+					anAnomaly);
+			};
+			originalEdge.accept (anomalyFinder);
+		}
+
+		void findNodeAnomalies (
+			String nodeIdentifier, 
+			GasNodeAbstract originalNode,
+			double nodePressure,
+			double algebraicSumOfFlows)
+		{
+			var anomalyFinder = new NodeAnomalyFinder ();
+			anomalyFinder.NodePressure = nodePressure;
+			anomalyFinder.NodeAlgebraicSumOfFlows = algebraicSumOfFlows;
+			anomalyFinder.ReportAnomaly = anAnomaly =>  {
+				if (AnomaliesByNodes.ContainsKey (originalNode) == false) {
+					AnomaliesByNodes.Add (originalNode, new StringBuilder ());
+				}
+				AnomaliesByNodes [originalNode].AppendFormat (
+					"Node {0}: {1}.", 
+					nodeIdentifier, 
+					anAnomaly);
+			};
+			originalNode.accept (anomalyFinder);
+		}
+
 		public void forMathematicallySolvedState (
 			FluidDynamicSystemStateMathematicallySolved fluidDynamicSystemStateMathematicallySolved)
 		{
@@ -202,49 +244,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.EndNode] += Qvalue;
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.StartNode] -= Qvalue;
-				
+								
 				var originalEdge = originalByComputationEdgesPair.Value;
-				var anomalyFinder = new EdgeAnomalyFinder ();
-				anomalyFinder.Flow = Qvalue;
-				anomalyFinder.Velocity = VelocityValue;
-				anomalyFinder.ReportAnomaly = anAnomaly => {
+				findEdgeAnomalies (
+					originalByComputationEdgesPair.Key.Identifier, 
+					Qvalue, 
+					VelocityValue,
+					originalEdge);
 
-					if (AnomaliesByEdges.ContainsKey (
-						originalEdge) == false) {
-						AnomaliesByEdges.Add (originalEdge, new StringBuilder ());
-					}
-
-					AnomaliesByEdges [originalEdge].AppendFormat (
-						"Node {0}: {1}.",
-						originalByComputationEdgesPair.Key.Identifier,
-						anAnomaly);
-				};
-
-				originalEdge.accept (anomalyFinder);
 			}
 
 			foreach (var originalByComputationNodesPair in 
 			         fluidDynamicSystemStateMathematicallySolved.MutationResult.
 			         StartingUnsolvedState.OriginalNodesByComputationNodes) {
-
-				var anomalyFinder = new NodeAnomalyFinder ();
+				
 				var originalNode = originalByComputationNodesPair.Value;
-				anomalyFinder.NodePressure = PressuresByNodes [originalNode];
-				anomalyFinder.NodeAlgebraicSumOfFlows = 
-					AlgebraicSumOfFlowsByNodes [originalNode];
-				anomalyFinder.ReportAnomaly = anAnomaly => {
+				
+				var nodePressure = PressuresByNodes [originalNode];
+				var algebraicSumOfFlows = AlgebraicSumOfFlowsByNodes [originalNode];
 
-					if (AnomaliesByNodes.ContainsKey (originalNode) == false) {
-						AnomaliesByNodes.Add (originalNode, new StringBuilder ());
-					}
+				findNodeAnomalies (originalByComputationNodesPair.Key.Identifier, 
+				                   originalNode,
+				                   nodePressure,
+				                   algebraicSumOfFlows);
 
-					AnomaliesByNodes [originalNode].AppendFormat (
-						"Node {0}: {1}.",
-						originalByComputationNodesPair.Key.Identifier,
-						anAnomaly);
-				};
-
-				originalNode.accept (anomalyFinder);
 			}
 		}
 
@@ -290,6 +313,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			AlgebraicSumOfFlowsByNodes = new Dictionary<GasNodeAbstract, double> ();
 			FlowsByEdges = new Dictionary<GasEdgeAbstract, double> ();
 			VelocitiesByEdges = new Dictionary<GasEdgeAbstract, double> ();
+			AnomaliesByNodes = new Dictionary<GasNodeAbstract, StringBuilder> ();
+			AnomaliesByEdges = new Dictionary<GasEdgeAbstract, StringBuilder> ();
 
 			ElapsedTime = computeElapsedTimeFrom (fluidDynamicSystemStateNegativeLoadsCorrected.
 			                                      FluidDynamicSystemStateMathematicallySolved.MutationResult);
@@ -322,18 +347,40 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					FluidDynamicSystemStateMathematicallySolved.MutationResult.
 						Qvector.valueAt (edgePair.Key);
 
-				var velocityValue = fluidDynamicSystemStateNegativeLoadsCorrected.
+				var VelocityValue = fluidDynamicSystemStateNegativeLoadsCorrected.
 					FluidDynamicSystemStateMathematicallySolved.MutationResult.
 						VelocityVector.valueAt (edgePair.Key);
 
 				FlowsByEdges.Add (originalEdge, Qvalue);
-				VelocitiesByEdges.Add (originalEdge, velocityValue);
+				VelocitiesByEdges.Add (originalEdge, VelocityValue);
 				
 				var startEndNodesFinder = new FindStartEndNodesOfAbstractEdge ();
 				originalEdge.accept (startEndNodesFinder);
 
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.EndNode] += Qvalue;
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.StartNode] -= Qvalue;
+				
+				findEdgeAnomalies (
+					edgePair.Key.Identifier, 
+					Qvalue, 
+					VelocityValue,
+					originalEdge);
+			}
+
+			foreach (var aNodePair in fluidDynamicSystemStateNegativeLoadsCorrected.
+			         FluidDynamicSystemStateMathematicallySolved.MutationResult.
+			         StartingUnsolvedState.OriginalNodesByComputationNodes) {
+
+				var originalNode = originalNodesBySubstitutedNodes.ContainsKey (aNodePair.Value) ?
+					originalNodesBySubstitutedNodes [aNodePair.Value] : aNodePair.Value;
+				
+				var nodePressure = PressuresByNodes [originalNode];
+				var algebraicSumOfFlows = AlgebraicSumOfFlowsByNodes [originalNode];
+
+				findNodeAnomalies (aNodePair.Key.Identifier, 
+				                   originalNode,
+				                   nodePressure,
+				                   algebraicSumOfFlows);
 			}
 		}
 		#endregion

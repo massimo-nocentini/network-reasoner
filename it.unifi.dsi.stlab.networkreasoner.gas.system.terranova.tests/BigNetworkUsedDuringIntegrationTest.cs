@@ -43,6 +43,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.tests
 				nodes.Values.ToList ().ForEach (aNode => Assert.That (
 					terranovaResults.AlgebraicSumOfFlowsByNodes.Keys, Contains.Item (aNode)));
 
+				Assert.That (terranovaResults.AnomaliesByNodes, Is.Empty);
+				Assert.That (terranovaResults.AnomaliesByEdges, Is.Empty);
+
 				return null;
 			}
 			#endregion

@@ -17,7 +17,7 @@ namespace it.unifi.dsi.stlab.extension_methods
 		}
 
 		public static List<int> rangeTill (
-			this int start, int till, Action<int> doOnCurrent)
+			this int start, int till)
 		{
 			var range = new List<int> ();
 
