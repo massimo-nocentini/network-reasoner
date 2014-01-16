@@ -4,7 +4,6 @@ using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.IO;
 using it.unifi.dsi.stlab.utilities.value_holders;
 using System.Globalization;
-using System.Dynamic.Utils;
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 {
