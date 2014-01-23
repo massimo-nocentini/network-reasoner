@@ -6,3 +6,4 @@ test-results/
 third-party-libraries/dotnetrdf_library_100_stable/
 third-party-libraries/
 *~
+/scripts/debugging/*.org
