@@ -85,5 +85,9 @@
     <None Include="emacs-buffers-examples\log-conf-for-multirun-with-computation-parameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.tests\networks\big-network-for-integration.org">
+      <Link>emacs-buffers-examples\big-network-for-integration.org</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
