@@ -57,20 +57,25 @@ def test
 	map_of_second_analysis.each do |key,value|
 	
 		inner_map = Hash.new
-		inner_map[:flow] = value.flow - map_of_first_analysis[key].flow
-		inner_map[:velocity] = value.velocity - map_of_first_analysis[key].velocity
+		inner_map[:flow1] = map_of_first_analysis[key].flow
+		inner_map[:flow2] = value.flow 
+		inner_map[:flow_diff] = value.flow - map_of_first_analysis[key].flow
+
+		inner_map[:velocity1] = map_of_first_analysis[key].velocity
+		inner_map[:velocity2] = value.velocity
+		inner_map[:velocity_diff] = value.velocity - map_of_first_analysis[key].velocity
 
 		combined_map[key] = inner_map
 	
 	end
 
 	org_string = ""
-	org_string += "|edge_id|flow comp|velocity comp|\n"
+	org_string += "|edge_id|first flow|second flow|flow diff|first vel|snd vel|velocity comp|\n"
 	org_string += "|-\n"
 
 	combined_map.each do |key,value|
 
-		org_string += "|#{key}|#{value[:flow]}|#{value[:velocity]}|\n"
+		org_string += "|#{key}|#{value[:flow1]}|#{value[:flow2]}|#{value[:flow_diff]}|#{value[:velocity1]}|#{value[:velocity2]}|#{value[:velocity_diff]}|\n"
 
 	end	
 

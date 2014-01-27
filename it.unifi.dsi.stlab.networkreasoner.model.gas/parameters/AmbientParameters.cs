@@ -25,7 +25,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Double GravitationalAcceleration {
 			get {
-				return 9.806;
+				return 9.806d;
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public virtual Double Rconstant ()
 		{
-			return 8314.0 / MolWeight;
+			return 8314d / MolWeight;
 			
 		}
 

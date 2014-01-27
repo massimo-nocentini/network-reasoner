@@ -17,12 +17,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
 				aSupplyNodeFormula);
 
-			var numerator = aSupplyNodeFormula.GadgetSetupPressureInMillibar / 1000 + 
+			var numerator = aSupplyNodeFormula.GadgetSetupPressureInMillibar / 1000d + 
 				AirPressureInBar;
 
 			var denominator = AmbientParameters.RefPressureInBar;
 
-			var Hsetup = Math.Pow (numerator / denominator, 2);
+			var Hsetup = Math.Pow (numerator / denominator, 2d);
 		
 			return Hsetup;
 		}
@@ -79,7 +79,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var f = aKvalueFormula.EdgeFvalue;
 
 			var A = this.AmbientParameters.Aconstant () / 
-				Math.Pow (aKvalueFormula.EdgeDiameterInMillimeters / 1000, 5);
+				Math.Pow (aKvalueFormula.EdgeDiameterInMillimeters / 1000d, 5d);
 
 			var unknownForStartNode = aKvalueFormula.UnknownForEdgeStartNode;
 			var unknownForEndNode = aKvalueFormula.UnknownForEdgeEndNode;
@@ -91,7 +91,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			var length = aKvalueFormula.EdgeLength;
 
-			var K = 3600 / Math.Sqrt (f * A * length * weightedHeightsDifference);
+			var K = 3600d / Math.Sqrt (f * A * length * weightedHeightsDifference);
 
 			return K;
 		}
@@ -107,7 +107,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 				AmatrixQuadrupletFormulaForSwitchedOnEdges,
 				out coVariant, out controVariant);
 
-			double initialValue = 0.0;
+			double initialValue = 0d;
 
 			AmatrixQuadruplet result = new AmatrixQuadruplet ();
 
@@ -139,20 +139,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 				jacobianMatrixQuadrupletFormulaForSwitchedOnEdges,
 				out coVariant, out controVariant);
 
-			double initialValue = 0.0;
+			double initialValue = 0d;
 
 			AmatrixQuadruplet result = new AmatrixQuadruplet ();
 
-			result.StartNodeStartNodeUpdater = cumulate => -coVariant / 2 + cumulate;
+			result.StartNodeStartNodeUpdater = cumulate => -coVariant / 2d + cumulate;
 			result.StartNodeStartNodeInitialValue = initialValue;
 
-			result.StartNodeEndNodeUpdater = cumulate => controVariant / 2 + cumulate;
+			result.StartNodeEndNodeUpdater = cumulate => controVariant / 2d + cumulate;
 			result.StartNodeEndNodeInitialValue = initialValue;
 
-			result.EndNodeStartNodeUpdater = cumulate => coVariant / 2 + cumulate;
+			result.EndNodeStartNodeUpdater = cumulate => coVariant / 2d + cumulate;
 			result.EndNodeStartNodeInitialValue = initialValue;
 
-			result.EndNodeEndNodeUpdater = cumulate => -controVariant / 2 + cumulate;
+			result.EndNodeEndNodeUpdater = cumulate => -controVariant / 2d + cumulate;
 			result.EndNodeEndNodeInitialValue = initialValue;
 
 			return result;
@@ -171,25 +171,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public double visitFvalueFormula (FvalueFormula FvalueFormula)
 		{			
 
-			double numeratorForRe = Math.Abs ((FvalueFormula.EdgeQvalue * 4) / 3600) * 
+			double numeratorForRe = Math.Abs ((FvalueFormula.EdgeQvalue * 4d) / 3600d) * 
 				this.AmbientParameters.RefDensity ();
 
-			var denominatorForRe = Math.PI * (FvalueFormula.EdgeDiameterInMillimeters / 1000) * 
+			var denominatorForRe = Math.PI * (FvalueFormula.EdgeDiameterInMillimeters / 1000d) * 
 				this.AmbientParameters.ViscosityInPascalTimesSecond;
 
 			var Re = numeratorForRe / denominatorForRe;
 
 			var augend = FvalueFormula.EdgeRoughnessInMicron / 
-				(FvalueFormula.EdgeDiameterInMillimeters * 1000 * 3.71);
+				(FvalueFormula.EdgeDiameterInMillimeters * 1000d * 3.71);
 
-			var addend = 2.51 / (Re * Math.Sqrt (FvalueFormula.EdgeFvalue));
+			var addend = 2.51d / (Re * Math.Sqrt (FvalueFormula.EdgeFvalue));
 
-			var toInvert = -2 * Math.Log10 (augend + addend);
+			var toInvert = -2d * Math.Log10 (augend + addend);
 
-			var Fvalue = Math.Pow (1 / toInvert, 2);
+			var Fvalue = Math.Pow (1d / toInvert, 2d);
 			
-			if (Re < 2000) {
-				Fvalue = 64.0 / Re;	
+			if (Re < 2000d) {
+				Fvalue = 64d / Re;	
+			}
+			else if(Re < 4000d) {
+				Fvalue = .00277 * Math.Pow(Re, .3219);	
 			}
 
 			return Fvalue;
@@ -205,7 +208,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var minPressure = Math.Min (absolutePressureOfStartNode, absolutePressureOfEndNode);
 
 			var numerator = (Qvalue / 3600d) * AmbientParameters.RefPressureInBar / minPressure;
-			var denominator = Math.PI * Math.Pow (diameter * 1e-3, 2) / 4d; 
+			var denominator = Math.PI * Math.Pow (diameter * 1e-3, 2d) / 4d; 
 
 			return numerator / denominator;
 		}
