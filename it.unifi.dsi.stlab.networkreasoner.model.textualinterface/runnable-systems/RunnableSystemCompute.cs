@@ -41,7 +41,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					AmbientParameters = ambientParameters
 				};
 
-			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+//			var formulaVisitor = new GasFormulaVisitorExactlyDimensioned ();
+			
+			var formulaVisitor = new GasFormulaVisitorExactlyDimensionedForWater ();
 			formulaVisitor.AmbientParameters = ambientParameters;
 
 			var eventListener = buildEventListener ();

@@ -135,5 +135,8 @@
     <None Include="log4net-configurations\terranova-stub-network.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="gheonet-textual-networks\for-water-test.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

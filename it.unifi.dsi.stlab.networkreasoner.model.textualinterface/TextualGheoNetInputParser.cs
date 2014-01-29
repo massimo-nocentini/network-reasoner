@@ -187,7 +187,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		internal virtual AmbientParameters parseAmbientParameters ()
 		{
-			AmbientParameters result = new AmbientParametersGas ();
+			AmbientParameters result = new AmbientParametersWater ();
 			
 			var ambientParametersSpecificationLines = fetchRegion ("ambient parameters", 
 			                                                       new TableHeaderParserIgnoreHeader ());

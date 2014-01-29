@@ -1,0 +1,22 @@
+
+* ambient parameters
+| 3 | 4 | 1013.25 | 1.00 | 15.00 | 15.00 | 16.00 | 28.97 | 0.0100000000 | 1.0    |
+
+* edges
+| K1 | N1 | N2 | 50 | 200 | 55 | 0.00 | 6 |
+
+
+* nodes
+| N1 | 1 | 0.00 | 2    | 0 |
+| N2 | 0 |   10 | 0.00 | 0 |
+
+
+* computation parameters
+  | param         |      |
+  |---------------+------|
+  | precision     | 1e-8 |
+  | listener      |      |
+  | log conf file |      |
+  | dot preview   |      |
+  
+* end

@@ -12,6 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			var specWeight = AmbientParameters.RefDensity () * AmbientParameters.GravitationalAcceleration;
 
+			// pressione assoluta al nodo espressa in metri
 			var numerator = (AirPressureInBar + 
 				aSupplyNodeFormula.GadgetSetupPressureInMillibar) * 1e5 // per andare in pascal
 				/ specWeight;
@@ -48,6 +49,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			ControVariantLittleKFormula controVariantLittleKFormula)
 		{
 			return 1;
+		}
+
+		public override double visitVelocityValueFormula (VelocityValueFormula velocityValueFormula)
+		{
+			double Qvalue = velocityValueFormula.Qvalue;
+			double diameter = velocityValueFormula.Diameter;
+			double absolutePressureOfStartNode = velocityValueFormula.AbsolutePressureOfStartNode;
+			double absolutePressureOfEndNode = velocityValueFormula.AbsolutePressureOfEndNode;
+		
+			var numerator = Qvalue / 3600d;
+			var denominator = Math.PI * Math.Pow (diameter * 1e-3, 2d) / 4d; 
+
+			return numerator / denominator;
+			
 		}
 	}
 }

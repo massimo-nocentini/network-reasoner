@@ -198,7 +198,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			return Fvalue;
 		}
 
-		public double visitVelocityValueFormula (VelocityValueFormula velocityValueFormula)
+		public virtual double visitVelocityValueFormula (VelocityValueFormula velocityValueFormula)
 		{
 			double Qvalue = velocityValueFormula.Qvalue;
 			double diameter = velocityValueFormula.Diameter;
