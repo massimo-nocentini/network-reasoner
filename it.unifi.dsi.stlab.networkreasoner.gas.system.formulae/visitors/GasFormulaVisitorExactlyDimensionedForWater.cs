@@ -10,15 +10,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
 				aSupplyNodeFormula);
 
-			var specWeight = AmbientParameters.RefDensity () * AmbientParameters.GravitationalAcceleration;
+			var specWeight = AmbientParameters.RefDensity () * 
+				AmbientParameters.GravitationalAcceleration;
 
 			// pressione assoluta al nodo espressa in metri
 			var numerator = (AirPressureInBar + 
 				aSupplyNodeFormula.GadgetSetupPressureInMillibar) * 1e5 // per andare in pascal
 				/ specWeight;
 
-			var result = numerator + aSupplyNodeFormula.NodeHeight;
+//			var result = numerator + aSupplyNodeFormula.NodeHeight;
 		
+			var result = aSupplyNodeFormula.GadgetSetupPressureInMillibar + 
+				aSupplyNodeFormula.NodeHeight;
+
 			return result;
 		}
 
@@ -29,14 +33,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 				aRelativePressureFromAbsolutePressureFormula);
 
 			var z = aRelativePressureFromAbsolutePressureFormula.AbsolutePressure;
-			var h = aRelativePressureFromAbsolutePressureFormula.NodeHeight;
+			var h = aRelativePressureFromAbsolutePressureFormula.NodeHeight;	
 					
 			var specWeight = AmbientParameters.RefDensity () * 
 				AmbientParameters.GravitationalAcceleration;
 
-			var result = (z - h) * specWeight * 1e-5;
+//			var result = (z - h) * specWeight * 1e-5;
+			var result = (z - h);
 
-			return (result - AirPressureInBar);
+//			return (result - AirPressureInBar);
+			return result;
 		}
 
 		public override double visitCovariantLittleKFormula (
