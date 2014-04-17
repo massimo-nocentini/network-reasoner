@@ -212,6 +212,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			result.MolWeight = parseDoubleCultureInvariant (
 				splittedSpecification [6]).Value;
 
+			result.AirMolWeight = parseDoubleCultureInvariant (
+				splittedSpecification [7]).Value;
+
 			result.RefPressureInBar = 1.01325;
 			result.RefTemperatureInKelvin = 288.15; // da interfacciare
 

@@ -9,6 +9,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		public Double MolWeight { get; set; }
 
+		public Double AirMolWeight { get; set; }
+
 		public Double ElementTemperatureInKelvin { get; set; }
 
 		public Double ViscosityInPascalTimesSecond { get; set; }
@@ -36,9 +38,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		public virtual Double Rconstant ()
 		{
 			return 8314d / MolWeight;
-			
 		}
 
+		public virtual Double AirRconstant ()
+		{
+			return 8314d / AirMolWeight;
+		}
 
 
 	

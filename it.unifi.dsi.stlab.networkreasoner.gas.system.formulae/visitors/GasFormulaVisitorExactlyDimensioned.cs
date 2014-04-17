@@ -30,9 +30,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public double visitAirPressureFormulaForNodes (
 			AirPressureFormulaForNodes anAirPressureFormula)
 		{
-			var airPressureInBar = AmbientParameters.AirPressureInBar * 
+			double airPressureInBar = AmbientParameters.AirPressureInBar * 
 				Math.Exp (-(AmbientParameters.GravitationalAcceleration * anAirPressureFormula.NodeHeight) / 
-				(AmbientParameters.Rconstant () * AmbientParameters.AirTemperatureInKelvin)
+				(AmbientParameters.AirRconstant () * AmbientParameters.AirTemperatureInKelvin)
 			);
 
 			return airPressureInBar;
@@ -234,9 +234,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		{
 			var airPressureFormula = new AirPressureFormulaForNodes ();
 			airPressureFormula.NodeHeight = nodeHeightHolder.NodeHeight;
-			var AirPressureInBar = airPressureFormula.accept (this);
+			var airPressureInBar = airPressureFormula.accept (this);
 
-			return AirPressureInBar;
+			return airPressureInBar;
 		}
 
 		protected virtual void computeCovariantAndControVariantFromKvalueHolder (
