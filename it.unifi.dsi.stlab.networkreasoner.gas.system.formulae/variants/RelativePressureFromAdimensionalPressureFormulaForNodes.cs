@@ -9,10 +9,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			set;
 		}
 
-		public double AbsolutePressure {
+		public double AdimensionalPressure {
 			get;
 			set;
 		}
+
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.formulae.GasFormulaAbstract
 		public override double accept (GasFormulaVisitor aVisitor)
 		{

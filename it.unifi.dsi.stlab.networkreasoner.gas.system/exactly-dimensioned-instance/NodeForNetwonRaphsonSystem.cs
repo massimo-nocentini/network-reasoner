@@ -235,7 +235,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			var formula = new RelativePressureFromAdimensionalPressureFormulaForNodes ();
 			formula.NodeHeight = this.Height;
-			formula.AbsolutePressure = absolutePressure;
+			formula.AdimensionalPressure = absolutePressure;
 
 			return formula.accept (aFormulaVisitor);
 		}
@@ -245,7 +245,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			GasFormulaVisitor aFormulaVisitor)
 		{
 			var formula = new AbsolutePressureFromAdimensionalPressureFormulaForNodes ();
-			formula.AbsolutePressure = absolutePressure;
+			formula.AdimensionalPressure = absolutePressure;
 
 			return formula.accept (aFormulaVisitor);
 		}

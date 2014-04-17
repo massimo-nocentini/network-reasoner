@@ -39,21 +39,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		}
 
 		public virtual double visitRelativePressureFromAdimensionalPressureFormulaForNodes (
-			RelativePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
+			RelativePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAdimensionalPressureFormula)
 		{
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
-				aRelativePressureFromAbsolutePressureFormula);
+				aRelativePressureFromAdimensionalPressureFormula);
 
-			var result = Math.Sqrt (aRelativePressureFromAbsolutePressureFormula.AbsolutePressure) *
+			var result = Math.Sqrt (aRelativePressureFromAdimensionalPressureFormula.AdimensionalPressure) *
 				AmbientParameters.RefPressureInBar;
 
 			return (result - AirPressureInBar) * 1e3;
 		}
 
 		public virtual double visitAbsolutePressureFromAdimensionalPressureFormulaForNodes (
-			AbsolutePressureFromAdimensionalPressureFormulaForNodes aRelativePressureFromAbsolutePressureFormula)
+			AbsolutePressureFromAdimensionalPressureFormulaForNodes aAbsolutePressureFromAdimensionalPressureFormula)
 		{
-			var result = Math.Sqrt (aRelativePressureFromAbsolutePressureFormula.AbsolutePressure) *
+			var result = Math.Sqrt (aAbsolutePressureFromAdimensionalPressureFormula.AdimensionalPressure) *
 				AmbientParameters.RefPressureInBar;
 
 			return result;

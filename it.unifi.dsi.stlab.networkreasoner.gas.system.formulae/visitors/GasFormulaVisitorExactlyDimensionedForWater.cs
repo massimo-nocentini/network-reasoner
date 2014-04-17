@@ -27,7 +27,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var AirPressureInBar = this.computeAirPressureFromHeightHolder (
 				aRelativePressureFromAbsolutePressureFormula);
 
-			var z = aRelativePressureFromAbsolutePressureFormula.AbsolutePressure;
+			var z = aRelativePressureFromAbsolutePressureFormula.AdimensionalPressure;
 			var h = aRelativePressureFromAbsolutePressureFormula.NodeHeight;
 					
 			var specWeight = AmbientParameters.RefDensity () * 

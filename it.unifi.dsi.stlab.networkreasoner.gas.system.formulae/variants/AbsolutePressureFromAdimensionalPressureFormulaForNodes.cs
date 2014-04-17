@@ -4,7 +4,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 {
 	public class AbsolutePressureFromAdimensionalPressureFormulaForNodes:GasFormulaAbstract<double>
 	{
-		public double AbsolutePressure {
+		public double AdimensionalPressure {
 			get;
 			set;
 		}
