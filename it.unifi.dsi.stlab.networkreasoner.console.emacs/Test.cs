@@ -12,7 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 		{
 			new MainClass ().run (new System.Collections.Generic.List<string> (
 				File.ReadAllLines (
-				"emacs-buffers-examples/multirun-with-computation-parameters.org")
+				"emacs-buffers-examples/spec-for-pressure-computation.org")
 			)
 			);
 		}

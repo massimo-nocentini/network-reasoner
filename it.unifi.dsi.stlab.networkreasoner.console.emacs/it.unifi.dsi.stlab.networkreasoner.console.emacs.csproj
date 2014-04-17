@@ -89,5 +89,8 @@
       <Link>emacs-buffers-examples\big-network-for-integration.org</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="emacs-buffers-examples\spec-for-pressure-computation.org">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
