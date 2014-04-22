@@ -62,13 +62,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 			var originalDomainReverterVisitor = 
 				new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
 
-			RunnableSystem runnable_system = new RunnableSystemComputeGivenEventListener{
+			RunnableSystem runnable_system = new RunnableSystemComputeGivenEventListener {
 				EventListener = eventListener,
 				Precision = precision,
 				UnknownInitialization = new UnknownInitializationSimplyRandomized()
 			};
 
-			runnable_system = new RunnableSystemWithDecorationApplySystemStateVisitor{
+			runnable_system = new RunnableSystemWithDecorationApplySystemStateVisitor {
 				DecoredRunnableSystem = runnable_system,
 				SystemStateVisitor = originalDomainReverterVisitor
 			};
@@ -89,7 +89,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 			return results;
 		}
 
-
+		public virtual String EngineVersioning {
+			get {
+				return "v1.0.1";
+			}
+		}
 	}
 }
 
