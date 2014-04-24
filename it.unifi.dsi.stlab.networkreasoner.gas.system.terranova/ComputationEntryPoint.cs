@@ -89,11 +89,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 			return results;
 		}
 
-		public virtual String EngineVersioning {
-			get {
-				return "v1.0.1";
-			}
-		}
 	}
 }
 
