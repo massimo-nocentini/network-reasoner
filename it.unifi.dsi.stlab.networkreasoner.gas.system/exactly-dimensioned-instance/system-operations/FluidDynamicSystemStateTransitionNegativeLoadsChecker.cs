@@ -80,15 +80,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 			var pressure = relativeUnknowns.valueAt (nodeWithMinValue);
 
-			if (pressure < 0) {
+			if (pressure + 1e3 < 0d) {
 
 				GasNodeAbstract substitutedNode = 
 					nodeWithMinValue.substituteNodeBecauseNegativePressureFound (
-						pressure, originalNode);
+					pressure, originalNode);
 
 				// we keep note that a new node has been created
 				nodesSubstitutions.Add (
-					new ObjectWithSubstitutionInSameType<GasNodeAbstract>{
+					new ObjectWithSubstitutionInSameType<GasNodeAbstract> {
 					Original = originalNode,
 					Substituted = substitutedNode
 				}
@@ -98,15 +98,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				GasNetwork networkWithFixedNodesWithLoadGadget = 
 						previousMutationResults.StartingUnsolvedState.
 						OriginalNetwork.makeFromRemapping (
-							nodesSubstitutions,
-							out currentEdgeSubstitutions);
+					nodesSubstitutions,
+					out currentEdgeSubstitutions);
 
 				currentEdgeSubstitutions.ForEach (aCurrentEdgeSubstitution => {
 
 					ObjectWithSubstitutionInSameType<GasEdgeAbstract> transitiveSubstitutedNode = 
 						edgesSubstitutions.Find (aGivenEdgeSubstitution => 
 						aGivenEdgeSubstitution.Substituted.Equals (
-								aCurrentEdgeSubstitution.Original)					
+						aCurrentEdgeSubstitution.Original)					
 					);
 
 					if (transitiveSubstitutedNode != null) {
@@ -169,9 +169,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			throw new System.NotImplementedException ();
 		}
-		
 		#endregion
-
 		protected virtual DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional (
 			OneStepMutationResults mutationResult)
 		{
