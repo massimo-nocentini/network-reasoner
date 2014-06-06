@@ -1,0 +1,178 @@
+\documentclass[twoside,openright,titlepage,fleqn,
+headinclude,11pt,a4paper,BCOR5mm,footinclude ]{scrbook}
+%--------------------------------------------------------------
+        \newcommand{\myTitle}{Analisi di reti metaboliche basata su
+          propriet\`a di connessione\xspace}
+% use the right myDegree option
+\newcommand{\myDegree}{Corso di Laurea in Informatica\xspace}
+%\newcommand{\myDegree}{
+	%Corso di Laurea Specialistica in Scienze e Tecnologie 
+	%dell'Informazione\xspace}
+\newcommand{\myName}{Massimo Nocentini\xspace}
+\newcommand{\myProf}{Pierluigi Crescenzi\xspace}
+\newcommand{\myOtherProf}{Nome Cognome\xspace}
+\newcommand{\mySupervisor}{Nome Cognome\xspace}
+\newcommand{\myFaculty}{
+	Facolt\`a di Scienze Matematiche, Fisiche e Naturali\xspace}
+\newcommand{\myDepartment}{
+	Dipartimento di Sistemi e Informatica\xspace}
+\newcommand{\myUni}{\protect{
+	Universit\`a degli Studi di Firenze}\xspace}
+\newcommand{\myLocation}{Firenze\xspace}
+\newcommand{\myTime}{Anno Accademico 2010-2011\xspace}
+\newcommand{\myVersion}{Version 0.1\xspace}
+%--------------------------------------------------------------
+\usepackage[latin1]{inputenc} 
+\usepackage[T1]{fontenc} 
+\usepackage[square,numbers]{natbib} 
+\usepackage[fleqn]{amsmath}  
+\usepackage[english]{babel}
+%--------------------------------------------------------------
+\usepackage{dia-classicthesis-ldpkg} 
+%--------------------------------------------------------------
+% Options for classicthesis.sty:
+% tocaligned eulerchapternumbers drafting linedheaders 
+% listsseparated subfig nochapters beramono eulermath parts 
+% minionpro pdfspacing
+\usepackage[eulerchapternumbers,subfig,beramono,eulermath,
+	parts]{classicthesis}
+%--------------------------------------------------------------
+\newlength{\abcd} % for ab..z string length calculation
+% how all the floats will be aligned
+\newcommand{\myfloatalign}{\centering} 
+\setlength{\extrarowheight}{3pt} % increase table row height
+\captionsetup{format=hang,font=small}
+%--------------------------------------------------------------
+% Layout setting
+%--------------------------------------------------------------
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	ignoremp,
+	bindingoffset = 1cm, 
+	textwidth     = 13.5cm,
+	textheight    = 21.5cm,
+	lmargin       = 3.5cm, % left margin
+	tmargin       = 4cm    % top margin 
+}
+%--------------------------------------------------------------
+\usepackage{listings}
+\usepackage{hyperref}
+% My Theorem
+\newtheorem{oss}{Observation}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+
+\newtheorem{lem}[thm]{Lemma}
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+% questo comando e' relativo alle correzioni che puo
+% apportare il prof se lo desidera.
+\newcommand{\prof}[1]{\boldsymbol{#1}}
+
+% instead of boldsymbol I can use the arrow above the letter with
+%\newcommand{\vect}[1]{\vec{#1}}
+
+% page settings
+% \pagestyle{headings}
+%--------------------------------------------------------------
+\begin{document}
+\frenchspacing
+\raggedbottom
+\pagenumbering{roman}
+\pagestyle{plain}
+%--------------------------------------------------------------
+% Frontmatter
+%--------------------------------------------------------------
+%\include{titlePage}
+\pagestyle{scrheadings}
+%--------------------------------------------------------------
+% Mainmatter
+%--------------------------------------------------------------
+\pagenumbering{arabic}
+
+% settings for the lstlisting environment
+\lstset{
+	language = java
+	, numbers = left 
+	, basicstyle=\sffamily%\footnotesize
+	%, frame=single
+	, tabsize=2
+	, captionpos=b
+	, breaklines=true
+	, showspaces=false
+	, showstringspaces=false
+}
+\chapter*{Report of activity: ``Architetture e metodi per la 
+cooperazione applicativa'' }
+Florence, \today
+\\\\
+This is the final document that describes the state of the project
+under the scholarship ``Architetture e metodi per la cooperazione
+applicativa'', renewed in date $25/12/13$.  The work is supervised by
+Prof. Enrico Vicario, the study of fluid dynamics equations and
+optimizations is due to Fabio Tarani and the implementation of those
+concepts is due to Massimo Nocentini.
+\\\\
+The work in this second period covers four main branches, namely we
+have $(i)$ continued the collaboration with Terranova Software, $(ii)$
+enhanced the fluid dynamic engine to support water contexts, $(iii)$
+built a scheduler for the engine and finally $(iv)$ started a
+maintenance process for the Oris1.0 project. In the following we
+describe each of these four activities in greater details:
+\begin{description}
+\item[tuning the engine] the joint work with Terranova Software allows
+  us to carefully test and tune the fluid dynamic engine, paying
+  special attention to bug fixing and optimization. In fact two main
+  issues has been fixed:
+  \begin{itemize}
+    \item handle the computation for the turbolent behaviour when
+      Reinolds numbers belongs to the interval $[2000, 4000]$. This
+      fix is required for a correct computation of gas velocity in
+      pipes;
+    \item fix an error pointed out by Terranova for network tologies
+      where gas setup nodes are placed higher respect load nodes. The
+      fix has been accepted by Terranova Software itself as valid.
+  \end{itemize}
+  The previous points allow a refactoring of small chunks of code in
+  order to make it perform better.
+  
+\item[water context enhancement] in order to support our work, we
+  enhance the engine toward handling the water context too,
+  specializing some behaviours extending the original code base. This
+  required not much effort since the pretty code structure (only a new
+  class has been created) and the solid theoretical foundation
+  proposed by Fabio, which simplify a lot this enhancement.  The main
+  new concept introduced in this activity is that of ``tank'', a node
+  with the special capability to change its water level during time,
+  giving to the entire system a dynamic aspect which isn't present in
+  gas networks.
+  \newpage
+\item[scheduling the engine] in order to ``program'' fixed network
+  events (such as a do load variations for a node, switch off a
+  pipe...), we built a scheduler for the water context which allow to
+  run the fluid dynamic engine several times driven by the set of
+  scheduled events. A prototype of the scheduler is completely
+  implemented in \emph{Smalltalk} and tested against a general, yet
+  quite real, town water network specification.
+  
+\item[Oris 1.0 maintenance] we've started a maintenance process for
+  Oris 1.0 project, in order to give it a second life by restoring a
+  classic building tool chain toward Linux, Windows platforms, 32/64
+  bit architectures. We restored the original workspace and change it
+  in order to make it compile, updating references to newly compiled
+  libraries for code written in C++: in a first check did with
+  Prof. Vicario, we validated four main components, namely the Petri Net
+  Editor, the Trace Extractor, the Trace Analyzer and the (token game)
+  simulator.
+\end{description}
+
+\begin{tabular}{ l c l }
+  written by Massimo Nocentini,  &  & approved by Enrico Vicario,  \\
+  Dr. in Computer Science & & Full Professor \\
+  \url{massimo.nocentini@gmail.com} &  & \url{enrico.vicario@unifi.it} \\
+\end{tabular}
+
+\end{document}
