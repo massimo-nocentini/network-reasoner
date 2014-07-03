@@ -77,6 +77,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				formula.EdgeLength = anEdge.Length;
 				
 				var K = formula.accept (aFormulaVisitor);
+
 				Kvector.atPut (anEdge, K);
 			}
 

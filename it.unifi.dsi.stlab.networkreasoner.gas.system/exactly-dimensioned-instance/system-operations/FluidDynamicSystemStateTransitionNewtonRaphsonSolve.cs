@@ -13,7 +13,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		public List<UntilConditionAbstract> UntilConditions{ get; set; }
 		//public Func<Vector<NodeForNetwonRaphsonSystem>, Vector<NodeForNetwonRaphsonSystem>> FromDimensionalToAdimensionalTranslator{ get; set; }
 		public GasFormulaVisitor FormulaVisitor{ get; set; }
+
 		#region computation driver classes
+
 		abstract class MutateComputationDriver
 		{
 			public abstract bool canDoOneMoreStep ();
@@ -24,6 +26,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		class MutateComputationDriverDoOneMoreMutation : MutateComputationDriver
 		{
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NetwonRaphsonSystem.MutateComputationDriver
+
 			public override bool canDoOneMoreStep ()
 			{
 				return true;
@@ -33,12 +36,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			{
 				step.Invoke ();
 			}
+
 			#endregion
 		}
 
 		class MutateComputationDriverStopMutate : MutateComputationDriver
 		{
 			#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.NetwonRaphsonSystem.MutateComputationDriver
+
 			public override bool canDoOneMoreStep ()
 			{
 				return false;
@@ -48,10 +53,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			{
 				// nothing to do with step since we've to interrupt the computation
 			}
+
 			#endregion
 		}
+
 		#endregion
+
 		#region FluidDynamicSystemStateTransition implementation
+
 		public FluidDynamicSystemStateAbstract forBareSystemState (
 			FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
 		{
@@ -68,22 +77,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			OneStepMutationResults previousOneStepMutationResults = null;
 
 			OneStepMutationResults currentOneStepMutationResults = 
-			new OneStepMutationResults {
-				IterationNumber = 0,
-				Unknowns = fluidDynamicSystemStateUnsolved.InitialUnknownVector,
-				Fvector = fluidDynamicSystemStateUnsolved.InitialFvector
-			};
+				new OneStepMutationResults {
+					IterationNumber = 0,
+					Unknowns = fluidDynamicSystemStateUnsolved.InitialUnknownVector,
+					Fvector = fluidDynamicSystemStateUnsolved.InitialFvector
+				};
 
 			MutateComputationDriver mutateComputationDriver = 
 				new MutateComputationDriverDoOneMoreMutation ();
 
-			while (mutateComputationDriver.canDoOneMoreStep()) {			
+			while (mutateComputationDriver.canDoOneMoreStep ()) {			
 
 				UntilConditions.ForEach (condition => {
 
 					if (this.decideIfComputationShouldBeStopped (condition,
-					                                             previousOneStepMutationResults, 
-					                                             currentOneStepMutationResults)) {
+						    previousOneStepMutationResults, 
+						    currentOneStepMutationResults)) {
 
 						mutateComputationDriver = new MutateComputationDriverStopMutate ();
 					}
@@ -93,15 +102,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				mutateComputationDriver.doOneMoreStep (
 					step: () => {
 
-					previousOneStepMutationResults = currentOneStepMutationResults;
+						previousOneStepMutationResults = currentOneStepMutationResults;
 
-					previousOneStepMutationResults.IterationNumber = 
+						previousOneStepMutationResults.IterationNumber = 
 						previousOneStepMutationResults.IterationNumber + 1;
 
-					currentOneStepMutationResults = this.mutate (
-						previousOneStepMutationResults,
-						fluidDynamicSystemStateUnsolved);
-				}
+						currentOneStepMutationResults = this.mutate (
+							previousOneStepMutationResults,
+							fluidDynamicSystemStateUnsolved);
+					}
 				);
 			}
 
@@ -132,15 +141,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			// simply return the given state since if it is already checked for negative pressures, someone mathematically solved it already.
 			return fluidDynamicSystemStateNegativeLoadsCorrected;
 		}
+
 		#endregion
+
 		protected virtual bool decideIfComputationShouldBeStopped (
 			UntilConditionAbstract condition, 
 			OneStepMutationResults previousOneStepMutationResults, 
 			OneStepMutationResults currentOneStepMutationResults)
 		{
 			bool until = condition.canContinue (
-				previousOneStepMutationResults, 
-				currentOneStepMutationResults);
+				             previousOneStepMutationResults, 
+				             currentOneStepMutationResults);
 
 			bool computationShouldBeStopped = until == false;
 
@@ -154,26 +165,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			var mutateStartTimestamp = DateTime.UtcNow;
 
 			var unknownVectorAtPreviousStep = computeUnknownVectorAtPreviousStep (
-				previousStepMutationResults);
+				                                  previousStepMutationResults);
 
 			var adimensionalUnknownVectorAtPreviousStep = makeAdimensionalUnknowns (
-				unknownVectorAtPreviousStep);
+				                                              unknownVectorAtPreviousStep);
 
 			var FvectorAtPreviousStep = computeFvectorAtPreviousStep (
-				previousStepMutationResults);
+				                            previousStepMutationResults);
 
 			var KvectorAtCurrentStep = computeKvector (
-				adimensionalUnknownVectorAtPreviousStep.WrappedObject,
-				FvectorAtPreviousStep,
-				fluidDynamicSystemStateUnsolved.Edges);
+				                           adimensionalUnknownVectorAtPreviousStep.WrappedObject,
+				                           FvectorAtPreviousStep,
+				                           fluidDynamicSystemStateUnsolved.Edges);
 
 			var AmatrixAtCurrentStep = computeAmatrix (
-				KvectorAtCurrentStep,
-				fluidDynamicSystemStateUnsolved.Edges);
+				                           KvectorAtCurrentStep,
+				                           fluidDynamicSystemStateUnsolved.Edges);
 
 			var JacobianMatrixAtCurrentStep = computeJacobianMatrix (
-				KvectorAtCurrentStep,
-				fluidDynamicSystemStateUnsolved.Edges);
+				                                  KvectorAtCurrentStep,
+				                                  fluidDynamicSystemStateUnsolved.Edges);
 
 			fixMatricesIfSupplyGadgetsPresent (
 				AmatrixAtCurrentStep, 
@@ -181,41 +192,43 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				fluidDynamicSystemStateUnsolved.Nodes);
 
 			var coefficientsVectorAtCurrentStep = computeCoefficientsVectorAtCurrentStep (
-				fluidDynamicSystemStateUnsolved.Nodes);
+				                                      fluidDynamicSystemStateUnsolved.Nodes);
 
 			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> unknownVectorAtCurrentStep = 
 				computeUnknowns (
-				AmatrixAtCurrentStep, 
-				adimensionalUnknownVectorAtPreviousStep.WrappedObject, 
-				coefficientsVectorAtCurrentStep, 
-				JacobianMatrixAtCurrentStep,
-				fluidDynamicSystemStateUnsolved.NodesEnumeration);
+					AmatrixAtCurrentStep, 
+					adimensionalUnknownVectorAtPreviousStep.WrappedObject, 
+					coefficientsVectorAtCurrentStep, 
+					JacobianMatrixAtCurrentStep,
+					fluidDynamicSystemStateUnsolved.NodesEnumeration);
 
 			fixNegativeUnknowns (unknownVectorAtCurrentStep.WrappedObject);
 
 			var QvectorAtCurrentStep = computeQvector (
-				unknownVectorAtCurrentStep.WrappedObject, 
-				KvectorAtCurrentStep,
-				fluidDynamicSystemStateUnsolved.Edges);
+				                           unknownVectorAtCurrentStep.WrappedObject, 
+				                           KvectorAtCurrentStep,
+				                           fluidDynamicSystemStateUnsolved.Edges);
 
 			var FvectorAtCurrentStep = computeFvector (
-				FvectorAtPreviousStep, 
-				QvectorAtCurrentStep,
-				fluidDynamicSystemStateUnsolved.Edges);
+				                           FvectorAtPreviousStep, 
+				                           QvectorAtCurrentStep,
+				                           fluidDynamicSystemStateUnsolved.Edges);
 
 			var result = computeOneStepMutationResult (AmatrixAtCurrentStep, 
-			                                           unknownVectorAtCurrentStep, 
-			                                           coefficientsVectorAtCurrentStep, 
-			                                           QvectorAtCurrentStep, 
-			                                           JacobianMatrixAtCurrentStep, 
-			                                           FvectorAtCurrentStep, 
-			                                           previousStepMutationResults.IterationNumber,
-			                                           mutateStartTimestamp,
-			                                           fluidDynamicSystemStateUnsolved);
+				             unknownVectorAtCurrentStep, 
+				             coefficientsVectorAtCurrentStep, 
+				             QvectorAtCurrentStep, 
+				             JacobianMatrixAtCurrentStep, 
+				             FvectorAtCurrentStep, 
+				             previousStepMutationResults.IterationNumber,
+				             mutateStartTimestamp,
+				             fluidDynamicSystemStateUnsolved);
 
 			return result;
 		}
+
 		#region ``compute'' methods
+
 		protected virtual DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeAdimensionalUnknowns (
 			DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> unknownVectorAtPreviousStep)
 		{
@@ -296,6 +309,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			result.UsedFormulae = FormulaVisitor;
 			result.ComputationStartTimestamp = stepStartTimestamp;
 			result.ComputationEndTimestamp = DateTime.UtcNow;
+
+			if (unknownVectorAtCurrentStep.WrappedObject.atLeastOneSatisfy (node => Double.IsNaN (unknownVectorAtCurrentStep.WrappedObject.valueAt (node)))) {
+				Console.WriteLine ("a NaN detected");
+			}
+
 			return result;
 		}
 
@@ -356,9 +374,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorFromJacobianSystemAtCurrentStep =
 				jacobianMatrixAtCurrentStep.SolveWithGivenEnumerations (
-				nodesEnumeration,
-				nodesEnumeration,
-				coefficientVectorForJacobianSystemFactorization);
+					nodesEnumeration,
+					nodesEnumeration,
+					coefficientVectorForJacobianSystemFactorization);
 
 			unknownVectorFromJacobianSystemAtCurrentStep.updateEach (
 				(node, currentValue) => currentValue * .75);
@@ -414,7 +432,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				Nodes = nodes,
 				Formulae = FormulaVisitor
 			}
-			).WrappedObject;
+			                        ).WrappedObject;
 
 			edges.ForEach (anEdge => anEdge.putVelocityValueIntoUsing (
 				velocityVector, absolutePressures, Qvector, FormulaVisitor)
@@ -427,6 +445,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			throw new System.NotImplementedException ();
 		}
+
 		#endregion
 	}
 }
