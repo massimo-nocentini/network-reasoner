@@ -1,0 +1,160 @@
+\documentclass[twoside,openright,titlepage,fleqn,
+headinclude,11pt,a4paper,BCOR5mm,footinclude ]{scrbook}
+%--------------------------------------------------------------
+        \newcommand{\myTitle}{Analisi di reti metaboliche basata su
+          propriet\`a di connessione\xspace}
+% use the right myDegree option
+\newcommand{\myDegree}{Corso di Laurea in Informatica\xspace}
+%\newcommand{\myDegree}{
+	%Corso di Laurea Specialistica in Scienze e Tecnologie 
+	%dell'Informazione\xspace}
+\newcommand{\myName}{Massimo Nocentini\xspace}
+\newcommand{\myProf}{Pierluigi Crescenzi\xspace}
+\newcommand{\myOtherProf}{Nome Cognome\xspace}
+\newcommand{\mySupervisor}{Nome Cognome\xspace}
+\newcommand{\myFaculty}{
+	Facolt\`a di Scienze Matematiche, Fisiche e Naturali\xspace}
+\newcommand{\myDepartment}{
+	Dipartimento di Sistemi e Informatica\xspace}
+\newcommand{\myUni}{\protect{
+	Universit\`a degli Studi di Firenze}\xspace}
+\newcommand{\myLocation}{Firenze\xspace}
+\newcommand{\myTime}{Anno Accademico 2010-2011\xspace}
+\newcommand{\myVersion}{Version 0.1\xspace}
+%--------------------------------------------------------------
+\usepackage[latin1]{inputenc} 
+\usepackage[T1]{fontenc} 
+\usepackage[square,numbers]{natbib} 
+\usepackage[fleqn]{amsmath}  
+\usepackage[english]{babel}
+%--------------------------------------------------------------
+\usepackage{dia-classicthesis-ldpkg} 
+%--------------------------------------------------------------
+% Options for classicthesis.sty:
+% tocaligned eulerchapternumbers drafting linedheaders 
+% listsseparated subfig nochapters beramono eulermath parts 
+% minionpro pdfspacing
+\usepackage[eulerchapternumbers,subfig,beramono,eulermath,
+	parts]{classicthesis}
+%--------------------------------------------------------------
+\newlength{\abcd} % for ab..z string length calculation
+% how all the floats will be aligned
+\newcommand{\myfloatalign}{\centering} 
+\setlength{\extrarowheight}{3pt} % increase table row height
+\captionsetup{format=hang,font=small}
+%--------------------------------------------------------------
+% Layout setting
+%--------------------------------------------------------------
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	ignoremp,
+	bindingoffset = 1cm, 
+	textwidth     = 13.5cm,
+	textheight    = 21.5cm,
+	lmargin       = 3.5cm, % left margin
+	tmargin       = 4cm    % top margin 
+}
+%--------------------------------------------------------------
+\usepackage{listings}
+\usepackage{hyperref}
+% My Theorem
+\newtheorem{oss}{Observation}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+
+\newtheorem{lem}[thm]{Lemma}
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+% questo comando e' relativo alle correzioni che puo
+% apportare il prof se lo desidera.
+\newcommand{\prof}[1]{\boldsymbol{#1}}
+
+% instead of boldsymbol I can use the arrow above the letter with
+%\newcommand{\vect}[1]{\vec{#1}}
+
+% page settings
+% \pagestyle{headings}
+%--------------------------------------------------------------
+\begin{document}
+\frenchspacing
+\raggedbottom
+\pagenumbering{roman}
+\pagestyle{plain}
+%--------------------------------------------------------------
+% Frontmatter
+%--------------------------------------------------------------
+%\include{titlePage}
+\pagestyle{scrheadings}
+%--------------------------------------------------------------
+% Mainmatter
+%--------------------------------------------------------------
+\pagenumbering{arabic}
+
+% settings for the lstlisting environment
+\lstset{
+	language = java
+	, numbers = left 
+	, basicstyle=\sffamily%\footnotesize
+	%, frame=single
+	, tabsize=2
+	, captionpos=b
+	, breaklines=true
+	, showspaces=false
+	, showstringspaces=false
+}
+\chapter*{Report of activity: ``Architetture e metodi per la 
+cooperazione applicativa'' }
+Florence, March 3, 2014
+\\\\
+This middle review document describes the state of the project under
+the scholarship ``Architetture e metodi per la cooperazione
+applicativa'', renewed in date $25/12/13$.  The work is supervised by
+Prof. Enrico Vicario, the study of fluid dynamics equations and
+optimization is due to Fabio Tarani and the implementation of those
+concepts is due to Massimo Nocentini.
+\\\\
+The work in this first three months since renewal covers the following
+branches: we have $(i)$ continued the collaboration with Terranova
+Software, $(ii)$ enhanced the fluid dynamic engine to support water
+contexts, $(iii)$ started to work on a scheduler for the engine. In
+the following we describe each of these activities in greater details:
+\begin{description}
+\item[tuning the engine] the joint work with Terranova Software allows
+  us to carefully test and tune the fluid dynamic engine, paying
+  special attention to bug fixing and optimization. A man issue has
+  been fixed, more specifically the engine is now able to handle the
+  computation for the turbulent behavior when Reynolds numbers belongs
+  to the interval $[2000, 4000]$. This fix is required for a correct
+  computation of gas velocity in pipes.
+  
+\item[water context enhancement] in order to support our work, we
+  enhance the engine toward handling the water context too,
+  specializing some behaviors extending the original code base. This
+  required not much effort since the pretty code structure (only a new
+  class has been created) and the solid theoretical foundation
+  proposed by Fabio, which simplify a lot this enhancement.  The main
+  new concept introduced in this activity is that of ``tank'', a node
+  with the special capability to change its water level during time,
+  giving to the entire system a dynamic aspect which isn't present in
+  gas networks.
+  \newpage
+\item[scheduling the engine] in order to ``program'' fixed network
+  events (such as do load variations for a node, switch off a
+  pipe...), we start to design a scheduler for the water context which
+  allow to run the fluid dynamic engine several times driven by the
+  set of scheduled events. We're working on a first stage prototype,
+  implementing it in \emph{Smalltalk}, while a parallel study of
+  existing literature is addressed by Fabio.
+  
+\end{description}
+
+\begin{tabular}{ l c l }
+  written by Massimo Nocentini,  &  & approved by Enrico Vicario,  \\
+  Dr. in Computer Science & & Full Professor \\
+  \url{massimo.nocentini@gmail.com} &  & \url{enrico.vicario@unifi.it} \\
+\end{tabular}
+
+\end{document}
