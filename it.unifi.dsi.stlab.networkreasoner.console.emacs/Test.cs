@@ -4,15 +4,15 @@ using System.IO;
 
 namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 {
-	[TestFixture()]
+	[TestFixture ()]
 	public class Test
 	{
-		[Test()]
+		[Test ()]
 		public void TestCase ()
 		{
 			new MainClass ().run (new System.Collections.Generic.List<string> (
 				File.ReadAllLines (
-				"emacs-buffers-examples/multirun-with-computation-parameters.org")
+					"emacs-buffers-examples/kagishitsu.dat")
 			)
 			);
 		}

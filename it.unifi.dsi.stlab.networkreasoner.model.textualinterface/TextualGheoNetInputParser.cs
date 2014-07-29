@@ -15,10 +15,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			this.SpecificationLines = new Lazy<List<string>> (
 				() => {
-				var result = new List<String> ();
-				lines.ForEach (line => result.Add (line.Trim ()));
-				return result;
-			}
+					var result = new List<String> ();
+					lines.ForEach (line => result.Add (line.Trim ()));
+					return result;
+				}
 			);
 		}
 
@@ -26,11 +26,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		{
 			this.SpecificationLines = new Lazy<List<string>> (
 				() => {
-				var lines = new List<String> (File.ReadLines (file.FullName));
-				var result = new List<String> ();
-				lines.ForEach (line => result.Add (line.Trim ()));
-				return result;
-			}
+					var lines = new List<String> (File.ReadLines (file.FullName));
+					var result = new List<String> ();
+					lines.ForEach (line => result.Add (line.Trim ()));
+					return result;
+				}
 			);
 		}
 
@@ -55,14 +55,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		public virtual List<string> fetchRegion (string regionIdentifier, TableHeaderParser tableHeaderParser)
 		{
 			int startNodesRegionIndex = SpecificationLines.Value.FindIndex (
-				line => line.StartsWith (string.Format ("* {0}", regionIdentifier)));
+				                            line => line.StartsWith (string.Format ("* {0}", regionIdentifier)));
 
 			int endNodesRegionIndex = SpecificationLines.Value.FindIndex (
-				startNodesRegionIndex + 1,
-				line => line.StartsWith ("*"));
+				                          startNodesRegionIndex + 1,
+				                          line => line.StartsWith ("*"));
 
 			var region = SpecificationLines.Value.GetRange (
-				startNodesRegionIndex + 1, endNodesRegionIndex - startNodesRegionIndex - 1);
+				             startNodesRegionIndex + 1, endNodesRegionIndex - startNodesRegionIndex - 1);
 
 			region = tableHeaderParser.parse (region);
 
@@ -73,7 +73,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 		protected virtual Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> 
 			parseNodeDelayedConstruction (
-				out List<NodeSpecificationLine> nodesSpecificationLinesOut)
+			out List<NodeSpecificationLine> nodesSpecificationLinesOut)
 		{
 			Dictionary<String, Func<ValueHolder<Double>, GasNodeAbstract>> delayConstructedNodes = 
 				new Dictionary<string, Func<ValueHolder<Double>, GasNodeAbstract>> ();
@@ -97,42 +97,42 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				Func<ValueHolder<Double>, GasNodeAbstract> delayedConstruction = 
 					aValueHolder => {
 
-					GasNodeAbstract aNode = new GasNodeTopological{
-						Identifier = semanticLine.Identifier,
-						Height = semanticLine.Height
-					};
-
-					if (semanticLine.Type == NodeType.WithSupplyGadget) {
-
-						aNode = new GasNodeWithGadget{
-							Equipped = aNode,
-							Gadget = new GasNodeGadgetSupply{
-								SetupPressure = aValueHolder.getValue()
-							}
+						GasNodeAbstract aNode = new GasNodeTopological {
+							Identifier = semanticLine.Identifier,
+							Height = semanticLine.Height
 						};
-					} else if (semanticLine.Type == NodeType.WithLoadGadget) {
 
-						// if we set a passive node we forget what the caller of this lambda
-						// gives as aDouble because a passive node is characterized by having
-						// a zero load.
-						var loadGadget = Double.Parse (splittedSpecification [2]) == 0.0 ?
+						if (semanticLine.Type == NodeType.WithSupplyGadget) {
+
+							aNode = new GasNodeWithGadget {
+								Equipped = aNode,
+								Gadget = new GasNodeGadgetSupply {
+									SetupPressure = aValueHolder.getValue ()
+								}
+							};
+						} else if (semanticLine.Type == NodeType.WithLoadGadget) {
+
+							// if we set a passive node we forget what the caller of this lambda
+							// gives as aDouble because a passive node is characterized by having
+							// a zero load.
+							var loadGadget = Double.Parse (splittedSpecification [2]) == 0.0 ?
 							new GasNodeGadgetLoad{ Load = 0 } : 
-							new GasNodeGadgetLoad{ Load = aValueHolder.getValue() };
+							new GasNodeGadgetLoad{ Load = aValueHolder.getValue () };
 
-						aNode = new GasNodeWithGadget{
-							Equipped = aNode,
-							Gadget = loadGadget
-						};
+							aNode = new GasNodeWithGadget {
+								Equipped = aNode,
+								Gadget = loadGadget
+							};
 
-					} else {
-						throw new ArgumentException (string.Format (
-						"The specification for node {0} is not correct: impossible " +
-							"to parse neither supply nor load value.", semanticLine.Identifier)
-						);
-					}
+						} else {
+							throw new ArgumentException (string.Format (
+								"The specification for node {0} is not correct: impossible " +
+								"to parse neither supply nor load value.", semanticLine.Identifier)
+							);
+						}
 
-					return aNode;
-				};
+						return aNode;
+					};
 
 				nodesSpecificationLines.Add (semanticLine);
 
@@ -148,7 +148,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 		public virtual String[] splitOrgRow (String orgTableRow)
 		{
 			return orgTableRow.Replace (" ", string.Empty).Replace ("\t", string.Empty).
-				Split (new []{'|'}, StringSplitOptions.RemoveEmptyEntries);
+				Split (new []{ '|' }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 		internal virtual Dictionary<string, GasEdgeAbstract> parseEdgesRelating (
@@ -165,17 +165,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var edgeIdentifier = splittedSpecification [0];
 
-				GasEdgeAbstract anEdge = new GasEdgeTopological{
+				if (nodes.ContainsKey (splittedSpecification [2]) == false) {
+					Console.WriteLine (string.Format ("Key {0} not present in node dictionary", splittedSpecification [2]));
+				}
+
+				GasEdgeAbstract anEdge = new GasEdgeTopological {
 					Identifier = edgeIdentifier,
-					StartNode = nodes[splittedSpecification[1]],
-					EndNode = nodes[splittedSpecification[2]]
+					StartNode = nodes [splittedSpecification [1]],
+					EndNode = nodes [splittedSpecification [2]]
 				};
 			
-				anEdge = new GasEdgePhysical{
+				anEdge = new GasEdgePhysical {
 					Described = anEdge,
-					Diameter = parseDoubleCultureInvariant(splittedSpecification[3]).Value,
-					Length = parseDoubleCultureInvariant(splittedSpecification[4]).Value,
-					Roughness = parseDoubleCultureInvariant(splittedSpecification[5]).Value
+					Diameter = parseDoubleCultureInvariant (splittedSpecification [3]).Value,
+					Length = parseDoubleCultureInvariant (splittedSpecification [4]).Value,
+					Roughness = parseDoubleCultureInvariant (splittedSpecification [5]).Value
 				};
 
 				parsedEdges.Add (edgeIdentifier, anEdge);
@@ -190,7 +194,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			AmbientParameters result = new AmbientParametersGas ();
 			
 			var ambientParametersSpecificationLines = fetchRegion ("ambient parameters", 
-			                                                       new TableHeaderParserIgnoreHeader ());
+				                                          new TableHeaderParserIgnoreHeader ());
 			string ambientParametersLine = ambientParametersSpecificationLines [0];
 			string[] splittedSpecification = splitOrgRow (ambientParametersLine);
 
@@ -231,9 +235,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 			Nullable<Double> result = null;
 			double value;
 			if (Double.TryParse (doubleAsString, 
-			                     System.Globalization.NumberStyles.Any, 
-			                     CultureInfo.InvariantCulture, 
-			                     out value)) {
+				    System.Globalization.NumberStyles.Any, 
+				    CultureInfo.InvariantCulture, 
+				    out value)) {
 				result = value;
 			}
 
