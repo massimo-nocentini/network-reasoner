@@ -30,6 +30,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				gasNodeWithGadget.Gadget.accept (this);
 				gasNodeWithGadget.Equipped.accept (this);
 			}
+
+			public void forNodeAntecedentInPressureReduction (
+				GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+			{
+				// simply walks down the recursion tower.
+				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+			}
+
 			#endregion
 
 			#region GasNodeGadgetVisitor implementation
@@ -70,19 +78,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			{
 				// TODO: per l'acqua si deve correggere come fatto nelle formule.
 
-				double min = (this.MinSeenSetupPressure.Value / 1000.0 + 
+				double min = (this.MinSeenSetupPressure.Value / 1000d + 
 					this.AmbientParameters.AirPressureInBar) /
 					this.AmbientParameters.RefPressureInBar;
 
-				double max = (this.MaxSeenSetupPressure.Value / 1000.0 + 
+				double max = (this.MaxSeenSetupPressure.Value / 1000d + 
 					this.AmbientParameters.AirPressureInBar) /
 					this.AmbientParameters.RefPressureInBar;
 
 				this.AdimensionalMin = new Lazy<double> (
-					() => Math.Pow (min, 2));
+					() => Math.Pow (min, 2d));
 
 				this.AdimensionalMax = new Lazy<double> (
-					() => Math.Pow (max, 2));
+					() => Math.Pow (max, 2d));
 			}
 
 		}

@@ -8,6 +8,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 {
 	public class EdgeForNetwonRaphsonSystem : AbstractItemForNetwonRaphsonSystem
 	{
+		public interface EdgeRegulator
+		{
+
+		}
+
+		public class IsEdgeRegulator : EdgeRegulator
+		{
+
+		}
+
+		public class IsNotEdgeRegulator : EdgeRegulator
+		{
+
+		}
+
 		public	interface EdgeState
 		{
 			void putKvalueIntoUsingFor (
@@ -59,6 +74,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public	class EdgeStateOn:EdgeState
 		{
 			#region EdgeState implementation
+
 			public  void putKvalueIntoUsingFor (
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
@@ -222,21 +238,23 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				EdgeForNetwonRaphsonSystem anEdge)
 			{
 				VelocityValueFormula formula = new VelocityValueFormula ();
-				formula.AbsolutePressureOfEndNode = pressures.valueAt(anEdge.EndNode);
-				formula.AbsolutePressureOfStartNode = pressures.valueAt(anEdge.StartNode);
+				formula.AbsolutePressureOfEndNode = pressures.valueAt (anEdge.EndNode);
+				formula.AbsolutePressureOfStartNode = pressures.valueAt (anEdge.StartNode);
 				formula.Diameter = anEdge.DiameterInMillimeters;
-				formula.Qvalue = Qvector.valueAt(anEdge);
+				formula.Qvalue = Qvector.valueAt (anEdge);
 
 				double velocityValue = formula.accept (formulaVisitor);
 
 				velocityVector.atPut (anEdge, velocityValue);
 			}
+
 			#endregion
 		}
 
 		public	class EdgeStateOff:EdgeState
 		{
 			#region EdgeState implementation
+
 			public  void putKvalueIntoUsingFor (
 				Vector<EdgeForNetwonRaphsonSystem> Kvector, 
 				Vector<EdgeForNetwonRaphsonSystem> Fvector, 
@@ -307,10 +325,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			{
 				// here we don't need to do anything since the edge is switched off.
 			}
+
 			#endregion
 		}
 
 		public EdgeState SwitchState{ get; set; }
+
+		public EdgeRegulator RegulatorState { get; set; }
 
 		public double Length { get; set; }
 
@@ -427,8 +448,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public String topologicalStringRepresentation ()
 		{
 			return string.Format ("({0} -> {1})", 
-			                      this.StartNode.Identifier, 
-			                      this.EndNode.Identifier);
+				this.StartNode.Identifier, 
+				this.EndNode.Identifier);
 		}
 
 		public void putVelocityValueIntoUsing (

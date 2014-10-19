@@ -8,3 +8,6 @@ third-party-libraries/
 *~
 /scripts/debugging/*.org
 /*/obj/
+*.pc
+*.pc.in
+config.log

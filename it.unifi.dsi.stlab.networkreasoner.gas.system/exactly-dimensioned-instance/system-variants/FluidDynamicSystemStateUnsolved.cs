@@ -21,6 +21,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public Dictionary<NodeForNetwonRaphsonSystem, GasNodeAbstract> OriginalNodesByComputationNodes { get; set; }
 
+		public Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ComputationNodesByOriginalNodes { get; set; }
+
 		public Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> OriginalEdgesByComputationEdges { get; set; }
 
 		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> InitialUnknownVector { get; set; }
@@ -30,6 +32,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		public FluidDynamicSystemStateTransitionInitialization InitializedBy{ get; set; }
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.FluidDynamicSystemStateAbstract
+
 		public override FluidDynamicSystemStateAbstract doStateTransition (FluidDynamicSystemStateTransition aVisitor)
 		{
 			return aVisitor.forUnsolvedSystemState (this);
@@ -37,8 +40,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public override void accept (FluidDynamicSystemStateVisitor aVisitor)
 		{
-			aVisitor.forUnsolvedSystemState(this);
+			aVisitor.forUnsolvedSystemState (this);
 		}
+
 		#endregion
 
 		public NodeForNetwonRaphsonSystem findNodeByIdentifier (
@@ -57,8 +61,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			NodeForNetwonRaphsonSystem startNode, 
 			NodeForNetwonRaphsonSystem endNode)
 		{
-			return Edges.Find (anEdge => anEdge.StartNode.Equals (startNode) && 
-				anEdge.EndNode.Equals (endNode)
+			return Edges.Find (anEdge => anEdge.StartNode.Equals (startNode) &&
+			anEdge.EndNode.Equals (endNode)
 			);
 		}
 

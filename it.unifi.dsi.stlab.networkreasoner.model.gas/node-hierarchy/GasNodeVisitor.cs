@@ -8,6 +8,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget);
 
+		void forNodeAntecedentInPressureReduction (GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator);
 	}
 }
 

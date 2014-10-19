@@ -83,7 +83,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		}
 
 		protected class NodeForReachabilityValidator : 
-			GasNodeVisitor, 
+		GasNodeVisitor, 
 			GasNodeGadgetVisitor
 		{
 			public	String Identifier{ get; set; }
@@ -106,6 +106,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			{
 				gasNodeWithGadget.Gadget.accept (this);
 				gasNodeWithGadget.Equipped.accept (this);
+			}
+
+			public void forNodeAntecedentInPressureReduction (
+				GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+			{
+				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
 			}
 			#endregion			
 
@@ -188,6 +194,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					this.equipped = equipped;
 				}
 
+
 				#region GasEdgeGadgetVisitor implementation
 				public void forSwitchOffGadget (
 					GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
@@ -196,6 +203,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 					// the recursive application of the visitor, so we
 					// do not reach the very bottom case of TopologicalEdge
 					// where the neighborhoods are updated.
+				}
+
+
+				public void forPressureRegulatorGadget (GasEdgeGadgetPressureRegulator gasEdgeGadgetPressureRegulator)
+				{
+					this.equipped.accept (this.edgeForReachabilityValidator);
 				}
 				#endregion
 

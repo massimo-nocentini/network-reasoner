@@ -11,7 +11,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public abstract string stoppingCauseDescription ();
 
-
 	}
 }
 

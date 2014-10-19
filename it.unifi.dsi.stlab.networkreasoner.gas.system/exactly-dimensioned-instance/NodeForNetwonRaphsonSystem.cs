@@ -9,17 +9,32 @@ using it.unifi.dsi.stlab.utilities.object_with_substitution;
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
 	public class NodeForNetwonRaphsonSystem :
-		AbstractItemForNetwonRaphsonSystem, GasNodeVisitor, GasNodeGadgetVisitor
+	AbstractItemForNetwonRaphsonSystem, GasNodeVisitor, GasNodeGadgetVisitor
 	{
 		public class HeightPropertyMissingException : Exception
 		{
 		}
 
+		public interface AntecedentInPressureRegulation
+		{
+
+		}
+
+		public class IsAntecedentInPressureRegulation : AntecedentInPressureRegulation
+		{
+			public GasNodeAbstract Regulator{ get; set; }
+		}
+
+		public class IsNotAntecedentInPressureRegulation : AntecedentInPressureRegulation
+		{
+
+		}
+
 		public interface NodeRole
 		{
 			void fixMatrixIfYouHaveSupplyGadgetFor (
-					NodeForNetwonRaphsonSystem aNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix);
+				NodeForNetwonRaphsonSystem aNode, 
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix);
 
 			void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
@@ -37,7 +52,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			public double SetupPressureInMillibar { get; set; }
 
-				#region NodeRole implementation
+			#region NodeRole implementation
+
 			public void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
 				Vector<NodeForNetwonRaphsonSystem> aVector,
@@ -52,11 +68,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 
 			public void fixMatrixIfYouHaveSupplyGadgetFor (
-					NodeForNetwonRaphsonSystem aRowNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
+				NodeForNetwonRaphsonSystem aRowNode, 
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
 			{
 				aMatrix.updateRow (aRowNode, 
-				                   (aColumnNode, cumulate) => 
+					(aColumnNode, cumulate) => 
 				                   		aRowNode.Equals (aColumnNode) ? 1 : 0
 				);
 			}
@@ -67,11 +83,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				GasNodeAbstract correspondingOriginalNode)
 			{
 				throw new Exception ("It is impossible to perform a substitution " +
-					"during negative loads checking: this is a role for a node with " +
-					"supply gadget, hence a contradiction occurs if we found a " +
-					"negative load for this node."
+				"during negative loads checking: this is a role for a node with " +
+				"supply gadget, hence a contradiction occurs if we found a " +
+				"negative load for this node."
 				);
 			}
+
 			#endregion
 
 
@@ -81,36 +98,49 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			public class NewNodeMaker : GasNodeVisitor
 			{
-				GasNodeGadgetSupply ReplacementSupplyGadget {
+				public GasNodeGadgetSupply ReplacementSupplyGadget {
 					get;
 					set;
 				}
 
-				public GasNodeWithGadget GasNodeWithGadget {
+				public GasNodeAbstract NewNode {
 					get;
-					set;
-				}
-
-				public NewNodeMaker (GasNodeGadgetSupply gasNodeGadgetSupply)
-				{
-					this.ReplacementSupplyGadget = gasNodeGadgetSupply;
+					private set;
 				}
 
 				#region GasNodeVisitor implementation
+
 				public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 				{
-					throw new Exception ("We cannot visit looking for substitution " +
-						"if we do not find a node decorated with a gadget before this variant."
-					);
+					this.NewNode = gasNodeTopological;
 				}
 
 				public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
 				{
-					this.GasNodeWithGadget = new GasNodeWithGadget{
-						Equipped = gasNodeWithGadget.Equipped,
+					// first we go down the tower in order to collect every piece of information
+					gasNodeWithGadget.Equipped.accept (this);
+
+					// now we can wrap the collected result with
+					// the new information.
+					this.NewNode = new GasNodeWithGadget {
+						Equipped = this.NewNode,
 						Gadget = this.ReplacementSupplyGadget
 					};
 				}
+
+				public void forNodeAntecedentInPressureReduction (
+					GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+				{
+					gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+
+					// after the recursion unwind we can to the obtained result with
+					// the informations that this node is an antecedent in
+					// a pressure regulation relation. But, since the node
+					// will become a supply node, do we really need 
+					// to re-apply this layer of information on the new node?
+					// TODO: ask Fabio that the previous reasoning is correct or not.
+				}
+
 				#endregion
 
 			}
@@ -118,6 +148,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			public double Load { get; set; }
 
 			#region NodeRole implementation
+
 			public virtual void putYourCoefficientIntoFor (
 				NodeForNetwonRaphsonSystem aNode, 
 				Vector<NodeForNetwonRaphsonSystem> aVector,
@@ -127,8 +158,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			}
 
 			public virtual void fixMatrixIfYouHaveSupplyGadgetFor (
-					NodeForNetwonRaphsonSystem aNode, 
-					Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
+				NodeForNetwonRaphsonSystem aNode, 
+				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
 			{
 				// here we do not need to do anything because
 				// the receiver node has a load gadget hence
@@ -141,16 +172,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				double pressure, 
 				GasNodeAbstract correspondingOriginalNode)
 			{
-				var nodeMaker = new NewNodeMaker (
-					new GasNodeGadgetSupply{
-						SetupPressure = 0
-				}
-				);
+				var nodeMaker = new NewNodeMaker {
+					ReplacementSupplyGadget = new GasNodeGadgetSupply {
+						SetupPressure = 0d
+					}
+				};
 
 				correspondingOriginalNode.accept (nodeMaker);
 
-				return nodeMaker.GasNodeWithGadget;
+				return nodeMaker.NewNode;
 			}
+
 			#endregion
 
 		}
@@ -159,7 +191,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			public NodeRolePassive ()
 			{
-				this.Load = 0;
+				this.Load = 0d;
 			}
 
 			public override void putYourCoefficientIntoFor (
@@ -167,13 +199,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				Vector<NodeForNetwonRaphsonSystem> aVector,
 				GasFormulaVisitor aFormulaVisitor)
 			{
-				aVector.atPut (aNode, 0);
+				aVector.atPut (aNode, 0d);
 			}
 		}
 
 		public long Height { get; set; }
 
 		public NodeRole Role{ get; set; }
+
+		public AntecedentInPressureRegulation RoleInPressureRegulation{ get; set; }
 
 		public void initializeWith (GasNodeAbstract aNode)
 		{
@@ -182,9 +216,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			if (this.Role == null) {
 				this.Role = new NodeRolePassive ();
 			}
+
+			if (this.RoleInPressureRegulation == null) {
+				this.RoleInPressureRegulation = new IsNotAntecedentInPressureRegulation ();
+			}
 		}
 
-			#region GasNodeVisitor implementation
+		#region GasNodeVisitor implementation
+
 		public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 		{
 			if (gasNodeTopological.Height.HasValue == false) {
@@ -199,21 +238,35 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			gasNodeWithGadget.Gadget.accept (this);
 			gasNodeWithGadget.Equipped.accept (this);
 		}
-			#endregion
 
-			#region GasNodeGadgetVisitor implementation
+		public void forNodeAntecedentInPressureReduction (
+			GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+		{
+			this.RoleInPressureRegulation = new IsAntecedentInPressureRegulation {
+				Regulator = gasNodeAntecedentInPressureRegulator.RegulatorNode
+			};
+			gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+		}
+
+		#endregion
+
+		#region GasNodeGadgetVisitor implementation
+
 		public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
 		{
-			this.Role = new NodeRoleLoader{ 
-				Load = aLoadGadget.Load};
+			this.Role = new NodeRoleLoader { 
+				Load = aLoadGadget.Load
+			};
 		}
 
 		public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
 		{
 			this.Role = new NodeRoleSupplier { 
-				SetupPressureInMillibar = aSupplyGadget.SetupPressure};
+				SetupPressureInMillibar = aSupplyGadget.SetupPressure
+			};
 		}
-			#endregion
+
+		#endregion
 
 		public void putYourCoefficientInto (
 			Vector<NodeForNetwonRaphsonSystem> aVector,
@@ -224,7 +277,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		}
 
 		public void fixMatrixIfYouHaveSupplyGadget (
-				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem>  aMatrix)
+			Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem>  aMatrix)
 		{
 			this.Role.fixMatrixIfYouHaveSupplyGadgetFor (this, aMatrix);
 		}

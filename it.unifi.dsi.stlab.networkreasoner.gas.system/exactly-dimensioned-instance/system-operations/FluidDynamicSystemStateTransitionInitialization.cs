@@ -13,12 +13,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 	public class FluidDynamicSystemStateTransitionInitialization : FluidDynamicSystemStateTransition
 	{
 		public UnknownInitialization UnknownInitialization{ get; set; }
-		
+
 		public GasNetwork Network { get; set; }
-		
-		//public Func<double, double> FromDimensionalToAdimensionalTranslator{ get; set; }
-	
+
 		#region FluidDynamicSystemStateOperation implementation
+
 		public virtual FluidDynamicSystemStateAbstract forBareSystemState (
 			FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
 		{
@@ -41,7 +40,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			out Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> newtonRaphsonNodesByOriginalNode,
 			FluidDynamicSystemStateUnsolved unsolvedState)
 		{
-			var originalNodesMapping = new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> ();
+			var computationNodesByOriginalNodes = 
+				new Dictionary<GasNodeAbstract, NodeForNetwonRaphsonSystem> (); 
+
+
 
 			unsolvedState.InitialUnknownVector = new DimensionalObjectWrapperWithAdimensionalValues<
 				Vector<NodeForNetwonRaphsonSystem>> {
@@ -56,22 +58,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			Network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aNode => {
 
-				var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
-				newtonRaphsonNode.initializeWith (aNode);
+					var newtonRaphsonNode = new NodeForNetwonRaphsonSystem ();
+					newtonRaphsonNode.initializeWith (aNode);
 
-				originalNodesMapping.Add (aNode, newtonRaphsonNode);
+					computationNodesByOriginalNodes.Add (aNode, newtonRaphsonNode);
 
-				unsolvedState.InitialUnknownVector.WrappedObject.atPut (newtonRaphsonNode, 
-				                                        initialUnknownGuessVector [aNode]);
+					unsolvedState.InitialUnknownVector.WrappedObject.atPut (newtonRaphsonNode, 
+						initialUnknownGuessVector [aNode]);
 
-				unsolvedState.OriginalNodesByComputationNodes.Add (newtonRaphsonNode, aNode);
-			}
+					unsolvedState.OriginalNodesByComputationNodes.Add (newtonRaphsonNode, aNode);
+				}
 			)
 			);
 
-			newtonRaphsonNodesByOriginalNode = originalNodesMapping;
-
-			var computationalNodes = originalNodesMapping.Values.ToList ();
+			newtonRaphsonNodesByOriginalNode = computationNodesByOriginalNodes;
+			var computationalNodes = newtonRaphsonNodesByOriginalNode.Values.ToList ();
+			unsolvedState.ComputationNodesByOriginalNodes = newtonRaphsonNodesByOriginalNode;
 			unsolvedState.Nodes = computationalNodes;
 			unsolvedState.NodesEnumeration = computationalNodes.enumerate ();
 		}
@@ -95,12 +97,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			Network.doOnNodes (new NodeHandlerWithDelegateOnRawNode<GasNodeAbstract> (
 				aVertex => {
 
-				var value = UnknownInitialization.initialValueFor (aVertex, rand);
+					var value = UnknownInitialization.initialValueFor (aVertex, rand);
 
-				initialUnknowns.Add (aVertex, 
-				                     value.translateTo (new AdimensionalInitialPressure ()).WrappedObject
-				);
-			}
+					initialUnknowns.Add (aVertex, 
+						value.translateTo (new AdimensionalInitialPressure ()).WrappedObject
+					);
+				}
 			)
 			);
 
@@ -156,11 +158,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public virtual FluidDynamicSystemStateTransition clone ()
 		{
-			var clone = new FluidDynamicSystemStateTransitionInitialization ();
-			clone.Network = Network;
-			clone.UnknownInitialization = UnknownInitialization;
-			return clone;
+			return new FluidDynamicSystemStateTransitionInitialization {
+				Network = Network,
+				UnknownInitialization = UnknownInitialization
+			};
 		}
+
 		#endregion
 	}
 }

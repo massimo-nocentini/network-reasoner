@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9B71E0F0-28C7-456B-870D-4D0C45F59846}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -62,6 +62,8 @@
     <Compile Include="handlers-for-network-iteration\NetworkIteratorHandler.cs" />
     <Compile Include="general-parsing-result-receiver\ParserResultReceiver.cs" />
     <Compile Include="general-parsing-result-receiver\GasParserResultReceiver.cs" />
+    <Compile Include="node-hierarchy\GasNodeAntecedentInPressureRegulator.cs" />
+    <Compile Include="gadgets\for-edges\GasEdgeGadgetPressureRegulator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

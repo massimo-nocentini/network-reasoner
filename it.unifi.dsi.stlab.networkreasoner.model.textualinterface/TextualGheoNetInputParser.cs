@@ -166,7 +166,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				var edgeIdentifier = splittedSpecification [0];
 
 				if (nodes.ContainsKey (splittedSpecification [2]) == false) {
-					Console.WriteLine (string.Format ("Key {0} not present in node dictionary", splittedSpecification [2]));
+					Console.WriteLine (string.Format ("Start node key {0} not present in node dictionary", splittedSpecification [1]));
+					Console.WriteLine (string.Format ("End node key {0} not present in node dictionary", splittedSpecification [2]));
 				}
 
 				GasEdgeAbstract anEdge = new GasEdgeTopological {

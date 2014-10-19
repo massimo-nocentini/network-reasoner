@@ -62,7 +62,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 		}
 
 		protected class NodeForDotRepresentationValidator : 
-			GasNodeVisitor, GasNodeGadgetVisitor
+		GasNodeVisitor, GasNodeGadgetVisitor
 		{
 			interface VertexRole
 			{
@@ -100,15 +100,26 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			public String Identifier { get; set; }
 
 			#region GasNodeVisitor implementation
-			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
+			public void forNodeWithTopologicalInfo (
+				GasNodeTopological gasNodeTopological)
 			{
 				this.Identifier = gasNodeTopological.Identifier;
 			}
 
-			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+			public void forNodeWithGadget (
+				GasNodeWithGadget gasNodeWithGadget)
 			{
 				gasNodeWithGadget.Gadget.accept (this);
 				gasNodeWithGadget.Equipped.accept (this);
+			}
+
+			public void forNodeAntecedentInPressureReduction (
+				GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+			{
+				// simply forward to the top node, hence in the drawing
+				// we wont see any difference for a node antecedent in a 
+				// pressure regulator relation.
+				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
 			}
 			#endregion
 			public string dotRepresentation ()
@@ -133,7 +144,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 
 		protected class EdgeForDotRepresentationValidator : 
 			GasEdgeVisitor,
-			GasEdgeGadgetVisitor
+		GasEdgeGadgetVisitor
 		{
 			public EdgeState State{ get; set; }
 
@@ -167,6 +178,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 			public void forSwitchOffGadget (GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
 			{
 				this.State = new EdgeStateOff ();
+			}
+
+			public void forPressureRegulatorGadget (GasEdgeGadgetPressureRegulator gasEdgeGadgetPressureRegulator)
+			{
+				// nothing for now, we don't catch this information, so 
+				// the line representing this edge cannot be distinguished
+				// by the following ones.
 			}
 			#endregion
 

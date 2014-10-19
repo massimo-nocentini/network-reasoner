@@ -44,22 +44,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			get;
 			set;
 		}
+
 		#region FluidDynamicSystemStateVisitorWithSystemName implementation
+
 		public string SystemName{ get; set; }
 
 		public void forBareSystemState (FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
 		{
 			throw new Exception ("It is no possible to map computation result on " +
-				"original domain since we're in a bare system state: initialize and " +
-				"solve it before doing this mapping"
+			"original domain since we're in a bare system state: initialize and " +
+			"solve it before doing this mapping"
 			);
 		}
 
 		public void forUnsolvedSystemState (FluidDynamicSystemStateUnsolved fluidDynamicSystemStateUnsolved)
 		{
 			throw new Exception ("It is no possible to map computation result on " +
-				"original domain since we're in an unsolved system state: " +
-				"solve it before doing this mapping"
+			"original domain since we're in an unsolved system state: " +
+			"solve it before doing this mapping"
 			);
 		}
 
@@ -79,16 +81,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				get;
 				set;
 			}
+
 			#region GasEdgeVisitor implementation
+
 			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
 			{
 				if (this.Velocity.belongToInterval (
-					double.NegativeInfinity, gasEdgePhysical.MaxSpeed) == false) {
+					    double.NegativeInfinity, gasEdgePhysical.MaxSpeed) == false) {
 					ReportAnomaly.Invoke (
 						string.Format (
-						"Edge speed {0} greater than the max {1} allowed.", 
-						this.Flow,
-						gasEdgePhysical.MaxSpeed));
+							"Edge speed {0} greater than the max {1} allowed.", 
+							this.Velocity,
+							gasEdgePhysical.MaxSpeed));
 				}
 				gasEdgePhysical.Described.accept (this);
 			}
@@ -103,12 +107,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				gasEdgeWithGadget.Gadget.accept (this);
 				gasEdgeWithGadget.Equipped.accept (this);
 			}
+
 			#endregion
+
 			#region GasEdgeGadgetVisitor implementation
+
 			public void forSwitchOffGadget (GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
 			{
 				// nothing to check
 			}
+
+			public void forPressureRegulatorGadget (GasEdgeGadgetPressureRegulator gasEdgeGadgetPressureRegulator)
+			{
+				if (this.Flow.belongToInterval (
+					    gasEdgeGadgetPressureRegulator.MinFlow, 
+					    gasEdgeGadgetPressureRegulator.MaxFlow) == false) {
+					ReportAnomaly.Invoke (
+						string.Format (
+							"Regulator edge's flow {0} doesn't belong to {1}...{2} requested interval.", 
+							this.Flow,
+							gasEdgeGadgetPressureRegulator.MinFlow, 
+							gasEdgeGadgetPressureRegulator.MaxFlow));
+				}
+			}
+
 			#endregion
 		}
 
@@ -128,7 +150,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				get;
 				set;
 			}
+
 			#region GasNodeVisitor implementation
+
 			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
 			{
 				// nothing to check
@@ -139,8 +163,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				gasNodeWithGadget.Gadget.accept (this);
 				gasNodeWithGadget.Equipped.accept (this);
 			}
+
+
+			public void forNodeAntecedentInPressureReduction (
+				GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+			{
+				// TODO: ask Fabio if the check on min/max flow written
+				// for the edge regulator case should be moved here 
+				// about Q, the algebraic sum of the antecedent (or, worse, of the conseguent...
+				// in this case we should create another node variant).
+				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+			}
+
 			#endregion
+
 			#region GasNodeGadgetVisitor implementation
+
 			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
 			{
 				// nothing to check
@@ -149,12 +187,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
 			{
 				if (this.NodeAlgebraicSumOfFlows.belongToInterval (
-					aSupplyGadget.MinQ, aSupplyGadget.MaxQ) == false) {
+					    aSupplyGadget.MinQ, aSupplyGadget.MaxQ) == false) {
 					ReportAnomaly.Invoke (
 						string.Format ("Sum of flow {0} not in allowed interval.", 
-					                this.NodeAlgebraicSumOfFlows));
+							this.NodeAlgebraicSumOfFlows));
 				}
 			}
+
 			#endregion
 		}
 
@@ -188,7 +227,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			var anomalyFinder = new NodeAnomalyFinder ();
 			anomalyFinder.NodePressure = nodePressure;
 			anomalyFinder.NodeAlgebraicSumOfFlows = algebraicSumOfFlows;
-			anomalyFinder.ReportAnomaly = anAnomaly =>  {
+			anomalyFinder.ReportAnomaly = anAnomaly => {
 				if (AnomaliesByNodes.ContainsKey (originalNode) == false) {
 					AnomaliesByNodes.Add (originalNode, new StringBuilder ());
 				}
@@ -221,7 +260,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			         StartingUnsolvedState.OriginalNodesByComputationNodes) {
 
 				PressuresByNodes.Add (originalByComputationNodesPair.Value, 
-				                      dimensionalUnknowns.valueAt (originalByComputationNodesPair.Key));
+					dimensionalUnknowns.valueAt (originalByComputationNodesPair.Key));
 			
 				AlgebraicSumOfFlowsByNodes.Add (originalByComputationNodesPair.Value, 0d);
 			}
@@ -264,9 +303,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				var algebraicSumOfFlows = AlgebraicSumOfFlowsByNodes [originalNode];
 
 				findNodeAnomalies (originalByComputationNodesPair.Key.Identifier, 
-				                   originalNode,
-				                   nodePressure,
-				                   algebraicSumOfFlows);
+					originalNode,
+					nodePressure,
+					algebraicSumOfFlows);
 
 			}
 		}
@@ -276,7 +315,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			public GasNodeAbstract StartNode{ get; private set; }
 
 			public GasNodeAbstract EndNode{ get; private set; }
+
 			#region GasEdgeVisitor implementation
+
 			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
 			{
 				gasEdgePhysical.Described.accept (this);
@@ -290,8 +331,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
 			{
+				// ignore the gadget since we want connection
+				// informations only
 				gasEdgeWithGadget.Equipped.accept (this);
 			}
+
 			#endregion
 		}
 
@@ -299,7 +343,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			TimeSpan? timeSpan = null;
 			if (mutationResults.ComputationStartTimestamp.HasValue &&
-				mutationResults.ComputationEndTimestamp.HasValue) {
+			    mutationResults.ComputationEndTimestamp.HasValue) {
 				timeSpan = mutationResults.ComputationEndTimestamp.Value.Subtract (
 					mutationResults.ComputationStartTimestamp.Value);
 			}
@@ -378,11 +422,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				var algebraicSumOfFlows = AlgebraicSumOfFlowsByNodes [originalNode];
 
 				findNodeAnomalies (aNodePair.Key.Identifier, 
-				                   originalNode,
-				                   nodePressure,
-				                   algebraicSumOfFlows);
+					originalNode,
+					nodePressure,
+					algebraicSumOfFlows);
 			}
 		}
+
 		#endregion
 	}
 }
