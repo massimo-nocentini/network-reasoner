@@ -10,7 +10,7 @@ using it.unifi.dsi.stlab.utilities.value_holders;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
-	[TestFixture()]
+	[TestFixture ()]
 	public class NodeForNetwonRaphsonSystemCoefficientVector
 	{
 		GasFormulaVisitor FormulaVisitor{ get; set; }
@@ -18,7 +18,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 		public NodeForNetwonRaphsonSystemCoefficientVector ()
 		{
 			this.FormulaVisitor = new GasFormulaVisitorExactlyDimensioned {
-				AmbientParameters = this.valid_initial_ambient_parameters()
+				AmbientParameters = this.valid_initial_ambient_parameters ()
 			};
 		}
 
@@ -38,15 +38,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 		}
 
-		[Test()]
-		[ExpectedExceptionAttribute(typeof(NodeForNetwonRaphsonSystem.HeightPropertyMissingException))]
+		[Test ()]
+		[ExpectedExceptionAttribute (typeof(NodeForNetwonRaphsonSystem.HeightPropertyMissingException))]
 		public void height_property_is_mandatory_for_nodes_for_Newton_Raphson_context ()
 		{
 			var aSetupPressure = 387.291;
 
 			var aSupplier = new GasNodeWithGadget ();
-			aSupplier.Gadget = new GasNodeGadgetSupply{ 
-				SetupPressure = aSetupPressure };
+			aSupplier.Gadget = new GasNodeGadgetSupply { 
+				SetupPressure = aSetupPressure
+			};
 
 			// here we inject an error since we do not give the Height property.
 			aSupplier.Equipped = new GasNodeTopological ();
@@ -55,63 +56,65 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			nodeForSystem.initializeWith (aSupplier);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_one_supplier_only_should_produce_a_vector_with_one_item_equals_to_setup_pressure ()
 		{
 			var aSetupPressure = 387.291;
 
 			var aSupplier = new GasNodeWithGadget ();
-			aSupplier.Gadget = new GasNodeGadgetSupply{ 
-				SetupPressure = aSetupPressure };
-			aSupplier.Equipped = new GasNodeTopological {Height = 1};
+			aSupplier.Gadget = new GasNodeGadgetSupply { 
+				SetupPressure = aSetupPressure
+			};
+			aSupplier.Equipped = new GasNodeTopological { Height = 1 };
 
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aSupplier);
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (nodeForSystem, 0);
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = 0 });
 
 			var expectedVector = new DenseVector (new[] { 1.9103690569894831 });
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_a_supplier_against_three_other_nodes_should_produce_a_vector_of_length_four ()
 		{
 			var aSetupPressure = 387.291;
 			var defaultForOthers = 0;
 
 			var aSupplier = new GasNodeWithGadget ();
-			aSupplier.Gadget = new GasNodeGadgetSupply{ 
-				SetupPressure = aSetupPressure };
-			aSupplier.Equipped = new GasNodeTopological  {Height = 1};
+			aSupplier.Gadget = new GasNodeGadgetSupply { 
+				SetupPressure = aSetupPressure
+			};
+			aSupplier.Equipped = new GasNodeTopological  { Height = 1 };
 
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aSupplier);
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 
 			var anotherNode1 = new NodeForNetwonRaphsonSystem ();
-			anotherNode1.initializeWith (new GasNodeTopological {Height = 1});
+			anotherNode1.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var anotherNode2 = new NodeForNetwonRaphsonSystem ();
-			anotherNode2.initializeWith (new GasNodeTopological {Height = 1});
+			anotherNode2.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
-			anotherNode3.initializeWith (new GasNodeTopological {Height = 1});
+			anotherNode3.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (anotherNode1, 0);
 			aList.Add (anotherNode2, 1);
 			aList.Add (nodeForSystem, 2);
 			aList.Add (anotherNode3, 3);
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = defaultForOthers });
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -119,12 +122,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				1.9103690569894831,
 				defaultForOthers
 			}
-			);
+			                     );
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_two_suppliers_against_three_other_nodes_should_produce_a_vector_of_length_five ()
 		{
 			var aSetupPressure1 = 387.291;
@@ -134,30 +137,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aSupplier1 = new GasNodeWithGadget ();
 			aSupplier1.Gadget = new GasNodeGadgetSupply{ SetupPressure = aSetupPressure1 };
-			aSupplier1.Equipped = new GasNodeTopological  {Height = 1};
+			aSupplier1.Equipped = new GasNodeTopological  { Height = 1 };
 
 			var nodeForSystem1 = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem1.initializeWith (aSupplier1);
 
 			var aSupplier2 = new GasNodeWithGadget ();
 			aSupplier2.Gadget = new GasNodeGadgetSupply{ SetupPressure = aSetupPressure2 };
-			aSupplier2.Equipped = new GasNodeTopological  {Height = 1};
+			aSupplier2.Equipped = new GasNodeTopological  { Height = 1 };
 
 			var nodeForSystem2 = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem2.initializeWith (aSupplier2);
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
-			nodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
+			nodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 			
 			var anotherNode1 = new NodeForNetwonRaphsonSystem ();
-			anotherNode1.initializeWith (new GasNodeTopological  {Height = 1});
+			anotherNode1.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var anotherNode2 = new NodeForNetwonRaphsonSystem ();
-			anotherNode2.initializeWith (new GasNodeTopological  {Height = 1});
+			anotherNode2.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
-			anotherNode3.initializeWith (new GasNodeTopological  {Height = 1});
+			anotherNode3.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (anotherNode1, 0);
@@ -166,7 +169,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (anotherNode3, 3);
 			aList.Add (nodeForSystem2, 4);
 			
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = defaultForOthers });
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -175,36 +178,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				defaultForOthers,
 				1.0063730987685002
 			}
-			);
+			                     );
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_one_loader_only_should_produce_a_vector_with_one_item_equals_to_gadget_load ()
 		{
 			var aLoad = 387.291;
 
 			var aLoader = new GasNodeWithGadget ();
 			aLoader.Gadget = new GasNodeGadgetLoad{ Load = aLoad };
-			aLoader.Equipped = new GasNodeTopological  {Height = 1};
+			aLoader.Equipped = new GasNodeTopological  { Height = 1 };
 
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aLoader);
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (nodeForSystem, 0);
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = 0 });
 
 			var expectedVector = new DenseVector (new[] { aLoad });
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_a_loader_against_three_other_nodes_should_produce_a_vector_of_length_four ()
 		{
 			var aLoad = 387.291;
@@ -212,29 +215,29 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aLoader = new GasNodeWithGadget ();
 			aLoader.Gadget = new GasNodeGadgetLoad{ Load = aLoad };
-			aLoader.Equipped = new GasNodeTopological  {Height = 1};
+			aLoader.Equipped = new GasNodeTopological  { Height = 1 };
 
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem.initializeWith (aLoader);
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 
 			var anotherNode1 = new NodeForNetwonRaphsonSystem ();
-			anotherNode1.initializeWith (new GasNodeTopological  {Height = 1});
+			anotherNode1.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var anotherNode2 = new NodeForNetwonRaphsonSystem ();
-			anotherNode2.initializeWith (new GasNodeTopological  {Height = 1});
+			anotherNode2.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
-			anotherNode3.initializeWith (new GasNodeTopological  {Height = 1});
+			anotherNode3.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (anotherNode1, 0);
 			aList.Add (anotherNode2, 1);
 			aList.Add (nodeForSystem, 2);
 			aList.Add (anotherNode3, 3);
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = defaultForOthers });
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -242,12 +245,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				aLoad,
 				defaultForOthers
 			}
-			);
+			                     );
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_two_loaders_against_three_other_nodes_should_produce_a_vector_of_length_five ()
 		{
 			var aLoad1 = 387.291;
@@ -257,30 +260,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aLoader1 = new GasNodeWithGadget ();
 			aLoader1.Gadget = new GasNodeGadgetLoad{ Load = aLoad1 };
-			aLoader1.Equipped = new GasNodeTopological {Height=1};
+			aLoader1.Equipped = new GasNodeTopological { Height = 1 };
 
 			var nodeForSystem1 = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem1.initializeWith (aLoader1);
 
 			var aLoader2 = new GasNodeWithGadget ();
 			aLoader2.Gadget = new GasNodeGadgetLoad{ Load = aLoad2 };
-			aLoader2.Equipped = new GasNodeTopological{Height=1};
+			aLoader2.Equipped = new GasNodeTopological{ Height = 1 };
 
 			var nodeForSystem2 = new NodeForNetwonRaphsonSystem ();
 			nodeForSystem2.initializeWith (aLoader2);
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
-			nodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
+			nodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 			
 			var anotherNode1 = new NodeForNetwonRaphsonSystem ();
-			anotherNode1.initializeWith (new GasNodeTopological {Height=1});
+			anotherNode1.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var anotherNode2 = new NodeForNetwonRaphsonSystem ();
-			anotherNode2.initializeWith (new GasNodeTopological {Height=1});
+			anotherNode2.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var anotherNode3 = new NodeForNetwonRaphsonSystem ();
-			anotherNode3.initializeWith (new GasNodeTopological {Height=1});
+			anotherNode3.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (anotherNode1, 0);
@@ -289,7 +292,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (anotherNode3, 3);
 			aList.Add (nodeForSystem2, 4);
 			
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = defaultForOthers});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = defaultForOthers });
 
 			var expectedVector = new DenseVector (new[] {
 				defaultForOthers,
@@ -298,30 +301,30 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				defaultForOthers,
 				aLoad2
 			}
-			);
+			                     );
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void building_a_vector_from_one_passive_node_only_should_produce_a_vector_with_one_item_equals_to_default_load ()
 		{
 			var nodeForSystem = new NodeForNetwonRaphsonSystem ();
-			nodeForSystem.initializeWith (new GasNodeTopological  {Height = 1});
+			nodeForSystem.initializeWith (new GasNodeTopological  { Height = 1 });
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
+			nodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (nodeForSystem, 0);
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = 0 });
 
 			var expectedVector = new DenseVector (new[] { 0.0 });
 
 			Assert.AreEqual (expectedVector, a);
 		}
 
-		[Test()]
+		[Test ()]
 		public void mixing_all_together ()
 		{
 			var aSetupPressure1 = 387.291;
@@ -330,14 +333,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aSupplier1 = new GasNodeWithGadget ();
 			aSupplier1.Gadget = new GasNodeGadgetSupply{ SetupPressure = aSetupPressure1 };
-			aSupplier1.Equipped = new GasNodeTopological {Height = 1};
+			aSupplier1.Equipped = new GasNodeTopological { Height = 1 };
 
 			var supplyNodeForSystem1 = new NodeForNetwonRaphsonSystem ();
 			supplyNodeForSystem1.initializeWith (aSupplier1);
 
 			var aSupplier2 = new GasNodeWithGadget ();
 			aSupplier2.Gadget = new GasNodeGadgetSupply{ SetupPressure = aSetupPressure2 };
-			aSupplier2.Equipped = new GasNodeTopological {Height = 1};
+			aSupplier2.Equipped = new GasNodeTopological { Height = 1 };
 
 			var supplyNodeForSystem2 = new NodeForNetwonRaphsonSystem ();
 			supplyNodeForSystem2.initializeWith (aSupplier2);
@@ -347,27 +350,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 
 			var aLoader1 = new GasNodeWithGadget ();
 			aLoader1.Gadget = new GasNodeGadgetLoad{ Load = aLoad1 };
-			aLoader1.Equipped = new GasNodeTopological {Height = 1};
+			aLoader1.Equipped = new GasNodeTopological { Height = 1 };
 
 			var loadNodeForSystem1 = new NodeForNetwonRaphsonSystem ();
 			loadNodeForSystem1.initializeWith (aLoader1);
 
 			var aLoader2 = new GasNodeWithGadget ();
 			aLoader2.Gadget = new GasNodeGadgetLoad{ Load = aLoad2 };
-			aLoader2.Equipped = new GasNodeTopological {Height = 1};
+			aLoader2.Equipped = new GasNodeTopological { Height = 1 };
 
 			var loadNodeForSystem2 = new NodeForNetwonRaphsonSystem ();
 			loadNodeForSystem2.initializeWith (aLoader2);
 
 			var passiveNodeForSystem = new NodeForNetwonRaphsonSystem ();
-			passiveNodeForSystem.initializeWith (new GasNodeTopological {Height = 1});
+			passiveNodeForSystem.initializeWith (new GasNodeTopological { Height = 1 });
 
 			var aVector = new Vector<NodeForNetwonRaphsonSystem> ();
-			loadNodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
-			loadNodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
-			supplyNodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor);
-			supplyNodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor);
-			passiveNodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor);
+			loadNodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
+			loadNodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
+			supplyNodeForSystem1.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
+			supplyNodeForSystem2.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
+			passiveNodeForSystem.putYourCoefficientInto (aVector, FormulaVisitor, new Vector<EdgeForNetwonRaphsonSystem> ());
 
 			var aList = new Dictionary<NodeForNetwonRaphsonSystem, int> ();
 			aList.Add (loadNodeForSystem1, 0);
@@ -376,7 +379,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			aList.Add (loadNodeForSystem2, 3);
 			aList.Add (supplyNodeForSystem1, 4);
 			
-			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{Value = 0});
+			var a = aVector.forComputationAmong (aList, new ValueHolderCarryInfo<double>{ Value = 0 });
 
 			var expectedVector = new DenseVector (new[] {
 				aLoad1,
@@ -385,7 +388,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 				aLoad2,
 				1.9103690569894831
 			}
-			);
+			                     );
 		
 			Assert.AreEqual (expectedVector, a);
 		}

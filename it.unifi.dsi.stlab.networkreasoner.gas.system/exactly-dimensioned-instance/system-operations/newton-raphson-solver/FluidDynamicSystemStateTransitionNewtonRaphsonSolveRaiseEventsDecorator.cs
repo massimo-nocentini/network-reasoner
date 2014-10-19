@@ -39,7 +39,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			OneStepMutationResults currentOneStepMutationResults)
 		{
 			var computationShouldBeStopped = base.decideIfComputationShouldBeStopped (
-				condition, previousOneStepMutationResults, currentOneStepMutationResults);
+				                                 condition, previousOneStepMutationResults, currentOneStepMutationResults);
 
 			if (computationShouldBeStopped) {
 				EventsListener.onComputationShouldBeStoppedDueTo (condition);
@@ -65,7 +65,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			computeUnknownVectorAtPreviousStep (OneStepMutationResults previousStepMutationResults)
 		{
 			var unknownVectorAtPreviousStep = base.computeUnknownVectorAtPreviousStep (
-				previousStepMutationResults);
+				                                  previousStepMutationResults);
 		
 			EventsListener.onUnknownVectorAtPreviousStepComputed (
 				unknownVectorAtPreviousStep.WrappedObject);
@@ -98,7 +98,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		protected override Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeAmatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
-			                List<EdgeForNetwonRaphsonSystem> edges)
+		                 List<EdgeForNetwonRaphsonSystem> edges)
 		{
 			var Amatrix = base.computeAmatrix (kvectorAtCurrentStep, edges);
 			
@@ -109,7 +109,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		protected override Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> 
 			computeJacobianMatrix (Vector<EdgeForNetwonRaphsonSystem> kvectorAtCurrentStep, 
-			                       List<EdgeForNetwonRaphsonSystem> edges)
+		                        List<EdgeForNetwonRaphsonSystem> edges)
 		{
 			var JacobianMatrix = base.computeJacobianMatrix (kvectorAtCurrentStep, edges);
 			
@@ -131,9 +131,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		}
 
 		protected override Vector<NodeForNetwonRaphsonSystem> 
-			computeCoefficientsVectorAtCurrentStep (List<NodeForNetwonRaphsonSystem> nodes)
+		computeCoefficientsVectorAtCurrentStep (
+			List<NodeForNetwonRaphsonSystem> nodes, 
+			Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{
-			var coefficientsVectorAtCurrentStep = base.computeCoefficientsVectorAtCurrentStep (nodes);
+			var coefficientsVectorAtCurrentStep = 
+				base.computeCoefficientsVectorAtCurrentStep (nodes, Qvector);
 			
 			this.EventsListener.onCoefficientsVectorAtCurrentStepComputed (
 				coefficientsVectorAtCurrentStep);
@@ -149,11 +152,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			Dictionary<NodeForNetwonRaphsonSystem, int> nodesEnumeration)
 		{
 			var result = base.computeUnknowns (
-				AmatrixAtCurrentStep, 
-				unknownVectorAtPreviousStep, 
-				coefficientsVectorAtCurrentStep, 
-				jacobianMatrixAtCurrentStep, 
-				nodesEnumeration);
+				             AmatrixAtCurrentStep, 
+				             unknownVectorAtPreviousStep, 
+				             coefficientsVectorAtCurrentStep, 
+				             jacobianMatrixAtCurrentStep, 
+				             nodesEnumeration);
 
 			var unknownVectorAtCurrentStep = result.WrappedObject;
 			EventsListener.onUnknownVectorAtCurrentStepComputed (unknownVectorAtCurrentStep);

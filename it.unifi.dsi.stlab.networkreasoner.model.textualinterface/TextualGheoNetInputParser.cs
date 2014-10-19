@@ -176,13 +176,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 					EndNode = nodes [splittedSpecification [2]]
 				};
 			
-				anEdge = new GasEdgePhysical {
-					Described = anEdge,
-					Diameter = parseDoubleCultureInvariant (splittedSpecification [3]).Value,
-					Length = parseDoubleCultureInvariant (splittedSpecification [4]).Value,
-					Roughness = parseDoubleCultureInvariant (splittedSpecification [5]).Value
-				};
-
+				if (this.doesLineDefineEdgeWithPressureRegulatorGadget (splittedSpecification)) {
+					anEdge = new GasEdgeWithGadget {
+						Equipped = anEdge,
+						Gadget = new GasEdgeGadgetPressureRegulator {
+							MaxFlow = null,
+							MinFlow = null
+						}
+					};
+				} else {
+					anEdge = new GasEdgePhysical {
+						Described = anEdge,
+						Diameter = parseDoubleCultureInvariant (splittedSpecification [3]).Value,
+						Length = parseDoubleCultureInvariant (splittedSpecification [4]).Value,
+						Roughness = parseDoubleCultureInvariant (splittedSpecification [5]).Value
+					};
+				}
 				parsedEdges.Add (edgeIdentifier, anEdge);
 			}
 			);
@@ -228,6 +237,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				splittedSpecification [9]).Value * 1e-3;
 
 			return result;
+		}
+
+		bool doesLineDefineEdgeWithPressureRegulatorGadget (string[] splittedSpecification)
+		{
+			Func<String, Boolean> trimmer = line => line.Trim ().ToLower ().Equals ("r");
+
+			return trimmer (splittedSpecification [3])
+			&& trimmer (splittedSpecification [3])
+			&& trimmer (splittedSpecification [3]);
 		}
 
 		public virtual Nullable<double> parseDoubleCultureInvariant (

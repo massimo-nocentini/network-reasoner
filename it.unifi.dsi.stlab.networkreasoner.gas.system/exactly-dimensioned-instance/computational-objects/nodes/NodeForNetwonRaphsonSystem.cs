@@ -5,6 +5,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using System.Collections.Generic;
 using System.Linq;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.nodes;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -15,202 +16,21 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 		}
 
-		public interface AntecedentInPressureRegulation
-		{
-
-		}
-
-		public class IsAntecedentInPressureRegulation : AntecedentInPressureRegulation
-		{
-			public GasNodeAbstract Regulator{ get; set; }
-		}
-
-		public class IsNotAntecedentInPressureRegulation : AntecedentInPressureRegulation
-		{
-
-		}
-
-		public interface NodeRole
-		{
-			void fixMatrixIfYouHaveSupplyGadgetFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix);
-
-			void putYourCoefficientIntoFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem> aVector,
-				GasFormulaVisitor aFormulaVisitor);
-
-			GasNodeAbstract substituteNodeBecauseNegativePressureFoundFor (
-				NodeForNetwonRaphsonSystem aNode,
-				double pressure, 
-				GasNodeAbstract correspondingOriginalNode);
-
-		}
-
-		public class NodeRoleSupplier:NodeRole
-		{
-			public double SetupPressureInMillibar { get; set; }
-
-			#region NodeRole implementation
-
-			public void putYourCoefficientIntoFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem> aVector,
-				GasFormulaVisitor aFormulaVisitor)
-			{				
-				var formula = new CoefficientFormulaForNodeWithSupplyGadget ();
-				formula.NodeHeight = aNode.Height;
-				formula.GadgetSetupPressureInMillibar = this.SetupPressureInMillibar;
-
-				double Hsetup = formula.accept (aFormulaVisitor);
-				aVector.atPut (aNode, Hsetup);
-			}
-
-			public void fixMatrixIfYouHaveSupplyGadgetFor (
-				NodeForNetwonRaphsonSystem aRowNode, 
-				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
-			{
-				aMatrix.updateRow (aRowNode, 
-					(aColumnNode, cumulate) => 
-				                   		aRowNode.Equals (aColumnNode) ? 1 : 0
-				);
-			}
-
-			public GasNodeAbstract substituteNodeBecauseNegativePressureFoundFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				double pressure, 
-				GasNodeAbstract correspondingOriginalNode)
-			{
-				throw new Exception ("It is impossible to perform a substitution " +
-				"during negative loads checking: this is a role for a node with " +
-				"supply gadget, hence a contradiction occurs if we found a " +
-				"negative load for this node."
-				);
-			}
-
-			#endregion
-
-
-		}
-
-		public class NodeRoleLoader:NodeRole
-		{
-			public class NewNodeMaker : GasNodeVisitor
-			{
-				public GasNodeGadgetSupply ReplacementSupplyGadget {
-					get;
-					set;
-				}
-
-				public GasNodeAbstract NewNode {
-					get;
-					private set;
-				}
-
-				#region GasNodeVisitor implementation
-
-				public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
-				{
-					this.NewNode = gasNodeTopological;
-				}
-
-				public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
-				{
-					// first we go down the tower in order to collect every piece of information
-					gasNodeWithGadget.Equipped.accept (this);
-
-					// now we can wrap the collected result with
-					// the new information.
-					this.NewNode = new GasNodeWithGadget {
-						Equipped = this.NewNode,
-						Gadget = this.ReplacementSupplyGadget
-					};
-				}
-
-				public void forNodeAntecedentInPressureReduction (
-					GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
-				{
-					gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
-
-					// after the recursion unwind we can to the obtained result with
-					// the informations that this node is an antecedent in
-					// a pressure regulation relation. But, since the node
-					// will become a supply node, do we really need 
-					// to re-apply this layer of information on the new node?
-					// TODO: ask Fabio that the previous reasoning is correct or not.
-				}
-
-				#endregion
-
-			}
-
-			public double Load { get; set; }
-
-			#region NodeRole implementation
-
-			public virtual void putYourCoefficientIntoFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem> aVector,
-				GasFormulaVisitor aFormulaVisitor)
-			{
-				aVector.atPut (aNode, Load);
-			}
-
-			public virtual void fixMatrixIfYouHaveSupplyGadgetFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				Matrix<NodeForNetwonRaphsonSystem, NodeForNetwonRaphsonSystem> aMatrix)
-			{
-				// here we do not need to do anything because
-				// the receiver node has a load gadget hence
-				// its row is already computed and doesn't need
-				// to be fixed in this case.
-			}
-
-			public GasNodeAbstract substituteNodeBecauseNegativePressureFoundFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				double pressure, 
-				GasNodeAbstract correspondingOriginalNode)
-			{
-				var nodeMaker = new NewNodeMaker {
-					ReplacementSupplyGadget = new GasNodeGadgetSupply {
-						SetupPressure = 0d
-					}
-				};
-
-				correspondingOriginalNode.accept (nodeMaker);
-
-				return nodeMaker.NewNode;
-			}
-
-			#endregion
-
-		}
-
-		public class NodeRolePassive:NodeRoleLoader
-		{
-			public NodeRolePassive ()
-			{
-				this.Load = 0d;
-			}
-
-			public override void putYourCoefficientIntoFor (
-				NodeForNetwonRaphsonSystem aNode, 
-				Vector<NodeForNetwonRaphsonSystem> aVector,
-				GasFormulaVisitor aFormulaVisitor)
-			{
-				aVector.atPut (aNode, 0d);
-			}
-		}
-
 		public long Height { get; set; }
 
 		public NodeRole Role{ get; set; }
 
 		public AntecedentInPressureRegulation RoleInPressureRegulation{ get; set; }
 
+		public List<EdgeForNetwonRaphsonSystem> IncomingEdges{ get; private set; }
+
+		public List<EdgeForNetwonRaphsonSystem> OutgoingEdges{ get; private set; }
+
 		public void initializeWith (GasNodeAbstract aNode)
 		{
+			this.IncomingEdges = new List<EdgeForNetwonRaphsonSystem> ();
+			this.OutgoingEdges = new List<EdgeForNetwonRaphsonSystem> ();
+
 			aNode.accept (this);
 
 			if (this.Role == null) {
@@ -242,9 +62,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void forNodeAntecedentInPressureReduction (
 			GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
 		{
-			this.RoleInPressureRegulation = new IsAntecedentInPressureRegulation {
-				Regulator = gasNodeAntecedentInPressureRegulator.RegulatorNode
-			};
+			// just for debugging we do not consider this case, since the parser
+			// doesn't create any object of this type.
+			throw new NotSupportedException ();
+
+//			this.RoleInPressureRegulation = new IsAntecedentInPressureRegulation {
+//				Regulator = gasNodeAntecedentInPressureRegulator.RegulatorNode
+//			};
 			gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
 		}
 
@@ -270,10 +94,22 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void putYourCoefficientInto (
 			Vector<NodeForNetwonRaphsonSystem> aVector,
-			GasFormulaVisitor aFormulaVisitor)
+			GasFormulaVisitor aFormulaVisitor,
+			Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{
-			this.Role.putYourCoefficientIntoFor (
-				this, aVector, aFormulaVisitor);
+			new IfNodeIsAntecedentInPressureRegulation {
+				IfItIs = data => {
+					// the following computation is the opposite of the one performed
+					// by FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain objects.
+					var invertedAlgebraicSum = 0d;
+					data.Regulator.OutgoingEdges.ForEach (edge => invertedAlgebraicSum += Qvector.valueAt (edge));
+					data.Regulator.IncomingEdges.ForEach (edge => invertedAlgebraicSum -= Qvector.valueAt (edge));
+					aVector.atPut (this, invertedAlgebraicSum);
+				},
+				Otherwise = () => this.Role.putYourCoefficientIntoFor (
+					this, aVector, aFormulaVisitor, Qvector)
+			}.performOn (this.RoleInPressureRegulation);
+
 		}
 
 		public void fixMatrixIfYouHaveSupplyGadget (
@@ -308,6 +144,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			return Role.substituteNodeBecauseNegativePressureFoundFor (
 				this, pressure, originalNode);
+		}
+
+		public double fixPressureForAntecedentInReduction (
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep,
+			double currentValue)
+		{
+			double nodePressure = currentValue;
+
+			new IfNodeIsAntecedentInPressureRegulation {
+				IfItIs = data => {
+					var regulatorPressure = unknownVectorAtCurrentStep.valueAt (data.Regulator);
+					if (currentValue < regulatorPressure) {
+						nodePressure = regulatorPressure;
+					} 
+				}
+			}.performOn (this.RoleInPressureRegulation);
+		
+			return nodePressure;
 		}
 
 	}

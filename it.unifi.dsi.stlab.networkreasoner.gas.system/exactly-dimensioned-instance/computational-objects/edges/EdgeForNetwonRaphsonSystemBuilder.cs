@@ -2,6 +2,7 @@ using System;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.edges;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.nodes;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -27,9 +28,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			CustomEdgeUnderBuilding.StartNode = 
 					CustomNodesByGeneralNodes [gasEdgeTopological.StartNode];
+			CustomEdgeUnderBuilding.StartNode.OutgoingEdges.Add (this.CustomEdgeUnderBuilding);
 
 			CustomEdgeUnderBuilding.EndNode = 
 					CustomNodesByGeneralNodes [gasEdgeTopological.EndNode];
+			CustomEdgeUnderBuilding.EndNode.IncomingEdges.Add (this.CustomEdgeUnderBuilding);
 
 			CustomEdgeUnderBuilding.Identifier = 
 				gasEdgeTopological.Identifier;
@@ -37,12 +40,14 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
 		{
-			gasEdgeWithGadget.Gadget.accept (this);
-
-			// here we continue the recursion just for elegance and 
-			// foreseeing in the future if we add a gadget for edges that 
-			// doesn't switch off the edge.
+			// Observation: here the order of the following two recursion calls
+			// does matter a lot because with the former one we'll go deep and
+			// set the start and end node...
 			gasEdgeWithGadget.Equipped.accept (this);
+
+			// instead, with the latter one we apply the gadget information
+			// to possibly the start and end nodes (like pressure regulator gadget)
+			gasEdgeWithGadget.Gadget.accept (this);
 		}
 
 		#endregion
@@ -60,6 +65,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		{
 			this.CustomEdgeUnderBuilding.RegulatorState = 
 				new IsEdgeRegulator ();
+
+			this.CustomEdgeUnderBuilding.StartNode.RoleInPressureRegulation = 
+				new IsAntecedentInPressureRegulation { 
+				Regulator = this.CustomEdgeUnderBuilding.EndNode
+			};
 		}
 
 		#endregion

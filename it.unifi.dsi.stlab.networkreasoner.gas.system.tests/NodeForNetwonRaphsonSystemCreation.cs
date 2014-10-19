@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.nodes;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -29,10 +30,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			nodeForSystem.initializeWith (aSupplier);
 
 			Assert.AreEqual (anHeight, nodeForSystem.Height);
-			Assert.IsInstanceOf (typeof(NodeForNetwonRaphsonSystem.NodeRoleSupplier), nodeForSystem.Role);
+			Assert.IsInstanceOf (typeof(NodeRoleSupplier), nodeForSystem.Role);
 
 			// since we know from the previous assert that the cast is safe.
-			var supplierRole = nodeForSystem.Role as NodeForNetwonRaphsonSystem.NodeRoleSupplier;
+			var supplierRole = nodeForSystem.Role as NodeRoleSupplier;
 			Assert.AreEqual (aSetupPressure, supplierRole.SetupPressureInMillibar);
 		}
 
@@ -56,10 +57,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			nodeForSystem.initializeWith (aLoader);
 
 			Assert.AreEqual (anHeight, nodeForSystem.Height);
-			Assert.IsInstanceOf (typeof(NodeForNetwonRaphsonSystem.NodeRoleLoader), nodeForSystem.Role);
+			Assert.IsInstanceOf (typeof(NodeRoleLoader), nodeForSystem.Role);
 
 			// since we know from the previous assert that the cast is safe.
-			var loaderRole = nodeForSystem.Role as NodeForNetwonRaphsonSystem.NodeRoleLoader;
+			var loaderRole = nodeForSystem.Role as NodeRoleLoader;
 			Assert.AreEqual (aLoad, loaderRole.Load);
 		}
 
@@ -80,10 +81,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			nodeForSystem.initializeWith (aTopologicalNode);
 
 			Assert.AreEqual (anHeight, nodeForSystem.Height);
-			Assert.IsInstanceOf (typeof(NodeForNetwonRaphsonSystem.NodeRolePassive), nodeForSystem.Role);
+			Assert.IsInstanceOf (typeof(NodeRolePassive), nodeForSystem.Role);
 
 			// since we know from the previous assert that the cast is safe.
-			var passiveRole = nodeForSystem.Role as NodeForNetwonRaphsonSystem.NodeRolePassive;
+			var passiveRole = nodeForSystem.Role as NodeRolePassive;
 			Assert.AreEqual (0, passiveRole.Load);
 		}
 	}

@@ -89,6 +89,15 @@
     <Compile Include="exactly-dimensioned-instance\computational-objects\AbstractItemForNetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\FluidDynamicSystemStateTransitionNewtonRaphsonSolve.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\anomalies-finders\EdgeAnomalyFinder.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-state-visitors\anomalies-finders\NodeAnomalyFinder.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\node-role\NodeRole.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\node-role\NodeRoleSupplier.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\node-role\NodeRoleLoader.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\node-role\NodeRolePassive.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\pressure-regulation\AntecedentInPressureRegulation.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\mutation-computation-driver\MutateComputationDriver.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\pressure-regulation\IfNodeIsAntecedentInPressureRegulation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -128,5 +137,10 @@
     <Folder Include="exactly-dimensioned-instance\computational-objects\edges\helpers\" />
     <Folder Include="exactly-dimensioned-instance\computational-objects\nodes\" />
     <Folder Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\" />
+    <Folder Include="exactly-dimensioned-instance\system-state-visitors\anomalies-finders\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\node-role\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\pressure-regulation\" />
+    <Folder Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\mutation-computation-driver\" />
   </ItemGroup>
 </Project>
