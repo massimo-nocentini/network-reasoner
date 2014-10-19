@@ -3,6 +3,7 @@ using NUnit.Framework;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.edges;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 {
@@ -58,7 +59,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			Assert.AreEqual (aLength, edgeForNetwonRaphsonSystem.Length);
 			Assert.AreSame (newtonRaphsonStartNode, edgeForNetwonRaphsonSystem.StartNode);
 			Assert.AreSame (newtonRaphsonEndNode, edgeForNetwonRaphsonSystem.EndNode);
-			Assert.IsInstanceOf (typeof(EdgeForNetwonRaphsonSystem.EdgeStateOn), 
+			Assert.IsInstanceOf (typeof(EdgeStateOn), 
 			                     edgeForNetwonRaphsonSystem.SwitchState);
 		}
 
@@ -108,7 +109,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.tests
 			Assert.AreEqual (aLength, edgeForNetwonRaphsonSystem.Length);
 			Assert.AreSame (newtonRaphsonStartNode, edgeForNetwonRaphsonSystem.StartNode);
 			Assert.AreSame (newtonRaphsonEndNode, edgeForNetwonRaphsonSystem.EndNode);
-			Assert.IsInstanceOf (typeof(EdgeForNetwonRaphsonSystem.EdgeStateOff), 
+			Assert.IsInstanceOf (typeof(EdgeStateOff), 
 			                     edgeForNetwonRaphsonSystem.SwitchState);
 		}
 

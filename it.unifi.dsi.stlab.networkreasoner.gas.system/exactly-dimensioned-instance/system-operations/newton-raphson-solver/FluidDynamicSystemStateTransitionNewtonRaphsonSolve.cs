@@ -104,8 +104,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 						previousOneStepMutationResults = currentOneStepMutationResults;
 
-						previousOneStepMutationResults.IterationNumber = 
-						previousOneStepMutationResults.IterationNumber + 1;
+						previousOneStepMutationResults.IterationNumber += 1;
 
 						currentOneStepMutationResults = this.mutate (
 							previousOneStepMutationResults,
@@ -149,8 +148,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			OneStepMutationResults previousOneStepMutationResults, 
 			OneStepMutationResults currentOneStepMutationResults)
 		{
-
-
 			bool until = condition.canContinue (
 				             previousOneStepMutationResults, 
 				             currentOneStepMutationResults);

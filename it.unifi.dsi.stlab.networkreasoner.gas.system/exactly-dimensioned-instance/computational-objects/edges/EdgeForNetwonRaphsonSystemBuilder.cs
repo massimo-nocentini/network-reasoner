@@ -1,6 +1,7 @@
 using System;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using System.Collections.Generic;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.edges;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 {
@@ -51,28 +52,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void forSwitchOffGadget (GasEdgeGadgetSwitchOff gasEdgeGadgetSwitchOff)
 		{
 			this.CustomEdgeUnderBuilding.SwitchState = 
-				new EdgeForNetwonRaphsonSystem.EdgeStateOff ();
+				new EdgeStateOff ();
 		}
 
 		public void forPressureRegulatorGadget (
 			GasEdgeGadgetPressureRegulator gasEdgeGadgetPressureRegulator)
 		{
 			this.CustomEdgeUnderBuilding.RegulatorState = 
-				new EdgeForNetwonRaphsonSystem.IsEdgeRegulator ();
+				new IsEdgeRegulator ();
 		}
 
 		#endregion
 
-		protected virtual EdgeForNetwonRaphsonSystem.EdgeState 
+		protected virtual EdgeState 
 			makeInitialSwitchStateOnEdgeUnderConstruction ()
 		{
-			return	new EdgeForNetwonRaphsonSystem.EdgeStateOn ();
+			return	new EdgeStateOn ();
 		}
 
-		protected virtual EdgeForNetwonRaphsonSystem.EdgeRegulator 
+		protected virtual EdgeRegulator 
 			makeInitialRegulatorStateOnEdgeUnderConstruction ()
 		{
-			return new EdgeForNetwonRaphsonSystem.IsNotEdgeRegulator ();
+			return new IsNotEdgeRegulator ();
 		}
 
 		public EdgeForNetwonRaphsonSystem buildCustomEdgeFrom (

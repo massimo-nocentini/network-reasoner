@@ -40,15 +40,11 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="exactly-dimensioned-instance\OneStepMutationResults.cs" />
-    <Compile Include="exactly-dimensioned-instance\NodeForNetwonRaphsonSystem.cs" />
-    <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystemBuilder.cs" />
-    <Compile Include="exactly-dimensioned-instance\EdgeForNetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionAbstract.cs" />
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionMaxIterationReached.cs" />
     <Compile Include="exactly-dimensioned-instance\repeat-until-condition\UntilConditionAdimensionalRatioPrecisionReached.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListener.cs" />
     <Compile Include="exactly-dimensioned-instance\NetwonRaphsonSystemListeners\NetwonRaphsonSystemEventsListenerNullObject.cs" />
-    <Compile Include="exactly-dimensioned-instance\AbstractItemForNetwonRaphsonSystem.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitialization.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationSimplyRandomized.cs" />
     <Compile Include="exactly-dimensioned-instance\unknowns-initializations\UnknownInitializationMinMaxSetupPressure.cs" />
@@ -59,8 +55,6 @@
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransition.cs" />
     <Compile Include="exactly-dimensioned-instance\system-variants\FluidDynamicSystemStateMathematicallySolved.cs" />
     <Compile Include="exactly-dimensioned-instance\system-variants\FluidDynamicSystemStateNegativeLoadsCorrected.cs" />
-    <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNewtonRaphsonSolve.cs" />
-    <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionInitializationRaiseEventsDecorator.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsChecker.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\FluidDynamicSystemStateTransitionNegativeLoadsCheckerRaiseEventsDecorator.cs" />
@@ -84,6 +78,17 @@
     <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\AbsolutePressures.cs" />
     <Compile Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\RelativePressures.cs" />
     <Compile Include="exactly-dimensioned-instance\objects-with-dimension\TargetDimension.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\EdgeForNetwonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\EdgeForNetwonRaphsonSystemBuilder.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\helpers\edge-regulator\EdgeRegulator.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\helpers\edge-regulator\IfEdgeHasntRegulatorGadget.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\helpers\edge-switch-state\EdgeState.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\helpers\edge-switch-state\EdgeStateOn.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\edges\helpers\edge-switch-state\EdgeStateOff.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\NodeForNetwonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\AbstractItemForNetwonRaphsonSystem.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\FluidDynamicSystemStateTransitionNewtonRaphsonSolve.cs" />
+    <Compile Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\FluidDynamicSystemStateTransitionNewtonRaphsonSolveRaiseEventsDecorator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -118,5 +123,10 @@
     <Folder Include="exactly-dimensioned-instance\system-state-visitors\summary-table-construction\" />
     <Folder Include="exactly-dimensioned-instance\objects-with-dimension\wrappers\" />
     <Folder Include="exactly-dimensioned-instance\objects-with-dimension\dimensions\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\edges\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\edges\helpers\" />
+    <Folder Include="exactly-dimensioned-instance\computational-objects\nodes\" />
+    <Folder Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\" />
   </ItemGroup>
 </Project>
