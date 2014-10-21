@@ -10,26 +10,28 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 	public class NodeRoleLoader:NodeRole
 	{
-		public class NewNodeMaker : GasNodeVisitor
+		class SubstituteGadget : GasNodeVisitor
 		{
-			public GasNodeGadgetSupply ReplacementSupplyGadget {
+			public GasNodeGadgetSupply ReplacementGadget {
 				get;
 				set;
 			}
 
-			public GasNodeAbstract NewNode {
+			GasNodeAbstract NewNode {
 				get;
-				private set;
+				set;
 			}
 
 			#region GasNodeVisitor implementation
 
-			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
+			public void forNodeWithTopologicalInfo (
+				GasNodeTopological gasNodeTopological)
 			{
 				this.NewNode = gasNodeTopological;
 			}
 
-			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+			public void forNodeWithGadget (
+				GasNodeWithGadget gasNodeWithGadget)
 			{
 				// first we go down the tower in order to collect every piece of information
 				gasNodeWithGadget.Equipped.accept (this);
@@ -38,24 +40,41 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				// the new information.
 				this.NewNode = new GasNodeWithGadget {
 					Equipped = this.NewNode,
-					Gadget = this.ReplacementSupplyGadget
+					Gadget = this.ReplacementGadget
 				};
 			}
 
 			public void forNodeAntecedentInPressureReduction (
 				GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
 			{
-				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+				throw new NotSupportedException ("An antecedent node in a pressure regulation relation" +
+					" cannot have a pressure lesser than conseguent's pressure, by definition of" +
+					" pressure regulator gadget.");
 
-				// after the recursion unwind we can to the obtained result with
+				//gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+
+				// after the recursion unwinds we can top the obtained result with
 				// the informations that this node is an antecedent in
 				// a pressure regulation relation. But, since the node
-				// will become a supply node, do we really need 
-				// to re-apply this layer of information on the new node?
+				// will become a supply node with 0 pressure, is it correct
+				// to proceed with this configuration, where the antecedent in a 
+				// pressure regulation has a pressure lesser than the pressure
+				// at the conseguent?
 				// TODO: ask Fabio that the previous reasoning is correct or not.
 			}
 
 			#endregion
+
+			/// <summary>
+			/// Syntactic sugar method, just visit the given node and build another
+			/// node tower with the given gadget supplied.
+			/// </summary>
+			/// <param name="correspondingOriginalNode">Corresponding original node.</param>
+			public GasNodeAbstract on (GasNodeAbstract correspondingOriginalNode)
+			{
+				correspondingOriginalNode.accept (this);
+				return this.NewNode;
+			}
 
 		}
 
@@ -87,15 +106,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			double pressure, 
 			GasNodeAbstract correspondingOriginalNode)
 		{
-			var nodeMaker = new NewNodeMaker {
-				ReplacementSupplyGadget = new GasNodeGadgetSupply {
+			return new SubstituteGadget {
+				ReplacementGadget = new GasNodeGadgetSupply {
 					SetupPressure = 0d
 				}
-			};
+			}.on (correspondingOriginalNode);
 
-			correspondingOriginalNode.accept (nodeMaker);
-
-			return nodeMaker.NewNode;
 		}
 
 		#endregion

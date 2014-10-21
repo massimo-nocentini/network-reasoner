@@ -89,6 +89,17 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			return initialFvector;
 		}
 
+		protected virtual Dictionary<GasEdgeAbstract, double> makeInitialGuessForQvector ()
+		{
+			var initialQvector = new Dictionary<GasEdgeAbstract, double> ();
+
+			Network.doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (
+				anEdge => initialQvector.Add (anEdge, 0d))
+			);
+
+			return initialQvector;
+		}
+
 		protected virtual Dictionary<GasNodeAbstract, double> makeInitialGuessForUnknowns ()
 		{
 			var initialUnknowns = new  Dictionary<GasNodeAbstract, double> ();
@@ -115,18 +126,27 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			unsolvedState.Edges = new List<EdgeForNetwonRaphsonSystem> ();
 			unsolvedState.InitialFvector = new Vector<EdgeForNetwonRaphsonSystem> ();
+			unsolvedState.InitialQvector = new Vector<EdgeForNetwonRaphsonSystem> ();
 			unsolvedState.OriginalEdgesByComputationEdges = 
 				new Dictionary<EdgeForNetwonRaphsonSystem, GasEdgeAbstract> ();
 
 			var initialFvalueGuessVector = this.makeInitialGuessForFvector ();
+			var initialQvalueGuessVector = this.makeInitialGuessForQvector ();
 
 			Network.doOnEdges (new NodeHandlerWithDelegateOnRawNode<GasEdgeAbstract> (anEdge => {
 				var aBuilder = new EdgeForNetwonRaphsonSystemBuilder {
 					CustomNodesByGeneralNodes = newtonRaphsonNodesByOriginalNode
 				};
 				var edgeForNetwonRaphsonSystem = aBuilder.buildCustomEdgeFrom (anEdge);
+
 				unsolvedState.Edges.Add (edgeForNetwonRaphsonSystem);
-				unsolvedState.InitialFvector.atPut (edgeForNetwonRaphsonSystem, initialFvalueGuessVector [anEdge]);
+
+				unsolvedState.InitialFvector.atPut (
+					edgeForNetwonRaphsonSystem, initialFvalueGuessVector [anEdge]);
+
+				unsolvedState.InitialQvector.atPut (
+					edgeForNetwonRaphsonSystem, initialQvalueGuessVector [anEdge]);
+
 				unsolvedState.OriginalEdgesByComputationEdges.Add (edgeForNetwonRaphsonSystem, anEdge);
 			}
 			)

@@ -29,6 +29,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 		public Vector<EdgeForNetwonRaphsonSystem> InitialFvector{ get; set; }
 
+		public Vector<EdgeForNetwonRaphsonSystem> InitialQvector { get; set; }
+
 		public FluidDynamicSystemStateTransitionInitialization InitializedBy{ get; set; }
 
 		#region implemented abstract members of it.unifi.dsi.stlab.networkreasoner.gas.system.FluidDynamicSystemStateAbstract

@@ -36,7 +36,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				new OneStepMutationResults {
 					IterationNumber = 0,
 					Unknowns = fluidDynamicSystemStateUnsolved.InitialUnknownVector,
-					Fvector = fluidDynamicSystemStateUnsolved.InitialFvector
+					Fvector = fluidDynamicSystemStateUnsolved.InitialFvector,
+					Qvector = fluidDynamicSystemStateUnsolved.InitialQvector
 				};
 
 			MutateComputationDriver mutateComputationDriver = 

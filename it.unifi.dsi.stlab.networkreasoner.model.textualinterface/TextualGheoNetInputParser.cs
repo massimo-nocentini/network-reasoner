@@ -165,8 +165,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 
 				var edgeIdentifier = splittedSpecification [0];
 
-				if (nodes.ContainsKey (splittedSpecification [2]) == false) {
+				if (nodes.ContainsKey (splittedSpecification [1]) == false) {
 					Console.WriteLine (string.Format ("Start node key {0} not present in node dictionary", splittedSpecification [1]));
+				}
+
+				if (nodes.ContainsKey (splittedSpecification [2]) == false) {
 					Console.WriteLine (string.Format ("End node key {0} not present in node dictionary", splittedSpecification [2]));
 				}
 
@@ -192,6 +195,18 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 						Roughness = parseDoubleCultureInvariant (splittedSpecification [5]).Value
 					};
 				}
+
+				// 9 is the number of field plus one if we want an edge switched off;
+				// this case for now has never been used in any network.
+				if (splittedSpecification.Length.Equals (9)
+				    && splittedSpecification [8].Equals ("off")) {
+
+					anEdge = new GasEdgeWithGadget { 
+						Equipped = anEdge,
+						Gadget = new GasEdgeGadgetSwitchOff ()
+					};
+				}
+
 				parsedEdges.Add (edgeIdentifier, anEdge);
 			}
 			);

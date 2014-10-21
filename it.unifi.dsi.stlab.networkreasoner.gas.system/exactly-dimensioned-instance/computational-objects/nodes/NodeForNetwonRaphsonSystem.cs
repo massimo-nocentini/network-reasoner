@@ -164,6 +164,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return nodePressure;
 		}
 
+		public override string ToString ()
+		{
+			return string.Format ("[Node: id={0}]", this.Identifier);
+		}
 	}
 }
 
