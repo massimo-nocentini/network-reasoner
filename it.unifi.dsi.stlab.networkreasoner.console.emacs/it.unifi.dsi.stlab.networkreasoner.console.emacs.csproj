@@ -95,5 +95,8 @@
     <None Include="emacs-buffers-examples\kagishitsu.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="emacs-buffers-examples\big-network-for-integration-with-pressure-regulator.org">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

@@ -242,8 +242,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			Random random = new Random ();
 			unknownVectorAtCurrentStep.updateEach (
-				(aNode, currentValue) => currentValue <= 0 ? 
-				random.NextDouble () / 10 : currentValue
+				(aNode, currentValue) => currentValue <= 0d ? 
+				random.NextDouble () / 10d : currentValue
 			);
 		}
 

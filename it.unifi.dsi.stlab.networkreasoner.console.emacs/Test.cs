@@ -12,7 +12,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 		{
 			new MainClass ().run (new System.Collections.Generic.List<string> (
 				File.ReadAllLines (
-					"emacs-buffers-examples/kagishitsu.dat")
+					"emacs-buffers-examples/big-network-for-integration-with-pressure-regulator.org")
 			)
 			);
 		}

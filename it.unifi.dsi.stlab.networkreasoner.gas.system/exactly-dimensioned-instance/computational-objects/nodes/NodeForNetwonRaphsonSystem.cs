@@ -102,8 +102,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 					// the following computation is the opposite of the one performed
 					// by FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain objects.
 					var invertedAlgebraicSum = 0d;
-					data.Regulator.OutgoingEdges.ForEach (edge => invertedAlgebraicSum += Qvector.valueAt (edge));
-					data.Regulator.IncomingEdges.ForEach (edge => invertedAlgebraicSum -= Qvector.valueAt (edge));
+					data.Regulator.OutgoingEdges.ForEach (edge => invertedAlgebraicSum += edge.fetchFlowFromQvector (Qvector));
+					data.Regulator.IncomingEdges.ForEach (edge => invertedAlgebraicSum -= edge.fetchFlowFromQvector (Qvector));
 					aVector.atPut (this, invertedAlgebraicSum);
 				},
 				Otherwise = () => this.Role.putYourCoefficientIntoFor (
@@ -156,7 +156,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				IfItIs = data => {
 					var regulatorPressure = unknownVectorAtCurrentStep.valueAt (data.Regulator);
 					if (currentValue < regulatorPressure) {
-						nodePressure = regulatorPressure;
+						//nodePressure = regulatorPressure;
+
 					} 
 				}
 			}.performOn (this.RoleInPressureRegulation);

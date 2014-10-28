@@ -124,6 +124,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<NodeForNetwonRaphsonSystem> unknownVector,
 			GasFormulaVisitor aFormulaVisitor)
 		{
+			new IfEdgeHasntRegulatorGadget {
+				Do = () => {
+					this.SwitchState.putQvalueIntoUsingFor (
+						Qvector, Kvector, unknownVector, aFormulaVisitor, this);
+				}
+			}.performOn (this.RegulatorState);
+
+			return;
+
 			// TODO: check with Fabio if this piece has to be executed anyway.
 			this.SwitchState.putQvalueIntoUsingFor (
 				Qvector, Kvector, unknownVector, aFormulaVisitor, this);
@@ -135,6 +144,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> previousFvector, 
 			GasFormulaVisitor formulaVisitor)
 		{
+			new IfEdgeHasntRegulatorGadget {
+				Do = () => {
+					this.SwitchState.putNewFvalueIntoUsingFor (
+						newFvector, Qvector, previousFvector, formulaVisitor, this);
+				}
+			}.performOn (this.RegulatorState);
+
+			return;
+
+
 			// TODO: check with Fabio if this piece has to be executed anyway.
 			this.SwitchState.putNewFvalueIntoUsingFor (
 				newFvector, Qvector, previousFvector, formulaVisitor, this);
@@ -161,12 +180,32 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> Qvector, 
 			GasFormulaVisitor formulaVisitor)
 		{
+
+			new IfEdgeHasntRegulatorGadget {
+				Do = () => {
+					this.SwitchState.putVelocityValueIntoUsingFor (
+						velocityVector, pressures, Qvector, formulaVisitor, this);
+				}
+			}.performOn (this.RegulatorState);
+
+			return;
+
 			// TODO: check with Fabio if this piece has to be executed anyway.
 			this.SwitchState.putVelocityValueIntoUsingFor (
 				velocityVector, pressures, Qvector, formulaVisitor, this);
 		}
-	
 
+
+		public double fetchFlowFromQvector (Vector<EdgeForNetwonRaphsonSystem> Qvector)
+		{
+			double flow = 0d;
+
+			new IfEdgeHasntRegulatorGadget {
+				Do = () => flow = Qvector.valueAt (this)
+			}.performOn (this.RegulatorState);
+
+			return flow;
+		}
 	}
 }
 
