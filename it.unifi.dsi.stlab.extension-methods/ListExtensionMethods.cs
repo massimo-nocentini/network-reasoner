@@ -46,9 +46,9 @@ namespace it.unifi.dsi.stlab.extension_methods
 
 			aList.Rest ().ForEach (anItem => decored.Add (
 				new ListItemDecoratedWithTimeComputation<T> {
-				Item = anItem,
-				ComputationTime = new TimeOfComputationHandlingBeyondFirst ()
-			}
+					Item = anItem,
+					ComputationTime = new TimeOfComputationHandlingBeyondFirst ()
+				}
 			)
 			);
 
@@ -63,7 +63,7 @@ namespace it.unifi.dsi.stlab.extension_methods
 
 			aList.ForEach (anObjWithSubstitution => 
 			               originalsBySubstituted.Add (anObjWithSubstitution.Substituted, 
-			                            anObjWithSubstitution.Original)
+				anObjWithSubstitution.Original)
 			);
 
 			return originalsBySubstituted;
@@ -77,10 +77,42 @@ namespace it.unifi.dsi.stlab.extension_methods
 
 			aList.ForEach (anObjWithSubstitution => 
 			               substitutedByOriginals.Add (anObjWithSubstitution.Original, 
-			                            anObjWithSubstitution.Substituted)
+				anObjWithSubstitution.Substituted)
 			);
 
 			return substitutedByOriginals;
+		}
+
+		public static void FindIfFoundIfNot<T> (
+			this List<T> aList, 
+			Predicate<T> predicate,
+			Action<T> ifFoundDo,
+			Action ifNotFoundDo)
+		{
+			T element = aList.Find (predicate);
+
+			if (element != null) {
+				ifFoundDo.Invoke (element);
+			} else {
+				ifNotFoundDo.Invoke ();
+			}
+		}
+
+		public static void ForEachFindInDo<T, S> (
+			this List<T> domainList, 
+			List<S> lookingAtList, 
+			Predicate<Tuple<T, S>> predicate,
+			Action<Tuple<T, S>> ifFoundDo,
+			Action<T> ifNotFoundDo)
+		{ 
+			domainList.ForEach (domainElement => {
+
+				lookingAtList.FindIfFoundIfNot (
+					aGivenEdgeSubstitution => predicate.Invoke (
+						Tuple.Create (domainElement, aGivenEdgeSubstitution)),
+					foundElement => ifFoundDo.Invoke (Tuple.Create (domainElement, foundElement)),
+					() => ifNotFoundDo.Invoke (domainElement));
+			});
 		}
 	}
 }

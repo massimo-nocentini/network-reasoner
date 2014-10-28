@@ -32,6 +32,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			return StartNode.Identifier + " -> " + EndNode.Identifier;
 		}
 
+		public override string ToString ()
+		{
+			return string.Format ("[EdgeForNetwonRaphsonSystem: Link={0}]", 
+				identifierUsingLinkNotation ());
+		}
+
 		public double coVariantLittleK (
 			GasFormulaVisitor aFormulaVisitor)
 		{

@@ -25,6 +25,24 @@ namespace it.unifi.dsi.stlab.extension_methods
 				anAction.Invoke (pair.Key, pair.Value);
 			}
 		}
+
+		public static TValue MapOrDefault<TKey, TValue> (
+			this Dictionary<TKey, TValue> aDictionary, TKey key, TValue defaultValue)
+		{
+			TValue delegatedValue = default(TValue);
+
+			if (aDictionary.TryGetValue (key, out delegatedValue) == false) {
+				delegatedValue = defaultValue;
+			}
+
+			return delegatedValue;
+		}
+
+		public static TKey MapIfPossible<TKey> (
+			this Dictionary<TKey, TKey> aDictionary, TKey key)
+		{
+			return aDictionary.MapOrDefault (key, key);
+		}
 	}
 }
 

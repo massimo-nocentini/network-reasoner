@@ -62,147 +62,104 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 				nodesSubstitutions.SubstitutedByOriginals ();
 
 			this.doOnNodes (new NodeHandlerWithDelegateOnKeyedNode<GasNodeAbstract> (
-				(aNodeKey, aNode) => {
-
-				// here isn't necessary to visit the structure of the node since 
-				// all the properties are mantained by the node to be substituted,
-				// the only thing that change is the gadget.
-				var nodeForNewNetwork = substitutedByOriginalsNodesDictionary.ContainsKey (aNode) ?
-					substitutedByOriginalsNodesDictionary [aNode] : aNode;
-
-				newNetwork.Nodes.Add (aNodeKey, nodeForNewNetwork);
-			}
-			)
-			);
+				makeNodeSubstitutionAction (newNetwork, substitutedByOriginalsNodesDictionary)));
 
 			var innerEdgeSubstitutions = new List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> ();
 
 			this.doOnEdges (new NodeHandlerWithDelegateOnKeyedNode<GasEdgeAbstract> (
-				(anEdgeKey, anEdge) => {
-
-				// creating a new visitor is necessary since every instance of the visitor
-				// keep state information about one edge, different at each iteration 
-				// of this block.
-				SubstituteNodeInsideEdge substituteNodeInsideEdge = 
-				new SubstituteNodeInsideEdge{
-					NewByOldNodesMapping = substitutedByOriginalsNodesDictionary
-				};
-
-				anEdge.accept (substituteNodeInsideEdge);
-
-				var edgeForNewNetwork = substituteNodeInsideEdge.buildEdge ();
-
-				innerEdgeSubstitutions.Add (new ObjectWithSubstitutionInSameType<GasEdgeAbstract>{
-					Original = anEdge,
-					Substituted = edgeForNewNetwork
-				}
-				);
-
-				newNetwork.Edges.Add (anEdgeKey, edgeForNewNetwork);
-			}
-			)
-			);
+				makeEdgeSubstitutionAction (newNetwork, substitutedByOriginalsNodesDictionary, innerEdgeSubstitutions)));
 
 			edgeSubstitutions = innerEdgeSubstitutions;
 
 			return newNetwork;
 		}
 
+		#region Virtual methods about nodes and edges substitution actions
+
+		protected virtual Action<String, GasNodeAbstract> makeNodeSubstitutionAction (
+			GasNetwork newNetwork, 
+			Dictionary<GasNodeAbstract, GasNodeAbstract> substitutedByOriginalsNodesDictionary)
+		{
+			return (aNodeKey, aNode) => {
+				newNetwork.Nodes.Add (aNodeKey, substitutedByOriginalsNodesDictionary.MapIfPossible (aNode));
+			};
+		}
+
+		protected virtual Action<String, GasEdgeAbstract> makeEdgeSubstitutionAction (
+			GasNetwork newNetwork, 
+			Dictionary<GasNodeAbstract, GasNodeAbstract> substitutedByOriginalsNodesDictionary, 
+			List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> innerEdgeSubstitutions)
+		{
+			return (anEdgeKey, anEdge) => {
+
+				var edgeForNewNetwork = new SubstituteNodeInsideEdge {
+					NewByOldNodesMapping = substitutedByOriginalsNodesDictionary
+				}.buildEdgeFrom (anEdge);
+
+				innerEdgeSubstitutions.Add (new ObjectWithSubstitutionInSameType<GasEdgeAbstract> {
+					Original = anEdge,
+					Substituted = edgeForNewNetwork
+				});
+
+				newNetwork.Edges.Add (anEdgeKey, edgeForNewNetwork);
+			};
+		}
+
+		#endregion
+
 		class SubstituteNodeInsideEdge : GasEdgeVisitor
 		{
 			public Dictionary<GasNodeAbstract, GasNodeAbstract> NewByOldNodesMapping;
 
-			#region properties
-			GasEdgeGadget Gadget {
-				get;
-				set;
-			}
-
-			double Diameter {
-				get;
-				set;
-			}
-
-			double Length {
-				get;
-				set;
-			}
-
-			double? MaxSpeed {
-				get;
-				set;
-			}
-
-			double Roughness {
-				get;
-				set;
-			}
-
-			GasNodeAbstract StartNode{ get; set; }
-
-			GasNodeAbstract EndNode{ get; set; }
-
-			String Identifier{ get; set; }
-
-			#endregion
+			GasEdgeAbstract BuildingEdge { get; set; }
 
 			#region GasEdgeVisitor implementation
+
 			public void forPhysicalEdge (GasEdgePhysical gasEdgePhysical)
 			{
-				this.Diameter = gasEdgePhysical.Diameter;
-				this.Length = gasEdgePhysical.Length;
-				this.MaxSpeed = gasEdgePhysical.MaxSpeed;
-				this.Roughness = gasEdgePhysical.Roughness;
-
+				// before go down in the recursive edge tower...
 				gasEdgePhysical.Described.accept (this);
+
+				// ...after we can wrap this piece of information
+				this.BuildingEdge = new GasEdgePhysical { 
+					Described = this.BuildingEdge,
+					Diameter = gasEdgePhysical.Diameter,
+					Length = gasEdgePhysical.Length,
+					MaxSpeed = gasEdgePhysical.MaxSpeed,
+					Roughness = gasEdgePhysical.Roughness
+				};
+
 			}
 
 			public void forTopologicalEdge (GasEdgeTopological gasEdgeTopological)
 			{
-				this.StartNode = applySubstitutionOn (gasEdgeTopological.StartNode);
-
-				this.EndNode = applySubstitutionOn (gasEdgeTopological.EndNode);
-
-				this.Identifier = gasEdgeTopological.Identifier;
-			}
-
-			GasNodeAbstract applySubstitutionOn (GasNodeAbstract aNode)
-			{
-				return NewByOldNodesMapping.ContainsKey (aNode) ?
-					NewByOldNodesMapping [aNode] : aNode;
+				// In the base of recursion we simply perform substitution
+				this.BuildingEdge = new GasEdgeTopological {
+					Identifier = gasEdgeTopological.Identifier,
+					StartNode = this.NewByOldNodesMapping.MapIfPossible (gasEdgeTopological.StartNode),
+					EndNode = this.NewByOldNodesMapping.MapIfPossible (gasEdgeTopological.EndNode)
+				};
 			}
 
 			public void forEdgeWithGadget (GasEdgeWithGadget gasEdgeWithGadget)
 			{
-				this.Gadget = gasEdgeWithGadget.Gadget;
 				gasEdgeWithGadget.Equipped.accept (this);
+
+				this.BuildingEdge = new GasEdgeWithGadget { 
+					Equipped = this.BuildingEdge,
+					Gadget = gasEdgeWithGadget.Gadget
+				};
 			}
+
 			#endregion
 
-			public GasEdgeAbstract buildEdge ()
+			public GasEdgeAbstract buildEdgeFrom (GasEdgeAbstract anEdge)
 			{
-				GasEdgeAbstract newEdge = new GasEdgeTopological{
-					StartNode = this.StartNode,
-					EndNode = this.EndNode,
-					Identifier = this.Identifier
-				};
+				// before visit the given edge
+				anEdge.accept (this);
 
-				newEdge = new GasEdgePhysical{
-					Described = newEdge,
-					Diameter = this.Diameter,
-					Length = this.Length,
-					MaxSpeed = this.MaxSpeed,
-					Roughness = this.Roughness
-				};
-
-				if (this.Gadget != null) {
-					newEdge = new GasEdgeWithGadget{
-						Equipped = newEdge,
-						Gadget = this.Gadget
-					};
-				}
-
-				return newEdge;
+				// then return the refinement
+				return this.BuildingEdge;
 			}
 		}
 	}

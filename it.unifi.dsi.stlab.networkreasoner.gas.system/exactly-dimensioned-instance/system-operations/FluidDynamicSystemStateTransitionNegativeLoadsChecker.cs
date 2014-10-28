@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.utilities.object_with_substitution;
+using it.unifi.dsi.stlab.extension_methods;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
@@ -14,11 +15,12 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 	{
 
 		#region FluidDynamicSystemStateTransition implementation
+
 		public FluidDynamicSystemStateAbstract forBareSystemState (
 			FluidDynamicSystemStateBare fluidDynamicSystemStateBare)
 		{
 			throw new Exception ("A system in the bare state cannot be checked " +
-				"for negative loads, initialize and solve it before and try again"
+			"for negative loads, initialize and solve it before and try again"
 			);
 		}
 
@@ -26,7 +28,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			FluidDynamicSystemStateUnsolved fluidDynamicSystemStateUnsolved)
 		{
 			throw new Exception ("A system in the unsolve state cannot be checked " +
-				"for negative loads, solve it before and try again"
+			"for negative loads, solve it before and try again"
 			);
 		}
 
@@ -47,11 +49,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			var iterationNumberOfPreviousResults = previousMutationResults.IterationNumber;
 
 			recursion (fluidDynamicSystemStateMathematicallySolved,
-			           nodesSubstitions,
-			           edgesSubstitions,
-			           startTimestampOfPreviousResults,
-			           iterationNumberOfPreviousResults,
-			           out correctedState);
+				nodesSubstitions,
+				edgesSubstitions,
+				startTimestampOfPreviousResults,
+				iterationNumberOfPreviousResults,
+				out correctedState);
 
 			return correctedState;
 
@@ -68,7 +70,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			var previousMutationResults = fluidDynamicSystemStateMathematicallySolved.MutationResult;
 
 			var relativeUnknownsDimensionalWrapper = this.makeUnknownsDimensional (
-				previousMutationResults);
+				                                         previousMutationResults);
 
 			var relativeUnknowns = relativeUnknownsDimensionalWrapper.WrappedObject;
 
@@ -88,35 +90,24 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 				// we keep note that a new node has been created
 				nodesSubstitutions.Add (
-					new ObjectWithSubstitutionInSameType<GasNodeAbstract>{
-					Original = originalNode,
-					Substituted = substitutedNode
-				}
-				);
+					new ObjectWithSubstitutionInSameType<GasNodeAbstract> {
+						Original = originalNode,
+						Substituted = substitutedNode
+					});
 
 				List<ObjectWithSubstitutionInSameType<GasEdgeAbstract>> currentEdgeSubstitutions;
+
 				GasNetwork networkWithFixedNodesWithLoadGadget = 
-						previousMutationResults.StartingUnsolvedState.
+					previousMutationResults.StartingUnsolvedState.
 						OriginalNetwork.makeFromRemapping (
-							nodesSubstitutions,
-							out currentEdgeSubstitutions);
+						nodesSubstitutions,
+						out currentEdgeSubstitutions);
 
-				currentEdgeSubstitutions.ForEach (aCurrentEdgeSubstitution => {
-
-					ObjectWithSubstitutionInSameType<GasEdgeAbstract> transitiveSubstitutedNode = 
-						edgesSubstitutions.Find (aGivenEdgeSubstitution => 
-						aGivenEdgeSubstitution.Substituted.Equals (
-								aCurrentEdgeSubstitution.Original)					
-					);
-
-					if (transitiveSubstitutedNode != null) {
-						transitiveSubstitutedNode.Substituted = 
-							aCurrentEdgeSubstitution.Substituted;
-					} else {
-						edgesSubstitutions.Add (aCurrentEdgeSubstitution);
-					}
-				}
-				);
+				currentEdgeSubstitutions.ForEachFindInDo (
+					lookingAtList: edgesSubstitutions,
+					predicate: pair => pair.Item2.Substituted.Equals (pair.Item1.Original),
+					ifFoundDo: matchingPair => matchingPair.Item2.Substituted = matchingPair.Item1.Substituted,
+					ifNotFoundDo: aCurrentEdgeSubstitution => edgesSubstitutions.Add (aCurrentEdgeSubstitution));
 
 				var initializerTransition = previousMutationResults.
 					StartingUnsolvedState.InitializedBy.clone () as FluidDynamicSystemStateTransitionInitialization;
@@ -126,19 +117,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 				var newBareSystemState = new FluidDynamicSystemStateBare ();
 				var newUnsolvedSystemState = newBareSystemState.doStateTransition (
-					initializerTransition);
+					                             initializerTransition);
 				var newMathematicallySolvedSystemState = newUnsolvedSystemState.doStateTransition (
-					newtonRaphsonSolverTransition);
+					                                         newtonRaphsonSolverTransition);
 
 				var newMathematicallySolvedSystemStateTypeSpecialized = newMathematicallySolvedSystemState 
 					as FluidDynamicSystemStateMathematicallySolved;
 
 				recursion (newMathematicallySolvedSystemStateTypeSpecialized,
-				           nodesSubstitutions,
-				           edgesSubstitutions,
-				           fixedStartTimestampOfPreviousResults,
-				           cumulativeIterationNumberSum + newMathematicallySolvedSystemStateTypeSpecialized.MutationResult.IterationNumber,
-				           out correctedState);
+					nodesSubstitutions,
+					edgesSubstitutions,
+					fixedStartTimestampOfPreviousResults,
+					cumulativeIterationNumberSum + newMathematicallySolvedSystemStateTypeSpecialized.MutationResult.IterationNumber,
+					out correctedState);
 			} else {
 
 				// modifying directly this object we put thing all together, if we wish to take
@@ -169,7 +160,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		{
 			throw new System.NotImplementedException ();
 		}
-		
+
 		#endregion
 
 		protected virtual DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> makeUnknownsDimensional (
