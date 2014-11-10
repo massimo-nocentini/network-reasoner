@@ -136,9 +136,9 @@ namespace it.unifi.dsi.stlab.math.algebra
 			foreach (IndexType key in this.aVector.Keys) {
 
 				result.atPut (key,
-				              onBijectionAction.Invoke (key, 
-				                   this.valueAt (key),
-				                   anotherVector.valueAt (key))
+					onBijectionAction.Invoke (key, 
+						this.valueAt (key),
+						anotherVector.valueAt (key))
 				);
 			}
 
@@ -165,7 +165,7 @@ namespace it.unifi.dsi.stlab.math.algebra
 		{
 			if (this.aVector.Count == 0) {
 				throw new Exception ("Impossible to find a key with " +
-					"min value because there's no keys at all!"
+				"min value because there's no keys at all!"
 				);
 			}
 

@@ -65,12 +65,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			);
 		}
 
-
-
-	
-
 		void findEdgeAnomalies (
-			string edgeIdentifier, 
+			EdgeForNetwonRaphsonSystem anEdge, 
 			double Qvalue, 
 			double VelocityValue,
 			GasEdgeAbstract originalEdge)
@@ -84,7 +80,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				}
 				AnomaliesByEdges [originalEdge].AppendFormat (
 					"Node {0}: {1}.", 
-					edgeIdentifier, 
+					anEdge.Identifier, 
 					anAnomaly);
 			};
 			originalEdge.accept (anomalyFinder);
@@ -138,8 +134,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			}
 
 			foreach (var originalByComputationEdgesPair in
-			        fluidDynamicSystemStateMathematicallySolved.MutationResult.
-			         StartingUnsolvedState.OriginalEdgesByComputationEdges) {
+			        fluidDynamicSystemStateMathematicallySolved.MutationResult.StartingUnsolvedState.OriginalEdgesByComputationEdges) {
 
 				var Qvalue = fluidDynamicSystemStateMathematicallySolved.
 					MutationResult.Qvector.valueAt (originalByComputationEdgesPair.Key);
@@ -158,7 +153,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 								
 				var originalEdge = originalByComputationEdgesPair.Value;
 				findEdgeAnomalies (
-					originalByComputationEdgesPair.Key.Identifier, 
+					originalByComputationEdgesPair.Key, 
 					Qvalue, 
 					VelocityValue,
 					originalEdge);
@@ -277,7 +272,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 				AlgebraicSumOfFlowsByNodes [startEndNodesFinder.StartNode] -= Qvalue;
 				
 				findEdgeAnomalies (
-					edgePair.Key.Identifier, 
+					edgePair.Key, 
 					Qvalue, 
 					VelocityValue,
 					originalEdge);

@@ -4,6 +4,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance
 using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
+using it.unifi.dsi.stlab.networkreasoner.model.gas;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
@@ -161,8 +162,13 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 
 			fixNegativeUnknowns (unknownVectorAtCurrentStep.WrappedObject);
 
-			fixLesserUnknownsForAntecedentsInPressureRegulations (
-				unknownVectorAtCurrentStep.WrappedObject);
+			// the following steps don't work for inverted pressure among nodes in pressure regulation relation.
+//			fixLesserUnknownsForAntecedentsInPressureRegulations (
+//				unknownVectorAtCurrentStep.WrappedObject, 
+//				computationalNode => fluidDynamicSystemStateUnsolved.OriginalNodesByComputationNodes [computationalNode]);
+//
+//			fixNegativeUnknowns (unknownVectorAtCurrentStep.WrappedObject);
+//
 
 			var QvectorAtCurrentStep = computeQvector (
 				                           unknownVectorAtCurrentStep.WrappedObject, 
@@ -240,19 +246,25 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 		protected virtual void fixNegativeUnknowns (
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
 		{
-			Random random = new Random ();
+			// we set a seed in order to reproduce quite similar results.
+			Random random = new Random (42);
 			unknownVectorAtCurrentStep.updateEach (
-				(aNode, currentValue) => currentValue <= 0d ? 
-				random.NextDouble () / 10d : currentValue
+				(aNode, currentValue) => currentValue <= 0d ? random.NextDouble () / 10d : currentValue
 			);
 		}
 
 		protected virtual void fixLesserUnknownsForAntecedentsInPressureRegulations (
-			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep)
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep,
+			Func<NodeForNetwonRaphsonSystem, GasNodeAbstract> originalNodeMapper)
 		{
+
 			unknownVectorAtCurrentStep.updateEach (
-				(aNode, currentValue) => aNode.fixPressureForAntecedentInReduction (
-					unknownVectorAtCurrentStep, currentValue)
+				(aNode, currentValue) => aNode.fixPressureIfAntecedentInPressureReductionRelation (currentValue, this.FormulaVisitor)
+			);
+
+			unknownVectorAtCurrentStep.updateEach (
+				(aNode, currentValue) => 
+					aNode.fixPressureIfInPressureReductionRelation (unknownVectorAtCurrentStep, currentValue, originalNodeMapper, this.FormulaVisitor)			
 			);
 		}
 

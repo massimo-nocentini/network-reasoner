@@ -12,6 +12,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		void forIsAntecedentInPressureRegulation (IsAntecedentInPressureRegulation isAntecedentInPressureRegulation);
 
 		void forIsNotAntecedentInPressureRegulation (IsNotAntecedentInPressureRegulation isNotAntecedentInPressureRegulation);
+
+		void forIsConsequentInPressureRegulation (IsConsequentInPressureRegulation isConsequentInPressureRegulation);
 	}
 
 	public class IsAntecedentInPressureRegulation : AntecedentInPressureRegulation
@@ -23,6 +25,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 		public void accept (AntecedentInPressureRegulationVisitor aVisitor)
 		{
 			aVisitor.forIsAntecedentInPressureRegulation (this);
+		}
+
+		#endregion
+	}
+
+	public class IsConsequentInPressureRegulation : AntecedentInPressureRegulation
+	{
+		public NodeForNetwonRaphsonSystem Antecedent{ get; set; }
+
+		#region AntecedentInPressureRegulation implementation
+
+		public void accept (AntecedentInPressureRegulationVisitor aVisitor)
+		{
+			aVisitor.forIsConsequentInPressureRegulation (this);
 		}
 
 		#endregion

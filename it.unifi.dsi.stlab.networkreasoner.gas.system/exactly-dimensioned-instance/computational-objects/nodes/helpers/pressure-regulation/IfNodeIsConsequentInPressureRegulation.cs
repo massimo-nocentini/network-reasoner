@@ -2,13 +2,13 @@
 
 namespace  it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.nodes
 {
-	public class IfNodeIsAntecedentInPressureRegulation : AntecedentInPressureRegulationVisitor
+	public class IfNodeIsConsequentInPressureRegulation : AntecedentInPressureRegulationVisitor
 	{
-		public Action<IsAntecedentInPressureRegulation> IfItIs{ get; set; }
+		public Action<IsConsequentInPressureRegulation> IfItIs{ get; set; }
 
 		public Action Otherwise{ get; set; }
 
-		public IfNodeIsAntecedentInPressureRegulation ()
+		public IfNodeIsConsequentInPressureRegulation ()
 		{
 			this.Otherwise = new Action (DoNothing);
 		}
@@ -26,7 +26,10 @@ namespace  it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_ins
 
 		public void forIsAntecedentInPressureRegulation (IsAntecedentInPressureRegulation isAntecedentInPressureRegulation)
 		{
-			this.IfItIs.Invoke (isAntecedentInPressureRegulation);
+			this.Otherwise.Invoke ();
+			return;
+			// FIXME: this piece of code should be abstracted out in order to have a better casing.
+			throw new NotSupportedException ("This method should not be called on a IsAntecedentInPressureRelation");
 		}
 
 		public void forIsNotAntecedentInPressureRegulation (IsNotAntecedentInPressureRegulation isNotAntecedentInPressureRegulation)
@@ -34,12 +37,10 @@ namespace  it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_ins
 			this.Otherwise.Invoke ();
 		}
 
+
 		public void forIsConsequentInPressureRegulation (IsConsequentInPressureRegulation isConsequentInPressureRegulation)
 		{
-			this.Otherwise.Invoke ();
-			return;
-			// FIXME: this otherwise branch should be handled in a more first-class manner.
-			throw new NotImplementedException ();
+			this.IfItIs.Invoke (isConsequentInPressureRegulation);
 		}
 
 		#endregion

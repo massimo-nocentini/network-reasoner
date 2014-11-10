@@ -70,6 +70,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				new IsAntecedentInPressureRegulation { 
 				Regulator = this.CustomEdgeUnderBuilding.EndNode
 			};
+
+			this.CustomEdgeUnderBuilding.EndNode.RoleInPressureRegulation = 
+				new IsConsequentInPressureRegulation {
+				Antecedent = this.CustomEdgeUnderBuilding.StartNode
+			};
 		}
 
 		#endregion

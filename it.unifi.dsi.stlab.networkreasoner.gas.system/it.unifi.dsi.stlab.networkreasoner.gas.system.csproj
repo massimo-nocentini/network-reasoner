@@ -98,6 +98,7 @@
     <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\pressure-regulation\AntecedentInPressureRegulation.cs" />
     <Compile Include="exactly-dimensioned-instance\system-operations\newton-raphson-solver\mutation-computation-driver\MutateComputationDriver.cs" />
     <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\pressure-regulation\IfNodeIsAntecedentInPressureRegulation.cs" />
+    <Compile Include="exactly-dimensioned-instance\computational-objects\nodes\helpers\pressure-regulation\IfNodeIsConsequentInPressureRegulation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

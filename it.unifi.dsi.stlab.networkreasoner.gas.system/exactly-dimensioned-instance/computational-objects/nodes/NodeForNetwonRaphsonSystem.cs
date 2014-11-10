@@ -146,28 +146,196 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 				this, pressure, originalNode);
 		}
 
-		public double fixPressureForAntecedentInReduction (
-			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep,
-			double currentValue)
+		public double fixPressureIfAntecedentInPressureReductionRelation (
+			double theCurrentNodePressure,
+			GasFormulaVisitor aFormulaVisitor)
 		{
-			double nodePressure = currentValue;
+			double antecedentNodePressure = theCurrentNodePressure;
 
 			new IfNodeIsAntecedentInPressureRegulation {
 				IfItIs = data => {
-					var regulatorPressure = unknownVectorAtCurrentStep.valueAt (data.Regulator);
-					if (currentValue < regulatorPressure) {
-						//nodePressure = regulatorPressure;
+				
+					if (antecedentNodePressure < 1d) {
 
-					} 
+						// restore atmospheric pressure
+						antecedentNodePressure = 1d;
+
+						// I don't understand if the following is the correct one
+//						antecedentNodePressure =	this.relativeDimensionalPressureOf (1d, aFormulaVisitor);
+					}
+				}
+			}.performOn (this.RoleInPressureRegulation);
+		
+			return antecedentNodePressure;
+		}
+
+		public double fixPressureIfInPressureReductionRelation (
+			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep,
+			double theCurrentNodePressure,
+			Func<NodeForNetwonRaphsonSystem, GasNodeAbstract> aNodeMapper,
+			GasFormulaVisitor aFormulaVisitor)
+		{
+			double nodePressure = theCurrentNodePressure;
+
+			new IfNodeIsConsequentInPressureRegulation {
+				IfItIs = data => {
+
+					var antecedentNodePressure = unknownVectorAtCurrentStep.valueAt (data.Antecedent);
+
+
+					if (antecedentNodePressure < 1d) {
+						throw new NotSupportedException ("Antecedent pressure cannot be less than 1d.");
+					}
+
+					//		if (antecedentNodePressure < currentNodePressure) {
+
+					var originalSetupPressure = new SetupPressureFinder {
+						FormulaVisitor = aFormulaVisitor
+					}.of (aNodeMapper.Invoke (this));
+
+					nodePressure = Math.Min (antecedentNodePressure, originalSetupPressure);
+
+					var newRelativePressure = this.relativeDimensionalPressureOf (nodePressure, aFormulaVisitor);
+
+					if (newRelativePressure < -1000) {
+						Console.WriteLine ("Relative pressure under -1000");
+					}
+
+					this.substituteSupplyGadgetBecauseAntecedentInPressureRegulationHasLowerPressure (
+						newRelativePressure,
+						aNodeMapper);
+					//} 
 				}
 			}.performOn (this.RoleInPressureRegulation);
 		
 			return nodePressure;
 		}
 
+		class SetupPressureFinder : GasNodeVisitor, GasNodeGadgetVisitor
+		{
+			public GasFormulaVisitor FormulaVisitor{ get; set; }
+
+			public double? OriginalSetupPressure { get; set; }
+
+			public long? Height{ get; set; }
+
+			public Double of (GasNodeAbstract gasNodeAbstract)
+			{
+				gasNodeAbstract.accept (this);
+
+				var coefficientFormula = new CoefficientFormulaForNodeWithSupplyGadget {
+					GadgetSetupPressureInMillibar = this.OriginalSetupPressure.Value,
+					NodeHeight = this.Height.Value				 
+				};
+
+				return coefficientFormula.accept (this.FormulaVisitor);
+
+			}
+
+			#region GasNodeGadgetVisitor implementation
+
+			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
+			{
+				throw new NotSupportedException ();
+			}
+
+			public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
+			{
+				this.OriginalSetupPressure = aSupplyGadget.SetupPressure;
+			}
+
+			#endregion
+
+			#region GasNodeVisitor implementation
+
+			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
+			{
+				this.Height = gasNodeTopological.Height;
+			}
+
+			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+			{
+				gasNodeWithGadget.Equipped.accept (this);
+				gasNodeWithGadget.Gadget.accept (this);
+			}
+
+			public void forNodeAntecedentInPressureReduction (
+				GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+			{
+				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+			}
+
+			#endregion
+
+
+		}
+
+		void substituteSupplyGadgetBecauseAntecedentInPressureRegulationHasLowerPressure (
+			double newSetupPressure, 
+			Func<NodeForNetwonRaphsonSystem, GasNodeAbstract> originalNodeMapper)
+		{
+		
+			this.Role = new NodeRoleSupplier { 
+				SetupPressureInMillibar = newSetupPressure 
+			};
+
+			// maybe this update on the original node can 
+			// be skipped since the user provide the
+			// value. In subsequent computation, for instance
+			// in negative pressure on load nodes, do we have
+			// to use this fixed value or not?
+//			GasNodeAbstract correspondingOriginalNode = 
+//				originalNodeMapper.Invoke (this);
+//
+//			correspondingOriginalNode.accept (
+//				new SubstituteSupplyGadget{ SetupPressure = newSetupPressure });
+		}
+
 		public override string ToString ()
 		{
 			return string.Format ("[Node: id={0}]", this.Identifier);
+		}
+
+		class SubstituteSupplyGadget : GasNodeVisitor, GasNodeGadgetVisitor
+		{
+			public Double SetupPressure{ get; set; }
+
+			#region GasNodeGadgetVisitor implementation
+
+			public void forLoadGadget (GasNodeGadgetLoad aLoadGadget)
+			{
+				throw new NotSupportedException ("This method shouldn't be called since we're " +
+				"substituting a node with a supply gadget.");
+			}
+
+			public void forSupplyGadget (GasNodeGadgetSupply aSupplyGadget)
+			{
+				aSupplyGadget.SetupPressure = SetupPressure;
+			}
+
+			#endregion
+
+			#region GasNodeVisitor implementation
+
+			public void forNodeWithTopologicalInfo (GasNodeTopological gasNodeTopological)
+			{
+				// nothing to do
+			}
+
+			public void forNodeWithGadget (GasNodeWithGadget gasNodeWithGadget)
+			{
+				gasNodeWithGadget.Gadget.accept (this);
+				gasNodeWithGadget.Equipped.accept (this);
+			}
+
+			public void forNodeAntecedentInPressureReduction (GasNodeAntecedentInPressureRegulator gasNodeAntecedentInPressureRegulator)
+			{
+				gasNodeAntecedentInPressureRegulator.ToppedNode.accept (this);
+			}
+
+			#endregion
+
+
 		}
 	}
 }

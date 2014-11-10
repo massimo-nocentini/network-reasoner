@@ -13,6 +13,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects
 		public GasFormulaVisitor Formulae { get; set; }
 
 		#region Dimension implementation
+
 		public DimensionalObjectWrapper<Vector<NodeForNetwonRaphsonSystem>> translateRelativeValues (DimensionalObjectWrapperWithRelativeValues<Vector<NodeForNetwonRaphsonSystem>> dimensionalObjectWrapperWithRelativeValues)
 		{
 			return dimensionalObjectWrapperWithRelativeValues;
@@ -35,7 +36,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects
 				double adimensionalPressure = dimensionalObjectWrapperWithAdimensionalValues.WrappedObject.valueAt (aNode);
 
 				double relativePressure = aNode.relativeDimensionalPressureOf (
-						adimensionalPressure, Formulae);
+					                          adimensionalPressure, Formulae);
 
 				relativePressures.WrappedObject.atPut (aNode, relativePressure);
 			}
@@ -43,6 +44,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects
 
 			return relativePressures;
 		}
+
 		#endregion
 
 	}
