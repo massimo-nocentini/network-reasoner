@@ -92,22 +92,35 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 		#endregion
 
+		public virtual double invertedAlgebraicFlowSum (
+			Vector<EdgeForNetwonRaphsonSystem> Qvector)
+		{
+			// the following computation is the opposite of the one performed
+			// by FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain objects.
+			var invertedAlgebraicSum = 0d;
+
+			this.OutgoingEdges.ForEach (
+				edge => invertedAlgebraicSum += edge.fetchFlowFromQvector (Qvector));
+
+			this.IncomingEdges.ForEach (
+				edge => invertedAlgebraicSum -= edge.fetchFlowFromQvector (Qvector));
+
+			return invertedAlgebraicSum;
+		}
+
 		public void putYourCoefficientInto (
 			Vector<NodeForNetwonRaphsonSystem> aVector,
 			GasFormulaVisitor aFormulaVisitor,
 			Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{
 			new IfNodeIsAntecedentInPressureRegulation {
-				IfItIs = data => {
-					// the following computation is the opposite of the one performed
-					// by FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain objects.
-					var invertedAlgebraicSum = 0d;
-					data.Regulator.OutgoingEdges.ForEach (edge => invertedAlgebraicSum += edge.fetchFlowFromQvector (Qvector));
-					data.Regulator.IncomingEdges.ForEach (edge => invertedAlgebraicSum -= edge.fetchFlowFromQvector (Qvector));
-					aVector.atPut (this, invertedAlgebraicSum);
-				},
+
+				IfItIs = data => aVector.atPut (
+					this, data.Regulator.invertedAlgebraicFlowSum (Qvector)),
+
 				Otherwise = () => this.Role.putYourCoefficientIntoFor (
 					this, aVector, aFormulaVisitor, Qvector)
+			
 			}.performOn (this.RoleInPressureRegulation);
 
 		}
@@ -182,7 +195,11 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 					var antecedentNodePressure = unknownVectorAtCurrentStep.valueAt (data.Antecedent);
 
-
+					// the following assertion is assured by a precedent method 
+					// invocation that fix exactly this condition. We move that logic
+					// in a dedicated chunck of code since here we cannot update the value
+					// for the antecedent node, because this method should be 
+					// invoked inside a foreach loop.
 					if (antecedentNodePressure < 1d) {
 						throw new NotSupportedException ("Antecedent pressure cannot be less than 1d.");
 					}
@@ -195,7 +212,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 
 					nodePressure = Math.Min (antecedentNodePressure, originalSetupPressure);
 
-					var newRelativePressure = this.relativeDimensionalPressureOf (nodePressure, aFormulaVisitor);
+					var newRelativePressure = this.relativeDimensionalPressureOf (
+						                          nodePressure, aFormulaVisitor);
 
 					if (newRelativePressure < -1000) {
 						Console.WriteLine ("Relative pressure under -1000");

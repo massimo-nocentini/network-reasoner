@@ -130,12 +130,6 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 						Qvector, Kvector, unknownVector, aFormulaVisitor, this);
 				}
 			}.performOn (this.RegulatorState);
-
-			return;
-
-			// TODO: check with Fabio if this piece has to be executed anyway.
-			this.SwitchState.putQvalueIntoUsingFor (
-				Qvector, Kvector, unknownVector, aFormulaVisitor, this);
 		}
 
 		public void putNewFvalueIntoUsing (
@@ -144,19 +138,19 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			Vector<EdgeForNetwonRaphsonSystem> previousFvector, 
 			GasFormulaVisitor formulaVisitor)
 		{
-			new IfEdgeHasntRegulatorGadget {
-				Do = () => {
+			new IfTrueIfFalseEdgeHasRegulatorGadget {
+
+				IfTrue = () => {
+					newFvector.atPut (this, 0d);					
+				},
+
+				IfFalse = () => {
 					this.SwitchState.putNewFvalueIntoUsingFor (
 						newFvector, Qvector, previousFvector, formulaVisitor, this);
 				}
+
 			}.performOn (this.RegulatorState);
 
-			return;
-
-
-			// TODO: check with Fabio if this piece has to be executed anyway.
-			this.SwitchState.putNewFvalueIntoUsingFor (
-				newFvector, Qvector, previousFvector, formulaVisitor, this);
 		}
 
 		public void stringRepresentationUsing (
@@ -181,30 +175,36 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_inst
 			GasFormulaVisitor formulaVisitor)
 		{
 
-			new IfEdgeHasntRegulatorGadget {
-				Do = () => {
+			new IfTrueIfFalseEdgeHasRegulatorGadget {
+
+				IfTrue = () => velocityVector.atPut (this, 0d),
+
+				IfFalse = () => {
 					this.SwitchState.putVelocityValueIntoUsingFor (
 						velocityVector, pressures, Qvector, formulaVisitor, this);
 				}
 			}.performOn (this.RegulatorState);
 
-			return;
-
-			// TODO: check with Fabio if this piece has to be executed anyway.
-			this.SwitchState.putVelocityValueIntoUsingFor (
-				velocityVector, pressures, Qvector, formulaVisitor, this);
 		}
 
 
 		public double fetchFlowFromQvector (Vector<EdgeForNetwonRaphsonSystem> Qvector)
 		{
-			double flow = 0d;
+			double? flow = null;
 
-			new IfEdgeHasntRegulatorGadget {
-				Do = () => flow = Qvector.valueAt (this)
+			new IfTrueIfFalseEdgeHasRegulatorGadget {
+
+				IfTrue = () => flow = 0d,
+
+				IfFalse = () => flow = Qvector.valueAt (this)
+
 			}.performOn (this.RegulatorState);
 
-			return flow;
+			// here we don't check if `flow' has a value since this style
+			// is an instance of self checking code, ie it is mandatory
+			// that `flow' would be set inside the IfTrueIfFalseEdgeHasRegulatorGadget
+			// dispatched predicate.
+			return flow.Value;
 		}
 	}
 }

@@ -5,6 +5,7 @@ using it.unifi.dsi.stlab.networkreasoner.gas.system.dimensional_objects;
 using it.unifi.dsi.stlab.math.algebra;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.formulae;
 using it.unifi.dsi.stlab.networkreasoner.model.gas;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.edges;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
@@ -377,6 +378,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			edges.ForEach (anEdge => anEdge.putQvalueIntoUsing (
 				Qvector, Kvector, unknownVector, FormulaVisitor)
 			);
+
+			// TODO: this is quite inefficient, we should maintain
+			// a list of edges with pressure regulator gadget in order
+			// to perform the following behavior only on that subset.
+			edges.ForEach (anEdge => {
+				new IfEdgeHasRegulatorGadget {
+					Do = () => Qvector.atPut (anEdge, anEdge.EndNode.invertedAlgebraicFlowSum (Qvector))				
+				}.performOn (anEdge.RegulatorState);
+			});
 
 			return Qvector;
 		}

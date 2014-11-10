@@ -4,6 +4,8 @@ using it.unifi.dsi.stlab.networkreasoner.model.gas;
 using it.unifi.dsi.stlab.extension_methods;
 using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance;
 using System.Text;
+using it.unifi.dsi.stlab.math.algebra;
+using it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.edges;
 
 namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 {
@@ -69,21 +71,51 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 			EdgeForNetwonRaphsonSystem anEdge, 
 			double Qvalue, 
 			double VelocityValue,
-			GasEdgeAbstract originalEdge)
+			GasEdgeAbstract originalEdge,
+			Vector<NodeForNetwonRaphsonSystem> aNodePressureVector)
 		{
-			var anomalyFinder = new EdgeAnomalyFinder ();
-			anomalyFinder.Flow = Qvalue;
-			anomalyFinder.Velocity = VelocityValue;
-			anomalyFinder.ReportAnomaly = anAnomaly => {
+			Action<String> anomalyReporter = anAnomaly => {
+
+				// this check should be done earlier and not at 
+				// each invocation.
 				if (AnomaliesByEdges.ContainsKey (originalEdge) == false) {
 					AnomaliesByEdges.Add (originalEdge, new StringBuilder ());
 				}
+
 				AnomaliesByEdges [originalEdge].AppendFormat (
-					"Node {0}: {1}.", 
+					"Edge {0}: {1}.", 
 					anEdge.Identifier, 
 					anAnomaly);
 			};
+
+			// this is a finder for ``nominal'' properties.
+			var anomalyFinder = new EdgeAnomalyFinder {
+				Flow = Qvalue,
+				Velocity = VelocityValue,
+				ReportAnomaly = anomalyReporter
+			};
 			originalEdge.accept (anomalyFinder);
+		
+			// this chunck of code should be move within anEdge,
+			// an send it a message.
+			new IfEdgeHasRegulatorGadget { 
+				Do = () => {
+					var pressureAtAntecedent = aNodePressureVector.valueAt (anEdge.StartNode);
+					var pressureAtConsequent = aNodePressureVector.valueAt (anEdge.EndNode);
+
+					if (pressureAtAntecedent < pressureAtConsequent) {					
+						anomalyReporter.Invoke (string.Format (
+							"node {0}, antecedent in pressure regulation, " +
+							"has pressure {2} which is less than pressure {3} " +
+							"at regulation node {1}.", 
+							anEdge.StartNode.Identifier,
+							anEdge.EndNode.Identifier,
+							pressureAtAntecedent.ToString (),
+							pressureAtConsequent.ToString ()
+						));
+					}
+				}
+			}.performOn (anEdge.RegulatorState);
 		}
 
 		void findNodeAnomalies (
@@ -156,7 +188,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					originalByComputationEdgesPair.Key, 
 					Qvalue, 
 					VelocityValue,
-					originalEdge);
+					originalEdge,
+					dimensionalUnknowns);
 
 			}
 
@@ -275,7 +308,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					edgePair.Key, 
 					Qvalue, 
 					VelocityValue,
-					originalEdge);
+					originalEdge,
+					dimensionalUnknowns);
 			}
 
 			foreach (var aNodePair in fluidDynamicSystemStateNegativeLoadsCorrected.

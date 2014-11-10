@@ -23,7 +23,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 		public static void Main (string[] args)
 		{
 			var lines = new List<string> ();
-			while (Console.In.Peek() != -1) {
+			while (Console.In.Peek () != -1) {
 				string input = Console.In.ReadLine ();
 				lines.Add (input);
 			}
@@ -39,7 +39,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			{
 				DotRepresentationsBySystems = new Dictionary<string, StringBuilder> ();
 			}
+
 			#region RunnableSystem implementation
+
 			public FluidDynamicSystemStateAbstract compute (
 				string systemName, 
 				Dictionary<string, GasNodeAbstract> nodes, 
@@ -59,7 +61,9 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 
 				return null;
 			}
+
 			#endregion
+
 			public String buildDotRepresentations ()
 			{
 				StringBuilder result = new StringBuilder ();
@@ -81,7 +85,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 
 			if (parser.existsLineSuchThat (line => line.StartsWith ("* " + multirun_region_identifier))) {
 				var multirun_region = parser.fetchRegion (
-					multirun_region_identifier, new TableHeaderParserKeepHeaderRow ());
+					                      multirun_region_identifier, new TableHeaderParserKeepHeaderRow ());
 
 				systemRunner = parser.parse (new SpecificationAssemblerSplitted (multirun_region));
 			} else {
@@ -99,7 +103,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			buildSystemRunner (parser, out systemRunner);
 
 			var computationParametersRegion = parser.fetchRegion ("computation parameters", 
-			                                                      new TableHeaderParserIgnoreHeader ());
+				                                  new TableHeaderParserIgnoreHeader ());
 			var precisionRow = parser.splitOrgRow (computationParametersRegion [0]);
 			double precision = Double.MinValue;
 			if (precisionRow.Length > 1) {
@@ -131,7 +135,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			RunnableSystem runnable_system = new RunnableSystemComputeGivenEventListener {
 				EventListener = listener,
 				Precision = precision,
-				UnknownInitialization = new UnknownInitializationSimplyRandomized()
+				UnknownInitialization = new UnknownInitializationSimplyRandomized ()
 			};
 
 			var summaryTableVisitor = new FluidDynamicSystemStateVisitorBuildSummaryTable ();
@@ -140,10 +144,20 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				SystemStateVisitor = summaryTableVisitor
 			};
 
+			var revertResultsVisitor = new FluidDynamicSystemStateVisitorRevertComputationResultsOnOriginalDomain ();
+			runnable_system = new RunnableSystemWithDecorationApplySystemStateVisitor { 
+				DecoredRunnableSystem = runnable_system,
+				SystemStateVisitor = revertResultsVisitor
+			};
+
 			systemRunner.run (runnable_system);
-			
+
+			foreach (var anomaly in revertResultsVisitor.AnomaliesByEdges.Values) {
+				Console.WriteLine (anomaly);				
+			}
+
 			Console.WriteLine (string.Format ("* steady state analysis\n{0}", 
-			                                  summaryTableVisitor.buildSummaryContent ())
+				summaryTableVisitor.buildSummaryContent ())
 			);
 
 			var dotRepresentationRow = parser.splitOrgRow (computationParametersRegion [3]);
@@ -152,7 +166,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 				systemRunner.run (dotRepresentationsRunnableSystem);
 
 				Console.WriteLine (string.Format ("\n\n* Dot representations\n{0}",
-				                                  dotRepresentationsRunnableSystem.buildDotRepresentations ())
+					dotRepresentationsRunnableSystem.buildDotRepresentations ())
 				);
 			}
 
