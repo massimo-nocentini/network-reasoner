@@ -31,6 +31,7 @@ namespace it.unifi.dsi.stlab.extension_methods
 		public static bool belongToInterval (
 			this double witness, double? min, double? max)
 		{
+
 			var result = true;
 
 			if (min.HasValue) {

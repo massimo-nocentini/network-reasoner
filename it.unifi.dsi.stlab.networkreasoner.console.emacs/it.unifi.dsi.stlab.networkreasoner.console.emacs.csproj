@@ -98,5 +98,8 @@
     <None Include="emacs-buffers-examples\big-network-for-integration-with-pressure-regulator.org">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="emacs-buffers-examples\network-for-pressure-regulator-inversions.org">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

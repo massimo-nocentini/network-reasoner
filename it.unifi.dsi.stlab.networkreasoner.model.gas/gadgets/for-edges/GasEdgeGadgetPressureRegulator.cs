@@ -2,6 +2,8 @@
 
 namespace it.unifi.dsi.stlab.networkreasoner.model.gas
 {
+	// TODO: use UPSTREAM instead of ANTECEDENT and the
+	// corresponding version for consequent nomenclature.
 	public class GasEdgeGadgetPressureRegulator : GasEdgeGadget
 	{
 		public Double? MinFlow{ get; set; }

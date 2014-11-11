@@ -169,7 +169,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 //				computationalNode => fluidDynamicSystemStateUnsolved.OriginalNodesByComputationNodes [computationalNode]);
 //
 //			fixNegativeUnknowns (unknownVectorAtCurrentStep.WrappedObject);
-//
+
 
 			var QvectorAtCurrentStep = computeQvector (
 				                           unknownVectorAtCurrentStep.WrappedObject, 
