@@ -2,11 +2,10 @@
 
 namespace  it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_instance.computational_objects.edges
 {
-	public class IfTrueIfFalseEdgeHasRegulatorGadget : EdgeRegulatorVisitor
-	{
-		public Action IfTrue { get; set; }
 
-		public Action IfFalse { get; set; }
+	public class IfEdgeHasntRegulatorGadget : EdgeRegulatorVisitor
+	{
+		public Action Do { get; set; }
 
 		public void performOn (EdgeRegulator regulatorState)
 		{
@@ -17,12 +16,15 @@ namespace  it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_ins
 
 		public void forIsNotEdgeRegulator (IsNotEdgeRegulator isNotEdgeRegulator)
 		{
-			this.IfFalse.Invoke ();
+			Do.Invoke ();
 		}
 
 		public void forIsEdgeRegulator (IsEdgeRegulator isEdgeRegulator)
 		{
-			this.IfTrue.Invoke ();
+			// since this object has been created in relation
+			// to an edge with a regulator gadget, we ignore
+			// the action to invoke since it is not
+			// our responsibility.
 		}
 
 		#endregion

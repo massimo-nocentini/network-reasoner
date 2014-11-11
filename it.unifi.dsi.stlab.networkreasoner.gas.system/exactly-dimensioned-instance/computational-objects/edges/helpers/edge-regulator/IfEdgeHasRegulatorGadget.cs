@@ -23,6 +23,11 @@ namespace  it.unifi.dsi.stlab.networkreasoner.gas.system.exactly_dimensioned_ins
 
 		public void forIsEdgeRegulator (IsEdgeRegulator isEdgeRegulator)
 		{
+			// HACK: with the following thunk we don't give any object
+			// for now this strategy seems to be sufficient.
+			// If we need some more informations in the future we should
+			// modify it giving `isEdgeRegulator' parameter, that may
+			// contain some more informations.
 			Do.Invoke ();
 		}
 
