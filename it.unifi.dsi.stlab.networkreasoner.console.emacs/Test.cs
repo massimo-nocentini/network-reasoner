@@ -16,6 +16,16 @@ namespace it.unifi.dsi.stlab.networkreasoner.console.emacs
 			)
 			);
 		}
+
+		[Test ()]
+		public void TestPressureRegulatorIntegrationNetwork ()
+		{
+			new MainClass ().run (new System.Collections.Generic.List<string> (
+				File.ReadAllLines (
+					"emacs-buffers-examples/pressure-regulator-integration.org")
+			)
+			);
+		}
 	}
 }
 

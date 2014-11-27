@@ -89,7 +89,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.model.textualinterface
 				NodeSpecificationLine semanticLine = new NodeSpecificationLine ();
 
 				semanticLine.Identifier = splittedSpecification [0];
-				semanticLine.Height = Int64.Parse (splittedSpecification [4]);
+				semanticLine.Height = Convert.ToInt64 (Double.Parse (splittedSpecification [4]));
 				semanticLine.SplittedSpecification = splittedSpecification;
 				semanticLine.Type = splittedSpecification [1].Equals ("1") ? 
 					NodeType.WithSupplyGadget : NodeType.WithLoadGadget;

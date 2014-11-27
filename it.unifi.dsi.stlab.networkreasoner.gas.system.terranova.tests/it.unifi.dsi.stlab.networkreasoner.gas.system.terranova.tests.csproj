@@ -49,6 +49,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="networks\pressure-regulator-integration.dat" />
+    <None Include="networks\pressure-regulator-integration.org">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.csproj">
