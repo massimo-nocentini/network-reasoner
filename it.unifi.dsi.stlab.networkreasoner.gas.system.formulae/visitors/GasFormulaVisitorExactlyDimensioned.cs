@@ -85,10 +85,10 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 			var unknownForStartNode = aKvalueFormula.UnknownForEdgeStartNode;
 			var unknownForEndNode = aKvalueFormula.UnknownForEdgeEndNode;
 				
-			var weightedHeightsDifference = Math.Abs (
+			var weightedHeightsDifference = Math.Max (Math.Abs (
 				                                aKvalueFormula.EdgeCovariantLittleK * unknownForStartNode -
 				                                aKvalueFormula.EdgeControVariantLittleK * unknownForEndNode
-			                                );
+			                                ), 0.1d);
 
 			var length = aKvalueFormula.EdgeLength;
 
@@ -172,13 +172,15 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 		public double visitFvalueFormula (FvalueFormula FvalueFormula)
 		{			
 
-			double numeratorForRe = Math.Abs ((FvalueFormula.EdgeQvalue * 4d) / 3600d) *
+			double numeratorForRe = Math.Abs (FvalueFormula.EdgeQvalue) / 900.0d *
 			                        this.AmbientParameters.RefDensity ();
 
 			var denominatorForRe = Math.PI * (FvalueFormula.EdgeDiameterInMillimeters / 1000d) *
 			                       this.AmbientParameters.ViscosityInPascalTimesSecond;
 
-			var Re = numeratorForRe / denominatorForRe;
+			var Re = Math.Max (numeratorForRe / denominatorForRe, 1.0d);
+
+// Colebrook equation
 
 			var augend = FvalueFormula.EdgeRoughnessInMicron /
 			             (FvalueFormula.EdgeDiameterInMillimeters * 1000d * 3.71);
@@ -189,16 +191,23 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.formulae
 
 			var Fvalue = Math.Pow (1d / toInvert, 2d);
 
-
-			if (Re < 2000d) {
-				Fvalue = 64d / Re;	
-			} else if (Re < 4000d) {
+			if (Re < 2000.0d) {
+				Fvalue = 64.0d / Re;	
+			} else if (Re < 4000.0d) {
 				Fvalue = .00277 * Math.Pow (Re, .3219);	
 			}
 
+/* Renouard equation
 
+			var Fvalue = 0.172d * Math.Pow (Re, -0.18d);
+
+			if (Re < 1365.0d) {
+				Fvalue = 64.0d / Re;	
+			}
+*/
 
 			return Fvalue;
+
 		}
 
 		public double visitVelocityValueFormula (VelocityValueFormula velocityValueFormula)

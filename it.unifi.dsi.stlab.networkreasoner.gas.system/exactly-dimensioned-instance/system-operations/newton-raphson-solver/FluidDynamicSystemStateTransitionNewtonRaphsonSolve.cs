@@ -357,7 +357,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system
 					coefficientVectorForJacobianSystemFactorization);
 
 			unknownVectorFromJacobianSystemAtCurrentStep.updateEach (
-				(node, currentValue) => currentValue * .75);
+				(node, currentValue) => currentValue * .55);
 
 			Vector<NodeForNetwonRaphsonSystem> unknownVectorAtCurrentStep = 
 				unknownVectorAtPreviousStep.minus (unknownVectorFromJacobianSystemAtCurrentStep);
