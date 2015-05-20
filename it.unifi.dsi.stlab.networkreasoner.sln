@@ -135,6 +135,6 @@ Global
 		{F03D530B-161A-4597-8B59-C80BCFF18235}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = it.unifi.dsi.stlab.networkreasoner.model.rdfinterface\it.unifi.dsi.stlab.networkreasoner.model.rdfinterface.csproj
+		StartupItem = it.unifi.dsi.stlab.networkreasoner.console.emacs\it.unifi.dsi.stlab.networkreasoner.console.emacs.csproj
 	EndGlobalSection
 EndGlobal

@@ -101,5 +101,9 @@
     <None Include="emacs-buffers-examples\network-for-pressure-regulator-inversions.org">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\it.unifi.dsi.stlab.networkreasoner.gas.system.terranova.tests\networks\pressure-regulator-integration.org">
+      <Link>emacs-buffers-examples\pressure-regulator-integration.org</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
