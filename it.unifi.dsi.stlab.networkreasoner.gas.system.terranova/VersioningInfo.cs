@@ -9,6 +9,8 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 		/// 
 		/// Here are the stack of versions with a brief description:
 		/// 
+		/// v1.1.1: tuning computational parameter to handle middle and low pressure networks.
+		/// 
 		/// v1.1.0: introduce pressure regulator gadget for edges.
 		/// 
 		/// v1.0.1: enhancement to tackle turbolent behavior due to 
@@ -21,7 +23,7 @@ namespace it.unifi.dsi.stlab.networkreasoner.gas.system.terranova
 		/// <value>The version number.</value>
 		public String VersionNumber { 
 			get {
-				return "v1.1.0";
+				return "v1.1.1";
 			}
 		}
 
